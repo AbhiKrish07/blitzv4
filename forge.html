@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Forge — B.L.I.T.Z.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04050a;--bg2:#07080f;--bg3:#0b0c15;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.32);--faint:rgba(255,255,255,0.045);
+  --accent:#a78bfa;--green:#4ade80;--red:#fb7185;--gold:#fbbf24;--blue:#60a5fa;--orange:#fdba74;
+  --font:'Syne',sans-serif;--mono:'Space Mono',monospace;
+  --forge-orange:#fdba74;
+  --blitz-w:340px;
+  --statusbar-h:24px;
+  --topbar-h:42px;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);}
+body{font-family:var(--font);color:var(--text);-webkit-font-smoothing:antialiased;letter-spacing:.02em;}
+body::after{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.012) 2px,rgba(0,0,0,.012) 4px);pointer-events:none;}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar-h);z-index:200;
+  display:flex;align-items:center;gap:0;
+  background:rgba(4,5,12,0.95);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-left{display:flex;align-items:center;gap:10px;padding:0 14px;border-right:1px solid var(--border);}
+.back-btn{
+  display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:7px;
+  font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;
+  border:1px solid var(--border);background:transparent;transition:all .15s;text-decoration:none;
+}
+.back-btn:hover{color:var(--text);border-color:var(--border2);background:var(--faint);}
+.forge-badge{
+  display:flex;align-items:center;gap:7px;padding:0 14px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--forge-orange);
+}
+.forge-dot{width:7px;height:7px;border-radius:50%;background:var(--forge-orange);box-shadow:0 0 10px rgba(253,186,116,.7);animation:forge-pulse 2s ease-in-out infinite;}
+@keyframes forge-pulse{0%,100%{opacity:1;box-shadow:0 0 10px rgba(253,186,116,.7)}50%{opacity:.6;box-shadow:0 0 20px rgba(253,186,116,.4)}}
+
+/* File tabs */
+.file-tabs{display:flex;flex:1;overflow-x:auto;gap:0;align-items:flex-end;padding:0 8px;height:100%;}
+.file-tabs::-webkit-scrollbar{height:2px;}
+.file-tabs::-webkit-scrollbar-thumb{background:var(--border2);}
+.file-tab{
+  display:flex;align-items:center;gap:8px;padding:0 14px;height:calc(var(--topbar-h) - 1px);
+  font-family:var(--mono);font-size:10.5px;color:var(--muted);cursor:pointer;
+  border-right:1px solid var(--border);white-space:nowrap;flex-shrink:0;
+  transition:all .15s;position:relative;
+}
+.file-tab:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.file-tab.active{color:var(--text);background:rgba(255,255,255,.05);}
+.file-tab.active::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--forge-orange);}
+.file-tab.modified .tab-dot{opacity:1;}
+.tab-dot{width:6px;height:6px;border-radius:50%;background:var(--forge-orange);opacity:0;margin-left:-2px;flex-shrink:0;}
+.tab-lang{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(253,186,116,.12);color:var(--forge-orange);border:1px solid rgba(253,186,116,.2);}
+.tab-close{margin-left:4px;opacity:0;color:var(--muted);font-size:11px;line-height:1;padding:1px 3px;border-radius:3px;transition:all .12s;}
+.file-tab:hover .tab-close{opacity:1;}
+.tab-close:hover{background:rgba(251,113,133,.2);color:var(--red);}
+.add-tab{padding:0 12px;color:var(--muted);font-size:18px;cursor:pointer;transition:color .15s;flex-shrink:0;}
+.add-tab:hover{color:var(--text);}
+
+/* Topbar right */
+.topbar-right{display:flex;align-items:center;gap:8px;padding:0 14px;border-left:1px solid var(--border);flex-shrink:0;}
+.run-btn{
+  display:flex;align-items:center;gap:6px;padding:5px 14px;border-radius:7px;
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+  background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green);
+  cursor:pointer;transition:all .15s;
+}
+.run-btn:hover{background:rgba(74,222,128,.18);border-color:rgba(74,222,128,.45);}
+.stop-btn{
+  display:none;align-items:center;gap:6px;padding:5px 14px;border-radius:7px;
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;
+  background:rgba(251,113,133,.08);border:1px solid rgba(251,113,133,.3);color:var(--red);
+  cursor:pointer;transition:all .15s;
+}
+.tb-btn{padding:5px 10px;border-radius:6px;font-family:var(--mono);font-size:9px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;}
+.tb-btn:hover{border-color:var(--border2);color:var(--text);background:var(--faint);}
+.api-pill{display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9px;color:var(--muted);}
+.api-dot{width:5px;height:5px;border-radius:50%;background:var(--muted);}
+.api-dot.on{background:var(--green);box-shadow:0 0 6px rgba(74,222,128,.6);}
+.api-dot.off{background:var(--red);}
+
+/* ── LAYOUT ── */
+.layout{
+  position:fixed;top:var(--topbar-h);bottom:var(--statusbar-h);left:0;right:0;
+  display:flex;
+}
+
+/* ── FILE EXPLORER ── */
+.explorer{
+  width:200px;flex-shrink:0;
+  background:rgba(5,6,14,.9);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  transition:width .25s cubic-bezier(.4,0,.2,1);
+}
+.explorer.collapsed{width:0;}
+.ex-head{
+  padding:10px 12px 8px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ex-title{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.ex-action{font-size:14px;color:var(--muted);cursor:pointer;padding:2px 4px;border-radius:3px;transition:color .12s;}
+.ex-action:hover{color:var(--text);}
+.ex-tree{flex:1;overflow-y:auto;padding:6px 0;}
+.ex-tree::-webkit-scrollbar{width:2px;}
+.ex-folder{padding:6px 12px;display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all .12s;}
+.ex-folder:hover{color:var(--text);background:var(--faint);}
+.ex-folder-icon{font-size:11px;}
+.ex-file{
+  padding:5px 12px 5px 28px;display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:10px;color:var(--muted);cursor:pointer;transition:all .12s;
+}
+.ex-file:hover{color:var(--text);background:var(--faint);}
+.ex-file.active{color:var(--text);background:rgba(253,186,116,.07);border-left:2px solid var(--forge-orange);}
+.ex-file-icon{font-size:11px;flex-shrink:0;}
+.ex-badge{margin-left:auto;font-size:8px;padding:1px 5px;border-radius:8px;background:rgba(74,222,128,.12);color:var(--green);}
+
+/* ── EDITOR ZONE ── */
+.editor-zone{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.editor-split{flex:1;display:flex;overflow:hidden;}
+
+/* Monaco container */
+.monaco-container{flex:1;overflow:hidden;position:relative;min-width:0;}
+#monaco-editor{width:100%;height:100%;}
+
+/* AI Ghost overlay */
+.inject-overlay{
+  position:absolute;inset:0;z-index:50;pointer-events:none;
+  background:rgba(253,186,116,.03);
+  border:1px solid rgba(253,186,116,.2);
+  opacity:0;transition:opacity .3s;
+}
+.inject-overlay.visible{opacity:1;}
+.inject-label{
+  position:absolute;top:14px;right:14px;
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;
+  color:var(--forge-orange);padding:4px 10px;border-radius:6px;
+  background:rgba(253,186,116,.12);border:1px solid rgba(253,186,116,.25);
+  animation:inject-blink .7s ease-in-out infinite;
+}
+@keyframes inject-blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Resizer */
+.v-resizer{
+  width:4px;flex-shrink:0;cursor:col-resize;
+  background:transparent;transition:background .15s;position:relative;
+}
+.v-resizer::after{content:'';position:absolute;top:0;bottom:0;left:1px;width:2px;background:var(--border);transition:background .15s;}
+.v-resizer:hover::after,.v-resizer.dragging::after{background:var(--forge-orange);}
+
+/* Terminal Panel */
+.terminal-panel{
+  height:220px;flex-shrink:0;
+  border-top:1px solid var(--border);
+  background:rgba(2,3,8,.95);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  transition:height .25s;
+}
+.terminal-panel.collapsed{height:0;border-top:none;}
+.term-tabs{display:flex;align-items:center;gap:0;border-bottom:1px solid var(--border);flex-shrink:0;padding:0 8px;}
+.term-tab{padding:6px 14px;font-family:var(--mono);font-size:9px;color:var(--muted);cursor:pointer;border-bottom:1px solid transparent;margin-bottom:-1px;transition:all .12s;}
+.term-tab.active{color:var(--text);border-bottom-color:var(--forge-orange);}
+.term-tab:hover{color:var(--text);}
+.term-actions{margin-left:auto;display:flex;gap:6px;align-items:center;}
+.term-action{padding:2px 8px;font-family:var(--mono);font-size:9px;border:1px solid var(--border);border-radius:4px;background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;}
+.term-action:hover{color:var(--text);border-color:var(--border2);}
+.term-body{flex:1;overflow-y:auto;padding:10px 14px;font-family:var(--mono);font-size:11px;line-height:1.7;color:rgba(255,255,255,.7);}
+.term-body::-webkit-scrollbar{width:3px;}
+.term-body::-webkit-scrollbar-thumb{background:var(--border2);}
+.term-line{white-space:pre-wrap;word-break:break-all;}
+.term-line.err{color:var(--red);}
+.term-line.warn{color:var(--gold);}
+.term-line.ok{color:var(--green);}
+.term-line.ai{color:var(--forge-orange);}
+.term-line.dim{color:var(--muted);}
+.term-prompt{display:flex;align-items:center;gap:8px;margin-top:4px;flex-shrink:0;padding:6px 14px;border-top:1px solid var(--border);}
+.term-ps{font-family:var(--mono);font-size:11px;color:var(--green);flex-shrink:0;}
+.term-inp{flex:1;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:11px;color:var(--text);caret-color:var(--green);}
+
+/* ── BLITZ SIDEBAR ── */
+.blitz-panel{
+  width:var(--blitz-w);flex-shrink:0;
+  display:flex;flex-direction:column;
+  border-left:1px solid var(--border);
+  background:rgba(4,5,14,.92);backdrop-filter:blur(24px);
+  overflow:hidden;transition:width .25s cubic-bezier(.4,0,.2,1);
+}
+.blitz-panel.collapsed{width:0;}
+.blitz-header{
+  padding:12px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;gap:8px;
+}
+.blitz-logo{font-size:13px;font-weight:800;letter-spacing:-.02em;flex:1;}
+.blitz-logo span{color:var(--accent);}
+.blitz-mode-badge{
+  padding:3px 8px;border-radius:6px;font-family:var(--mono);font-size:9px;font-weight:700;
+  background:rgba(253,186,116,.1);color:var(--forge-orange);border:1px solid rgba(253,186,116,.22);
+}
+.blitz-context{
+  padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;
+  background:rgba(253,186,116,.04);
+}
+.blitz-ctx-label{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(253,186,116,.5);margin-bottom:5px;}
+.blitz-ctx-info{font-family:var(--mono);font-size:9.5px;color:var(--muted);line-height:1.5;}
+.blitz-ctx-info span{color:var(--forge-orange);}
+.selection-pill{
+  display:inline-flex;align-items:center;gap:5px;margin-top:4px;
+  padding:2px 8px;border-radius:5px;font-family:var(--mono);font-size:8px;
+  background:rgba(253,186,116,.08);color:var(--forge-orange);border:1px solid rgba(253,186,116,.2);
+}
+
+/* Auto-loop row in blitz panel */
+.auto-row{
+  display:flex;align-items:center;gap:7px;padding:8px 14px;border-bottom:1px solid var(--border);
+  flex-shrink:0;background:rgba(253,186,116,.02);
+}
+.auto-row-label{font-family:var(--mono);font-size:9px;color:var(--muted);flex:1;}
+.retry-badge{font-family:var(--mono);font-size:9px;color:var(--forge-orange);}
+.tog{width:30px;height:16px;background:rgba(255,255,255,.08);border-radius:8px;position:relative;cursor:pointer;border:1px solid var(--border);transition:background .3s;flex-shrink:0;}
+.tog.on{background:rgba(74,222,128,.25);border-color:rgba(74,222,128,.4);}
+.tog::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.5);transition:left .25s;}
+.tog.on::after{left:16px;background:var(--green);}
+
+/* Blitz feed */
+.blitz-feed{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px;}
+.blitz-feed::-webkit-scrollbar{width:2px;}
+.blitz-feed::-webkit-scrollbar-thumb{background:var(--border2);}
+.b-msg{display:flex;flex-direction:column;gap:2px;max-width:96%;}
+.b-msg.u{align-self:flex-end;align-items:flex-end;}
+.b-msg.b{align-self:flex-start;align-items:flex-start;}
+.b-who{font-family:var(--mono);font-size:7.5px;color:var(--muted);letter-spacing:.08em;}
+.b-bubble{padding:8px 11px;border-radius:10px;font-size:11.5px;line-height:1.55;cursor:text;user-select:text;}
+.b-msg.u .b-bubble{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.18);}
+.b-msg.b .b-bubble{background:rgba(253,186,116,.06);border:1px solid rgba(253,186,116,.15);}
+.b-bubble code{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px;}
+.b-bubble pre{background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:6px;padding:8px;margin:5px 0;overflow-x:auto;font-family:var(--mono);font-size:10px;line-height:1.5;cursor:text;user-select:text;}
+.b-ts{font-family:var(--mono);font-size:7px;color:var(--muted);}
+
+/* Inject button */
+.inject-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:4px;padding:4px 10px;border-radius:5px;
+  font-family:var(--mono);font-size:9px;font-weight:700;
+  background:rgba(253,186,116,.1);border:1px solid rgba(253,186,116,.28);
+  color:var(--forge-orange);cursor:pointer;transition:all .15s;
+}
+.inject-btn:hover{background:rgba(253,186,116,.2);border-color:rgba(253,186,116,.5);}
+.inject-btn svg{width:10px;height:10px;}
+
+/* Typing */
+.b-typing{align-self:flex-start;padding:9px 12px;background:rgba(253,186,116,.06);border:1px solid rgba(253,186,116,.12);border-radius:10px;display:flex;gap:4px;align-items:center;}
+.tdot{width:4px;height:4px;border-radius:50%;background:rgba(253,186,116,.5);animation:tdot-bounce 1.2s ease-in-out infinite;}
+.tdot:nth-child(2){animation-delay:.2s}.tdot:nth-child(3){animation-delay:.4s}
+@keyframes tdot-bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+
+/* Blitz input area */
+.blitz-input-area{padding:10px 12px;border-top:1px solid var(--border);background:rgba(255,255,255,.01);flex-shrink:0;}
+.b-cmd-hint{font-family:var(--mono);font-size:8.5px;color:rgba(253,186,116,.5);margin-bottom:6px;min-height:11px;}
+.b-input-row{display:flex;gap:6px;align-items:center;}
+.b-inp{
+  flex:1;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
+  padding:7px 10px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;
+  caret-color:rgba(255,255,255,.7);transition:border-color .15s;
+}
+.b-inp:focus{border-color:rgba(253,186,116,.35);}
+.b-send{
+  width:32px;height:32px;border-radius:7px;flex-shrink:0;cursor:pointer;
+  border:1px solid rgba(253,186,116,.25);background:rgba(253,186,116,.07);
+  color:rgba(253,186,116,.7);font-size:12px;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.b-send:hover{background:rgba(253,186,116,.16);color:var(--forge-orange);}
+.b-inject-all{
+  display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:6px;margin-top:5px;width:100%;
+  font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.04em;
+  background:rgba(253,186,116,.06);border:1px solid rgba(253,186,116,.18);color:rgba(253,186,116,.6);
+  cursor:pointer;transition:all .15s;
+}
+.b-inject-all:hover{background:rgba(253,186,116,.15);border-color:rgba(253,186,116,.4);color:var(--forge-orange);}
+.blitz-quick{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;}
+.bq-btn{
+  padding:3px 8px;border-radius:5px;font-family:var(--mono);font-size:8.5px;
+  border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;
+}
+.bq-btn:hover{border-color:rgba(253,186,116,.3);color:var(--forge-orange);background:rgba(253,186,116,.05);}
+
+/* ── STATUS BAR ── */
+.statusbar{
+  position:fixed;bottom:0;left:0;right:0;height:var(--statusbar-h);z-index:200;
+  display:flex;align-items:center;gap:0;
+  background:rgba(253,186,116,.08);border-top:1px solid rgba(253,186,116,.18);
+  font-family:var(--mono);font-size:9.5px;
+}
+.sb-section{display:flex;align-items:center;gap:8px;padding:0 12px;border-right:1px solid rgba(253,186,116,.1);height:100%;color:rgba(253,186,116,.6);}
+.sb-section:last-child{border-right:none;margin-left:auto;}
+.sb-dot2{width:5px;height:5px;border-radius:50%;background:var(--forge-orange);box-shadow:0 0 6px rgba(253,186,116,.6);}
+.sb-kv{display:flex;align-items:center;gap:4px;}
+.sb-k{color:rgba(255,255,255,.2);}
+.sb-v{color:rgba(253,186,116,.7);}
+.sb-cursor-info{margin-left:auto;color:rgba(255,255,255,.25);}
+
+/* ── FLOATING COMMAND BAR ── */
+.float-cmd{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:300;
+  background:rgba(7,8,18,.97);backdrop-filter:blur(28px);
+  border:1px solid rgba(253,186,116,.3);border-radius:14px;
+  padding:12px 16px;
+  display:none;flex-direction:column;gap:8px;
+  width:520px;max-width:90vw;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 0 1px rgba(253,186,116,.08),0 0 60px rgba(253,186,116,.06);
+}
+.float-cmd.visible{display:flex;}
+.cmd-top{display:flex;align-items:center;gap:10px;}
+.cmd-icon{font-size:16px;flex-shrink:0;}
+.cmd-inp{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:var(--mono);font-size:13px;color:var(--text);
+  caret-color:var(--forge-orange);
+}
+.cmd-inp::placeholder{color:var(--muted);}
+.cmd-kb{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);}
+.cmd-context-preview{
+  background:rgba(253,186,116,.05);border:1px solid rgba(253,186,116,.15);border-radius:8px;
+  padding:8px 10px;font-family:var(--mono);font-size:9.5px;color:var(--muted);
+  max-height:80px;overflow-y:auto;line-height:1.5;
+}
+.cmd-context-label{font-size:8px;color:rgba(253,186,116,.5);margin-bottom:3px;letter-spacing:.12em;text-transform:uppercase;}
+.cmd-actions{display:flex;gap:6px;}
+.cmd-act-btn{
+  flex:1;padding:7px;border-radius:8px;font-family:var(--mono);font-size:9px;font-weight:700;
+  border:1px solid var(--border);background:var(--faint);color:var(--muted);cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.cmd-act-btn:hover{border-color:rgba(253,186,116,.3);color:var(--forge-orange);background:rgba(253,186,116,.06);}
+.cmd-act-btn.primary{background:rgba(253,186,116,.1);border-color:rgba(253,186,116,.3);color:var(--forge-orange);}
+.cmd-act-btn.primary:hover{background:rgba(253,186,116,.2);border-color:rgba(253,186,116,.5);}
+
+/* ── DIFF PREVIEW PANEL ── */
+.diff-overlay{
+  position:fixed;inset:0;z-index:400;background:rgba(4,5,12,.92);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;
+}
+.diff-overlay.visible{display:flex;}
+.diff-panel{
+  width:80vw;max-width:900px;max-height:80vh;
+  background:rgba(8,9,20,.98);border:1px solid rgba(253,186,116,.25);border-radius:16px;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 0 1px rgba(253,186,116,.08);
+}
+.diff-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.diff-title{font-size:14px;font-weight:700;flex:1;}
+.diff-subtitle{font-family:var(--mono);font-size:9px;color:var(--muted);}
+.diff-close{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:13px;transition:all .12s;display:flex;align-items:center;justify-content:center;}
+.diff-close:hover{background:rgba(251,113,133,.1);color:var(--red);border-color:rgba(251,113,133,.3);}
+.diff-body{flex:1;overflow-y:auto;padding:14px 18px;font-family:var(--mono);font-size:11.5px;line-height:1.7;}
+.diff-body::-webkit-scrollbar{width:3px;}
+.diff-body::-webkit-scrollbar-thumb{background:var(--border2);}
+.diff-added{background:rgba(74,222,128,.08);color:var(--green);border-left:2px solid var(--green);padding-left:10px;margin:1px 0;}
+.diff-removed{background:rgba(251,113,133,.07);color:rgba(251,113,133,.6);border-left:2px solid rgba(251,113,133,.4);padding-left:10px;margin:1px 0;text-decoration:line-through;}
+.diff-neutral{color:var(--muted);padding-left:12px;}
+.diff-footer{display:flex;gap:8px;padding:14px 18px;border-top:1px solid var(--border);flex-shrink:0;}
+.diff-accept{flex:1;padding:9px;border-radius:9px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--green);cursor:pointer;transition:all .15s;}
+.diff-accept:hover{background:rgba(74,222,128,.2);border-color:rgba(74,222,128,.55);}
+.diff-reject{flex:1;padding:9px;border-radius:9px;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.06em;background:rgba(251,113,133,.06);border:1px solid rgba(251,113,133,.2);color:rgba(251,113,133,.7);cursor:pointer;transition:all .15s;}
+.diff-reject:hover{background:rgba(251,113,133,.14);border-color:rgba(251,113,133,.4);color:var(--red);}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(8px);z-index:9000;
+  background:rgba(8,9,22,.97);border:1px solid var(--border2);border-radius:9px;
+  padding:7px 14px;font-family:var(--mono);font-size:11px;color:var(--text);
+  opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.forge{border-color:rgba(253,186,116,.3);color:var(--forge-orange);}
+
+/* ── KEYBOARD SHORTCUT HINT ── */
+.shortcut-overlay{
+  position:fixed;bottom:36px;right:16px;z-index:150;
+  font-family:var(--mono);font-size:9px;color:var(--muted);
+  display:flex;flex-direction:column;gap:3px;align-items:flex-end;
+  pointer-events:none;
+}
+.sc-row{display:flex;align-items:center;gap:6px;}
+.sc-key{padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:rgba(255,255,255,.35);}
+
+/* ── NOTIFICATION ── */
+.notif{
+  position:fixed;top:54px;right:16px;z-index:9000;
+  background:rgba(8,9,22,.97);border:1px solid var(--border2);border-radius:10px;
+  padding:10px 14px;font-size:12px;max-width:280px;
+  opacity:0;transform:translateX(16px);transition:all .35s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;
+}
+.notif.show{opacity:1;transform:translateX(0);}
+.notif-title{font-weight:700;margin-bottom:2px;}
+.notif-body{font-family:var(--mono);font-size:10px;color:var(--muted);}
+
+.monaco-scrollbar-shadow,.decorationsOverviewRuler{display:none!important;}
+@keyframes win-in{from{opacity:0;transform:translateX(-50%) scale(.92) translateY(10px)}to{opacity:1;transform:translateX(-50%) scale(1) translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="back-btn">← Hub</a>
+    <div class="forge-badge">
+      <div class="forge-dot"></div>
+      THE FORGE
+    </div>
+  </div>
+
+  <div class="file-tabs" id="file-tabs"></div>
+  <span class="add-tab" onclick="newFile()" title="New file (Ctrl+N)">+</span>
+
+  <div class="topbar-right">
+    <button class="run-btn" id="run-btn" onclick="runCode()" title="Run (Ctrl+Enter)">▶ Run</button>
+    <button class="stop-btn" id="stop-btn" onclick="stopRun()">■ Stop</button>
+    <button class="tb-btn" onclick="toggleExplorer()">⬡ Files</button>
+    <button class="tb-btn" onclick="toggleBlitz()">⚡ Blitz</button>
+    <div class="api-pill">
+      <div class="api-dot" id="api-dot"></div>
+      <span id="api-lbl">—</span>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <!-- FILE EXPLORER -->
+  <div class="explorer" id="explorer">
+    <div class="ex-head">
+      <span class="ex-title">Explorer</span>
+      <div style="display:flex;gap:6px;">
+        <span class="ex-action" onclick="newFile()" title="New file">+</span>
+        <span class="ex-action" onclick="toggleExplorer()" title="Close">×</span>
+      </div>
+    </div>
+    <div class="ex-tree" id="ex-tree">
+      <div class="ex-folder"><span class="ex-folder-icon">▾</span>📁 WORKSPACE</div>
+    </div>
+  </div>
+
+  <!-- EDITOR ZONE -->
+  <div class="editor-zone">
+    <div class="editor-split">
+      <!-- Monaco Editor -->
+      <div class="monaco-container">
+        <div id="monaco-editor"></div>
+        <div class="inject-overlay" id="inject-overlay">
+          <div class="inject-label">⚡ INJECTING CODE...</div>
+        </div>
+      </div>
+
+      <!-- Vertical resizer -->
+      <div class="v-resizer" id="v-resizer"></div>
+
+      <!-- Blitz Panel -->
+      <div class="blitz-panel" id="blitz-panel">
+        <div class="blitz-header">
+          <div class="blitz-logo">B<span>.</span>L<span>.</span>I<span>.</span>T<span>.</span>Z<span>.</span></div>
+          <div class="blitz-mode-badge">⚡ FORGE MODE</div>
+        </div>
+        <div class="blitz-context">
+          <div class="blitz-ctx-label">Active Context</div>
+          <div class="blitz-ctx-info">
+            File: <span id="ctx-file">untitled.py</span><br>
+            Lang: <span id="ctx-lang">python</span> · Lines: <span id="ctx-lines">0</span>
+          </div>
+          <div id="selection-info" style="display:none;">
+            <div class="selection-pill">✂ <span id="sel-lines">0</span> lines selected</div>
+          </div>
+        </div>
+        <!-- Auto-loop row -->
+        <div class="auto-row">
+          <span class="auto-row-label">Auto-loop on error</span>
+          <span class="retry-badge" id="retry-badge"></span>
+          <div class="tog" id="auto-tog" onclick="toggleAutoLoop()"></div>
+        </div>
+        <div class="blitz-feed" id="blitz-feed"></div>
+        <div class="blitz-input-area">
+          <div class="b-cmd-hint" id="b-hint">Select code + ⌘K to ask Blitz to edit it</div>
+          <div class="b-input-row">
+            <input class="b-inp" id="b-inp" placeholder="Ask Blitz about your code..." autocomplete="off" spellcheck="false">
+            <button class="b-send" onclick="sendForge()" title="Send (Enter)">↵</button>
+          </div>
+          <button class="b-inject-all" id="inject-all-btn" onclick="injectLastCode()" style="display:none;">
+            ⚡ Inject last response into editor
+          </button>
+          <div class="blitz-quick" id="bq-row"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Terminal Panel -->
+    <div class="terminal-panel" id="term-panel">
+      <div class="term-tabs">
+        <div class="term-tab active" onclick="termTab('output')">Output</div>
+        <div class="term-tab" onclick="termTab('terminal')">Terminal</div>
+        <div class="term-tab" onclick="termTab('problems')">Problems</div>
+        <div class="term-actions">
+          <button class="term-action" onclick="clearTerm()">Clear</button>
+          <button class="term-action" onclick="toggleTerm()">▼</button>
+        </div>
+      </div>
+      <div class="term-body" id="term-body"></div>
+      <div class="term-prompt">
+        <span class="term-ps">$</span>
+        <input class="term-inp" id="term-inp" placeholder="Run a command..." spellcheck="false" autocomplete="off">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING COMMAND BAR (Cmd+K) -->
+<div class="float-cmd" id="float-cmd">
+  <div class="cmd-top">
+    <span class="cmd-icon">⚡</span>
+    <input class="cmd-inp" id="cmd-inp" placeholder="Tell Blitz what to do with your selection..." autocomplete="off" spellcheck="false">
+    <span class="cmd-kb">ESC</span>
+  </div>
+  <div class="cmd-context-preview" id="cmd-preview">
+    <div class="cmd-context-label">Selected code</div>
+    <div id="cmd-preview-code" style="white-space:pre-wrap;font-size:9px;color:var(--muted);max-height:60px;overflow:hidden;"></div>
+  </div>
+  <div class="cmd-actions">
+    <button class="cmd-act-btn" onclick="cmdQuick('Explain this code in detail')">💡 Explain</button>
+    <button class="cmd-act-btn" onclick="cmdQuick('Debug and fix any issues in this code')">🐛 Debug</button>
+    <button class="cmd-act-btn" onclick="cmdQuick('Refactor and optimize this code')">✨ Optimize</button>
+    <button class="cmd-act-btn primary" onclick="submitCmd()">⚡ Run →</button>
+  </div>
+</div>
+
+<!-- DIFF PREVIEW OVERLAY -->
+<div class="diff-overlay" id="diff-overlay">
+  <div class="diff-panel">
+    <div class="diff-header">
+      <div>
+        <div class="diff-title">⚡ Blitz Suggestion</div>
+        <div class="diff-subtitle" id="diff-subtitle">Review the changes before accepting</div>
+      </div>
+      <button class="diff-close" onclick="closeDiff()">✕</button>
+    </div>
+    <div class="diff-body" id="diff-body"></div>
+    <div class="diff-footer">
+      <button class="diff-accept" onclick="acceptDiff()">✓ Accept Changes</button>
+      <button class="diff-reject" onclick="closeDiff()">✕ Reject</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <div class="sb-section">
+    <div class="sb-dot2"></div>
+    <span style="color:var(--forge-orange);font-weight:700;letter-spacing:.1em;">THE FORGE</span>
+  </div>
+  <div class="sb-section">
+    <div class="sb-kv"><span class="sb-k">file</span><span class="sb-v" id="sb-file">untitled.py</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-kv"><span class="sb-k">lang</span><span class="sb-v" id="sb-lang">python</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-kv"><span class="sb-k">lines</span><span class="sb-v" id="sb-lines">0</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-kv"><span class="sb-k">api</span><span class="sb-v" id="sb-api">—</span></div>
+  </div>
+  <div class="sb-section">
+    <span class="sb-cursor-info" id="sb-cursor">Ln 1, Col 1</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="notif" id="notif">
+  <div class="notif-title" id="notif-title"></div>
+  <div class="notif-body" id="notif-body"></div>
+</div>
+
+<div class="shortcut-overlay">
+  <div class="sc-row"><span class="sc-key">⌘K</span><span>AI Command</span></div>
+  <div class="sc-row"><span class="sc-key">⌘B</span><span>Toggle Blitz</span></div>
+  <div class="sc-row"><span class="sc-key">⌘↵</span><span>Run</span></div>
+</div>
+
+<!-- Monaco Editor CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════
+// B.L.I.T.Z. FORGE — Merged UI + Functionality
+// ════════════════════════════════════════════════════════
+
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000'
+  : window.location.origin;
+
+// ── STATE ────────────────────────────────────────────────
+let editor = null;
+let currentTab = 0;
+let lastCode = '';
+let lastCodeLang = 'python';
+let pendingDiff = null;
+let toastTimer = null;
+let notifTimer = null;
+let apiOnline = false;
+let apiCalls = 0;
+let termTabActive = 'output';
+
+// Original forge.html auto-loop state
+let autoLoop = false;
+let autoRetries = 0;
+let lastErr = '';
+let pyodide = null;
+let pyodideLoading = false;
+let pyodideReady = false;
+
+const tabs = [
+  { id: 0, name: 'main.py', lang: 'python', content: `# B.L.I.T.Z. FORGE — Write code, hit ▶ RUN, or ask Blitz via the panel\n\ndef fibonacci(n):\n    """Return list of Fibonacci numbers up to n."""\n    seq, a, b = [], 0, 1\n    while a <= n:\n        seq.append(a)\n        a, b = b, a + b\n    return seq\n\nresult = fibonacci(100)\nprint(f"Fibonacci numbers up to 100: {result}")\nprint(f"Count: {len(result)}")\n`, modified: false },
+  { id: 1, name: 'notes.md', lang: 'markdown', content: `# Project Notes\n\nUse this file to keep notes about your project.\n\n## Ideas\n- [ ] Add a new feature\n- [ ] Refactor the main module\n- [ ] Write tests\n`, modified: false },
+];
+
+const langIcons = {
+  python:'🐍', javascript:'🟨', typescript:'🔷', html:'🟧', css:'🎨',
+  json:'📋', markdown:'📝', java:'☕', cpp:'⚙', c:'⚙', rust:'🦀',
+  go:'🐹', sql:'🗄', bash:'💻', shell:'💻', plaintext:'📄'
+};
+
+const QUICK_CMDS = [
+  ['🐛 Debug',    'Debug this code and fix any bugs:'],
+  ['💡 Explain',  'Explain this code step by step:'],
+  ['✨ Refactor', 'Refactor this to be cleaner:'],
+  ['🧪 Tests',    'Write unit tests for this:'],
+  ['📝 Docs',     'Add docstrings and comments:'],
+];
+
+// ── MONACO INIT ──────────────────────────────────────────
+require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+
+require(['vs/editor/editor.main'], () => {
+  monaco.editor.defineTheme('forge-dark', {
+    base: 'vs-dark', inherit: true,
+    rules: [
+      { token: 'comment',  foreground: '4a5568', fontStyle: 'italic' },
+      { token: 'keyword',  foreground: 'a78bfa' },
+      { token: 'string',   foreground: '4ade80' },
+      { token: 'number',   foreground: 'fbbf24' },
+      { token: 'type',     foreground: '60a5fa' },
+      { token: 'function', foreground: 'fdba74' },
+      { token: 'variable', foreground: 'e2e8f0' },
+      { token: 'operator', foreground: 'fb7185' },
+    ],
+    colors: {
+      'editor.background':                    '#04050a',
+      'editor.foreground':                    '#e2e8f0',
+      'editor.lineHighlightBackground':       '#ffffff08',
+      'editor.selectionBackground':           '#a78bfa28',
+      'editor.selectionHighlightBackground':  '#a78bfa14',
+      'editorCursor.foreground':              '#fdba74',
+      'editorLineNumber.foreground':          '#2d3748',
+      'editorLineNumber.activeForeground':    '#fdba7480',
+      'editorGutter.background':              '#04050a',
+      'editor.inactiveSelectionBackground':   '#a78bfa14',
+      'editorWidget.background':              '#070810',
+      'editorWidget.border':                  '#ffffff12',
+      'editorSuggestWidget.background':       '#07080f',
+      'editorSuggestWidget.border':           '#a78bfa30',
+      'editorSuggestWidget.selectedBackground':'#a78bfa18',
+      'editorHoverWidget.background':         '#07080f',
+      'editorHoverWidget.border':             '#ffffff12',
+      'input.background':                     '#0b0c15',
+      'input.border':                         '#ffffff10',
+      'scrollbarSlider.background':           '#ffffff08',
+      'scrollbarSlider.hoverBackground':      '#ffffff14',
+      'minimap.background':                   '#04050a',
+    }
+  });
+
+  editor = monaco.editor.create(document.getElementById('monaco-editor'), {
+    value: tabs[0].content,
+    language: tabs[0].lang,
+    theme: 'forge-dark',
+    fontFamily: "'Space Mono', 'Fira Code', monospace",
+    fontSize: 13,
+    lineHeight: 22,
+    letterSpacing: 0,
+    wordWrap: 'on',
+    minimap: { enabled: true, scale: 1, renderCharacters: false },
+    scrollBeyondLastLine: false,
+    smoothScrolling: true,
+    cursorBlinking: 'smooth',
+    cursorSmoothCaretAnimation: 'on',
+    renderLineHighlight: 'line',
+    lineNumbers: 'on',
+    glyphMargin: false,
+    folding: true,
+    bracketPairColorization: { enabled: true },
+    suggest: { showMethods: true, showFunctions: true },
+    quickSuggestions: true,
+    automaticLayout: true,
+    padding: { top: 16, bottom: 16 },
+    overviewRulerBorder: false,
+    scrollbar: { vertical: 'auto', horizontal: 'auto', verticalScrollbarSize: 6, horizontalScrollbarSize: 6 },
+  });
+
+  // Track cursor
+  editor.onDidChangeCursorPosition(e => {
+    const p = e.position;
+    document.getElementById('sb-cursor').textContent = `Ln ${p.lineNumber}, Col ${p.column}`;
+  });
+
+  // Track selection
+  editor.onDidChangeCursorSelection(() => {
+    const sel = editor.getSelection();
+    const isEmpty = sel.isEmpty();
+    const lines = sel.endLineNumber - sel.startLineNumber + 1;
+    const selInfo = document.getElementById('selection-info');
+    if (!isEmpty && lines > 0) {
+      selInfo.style.display = 'block';
+      document.getElementById('sel-lines').textContent = lines;
+      document.getElementById('b-hint').textContent = `⌘K to send ${lines} selected lines to Blitz`;
+    } else {
+      selInfo.style.display = 'none';
+      document.getElementById('b-hint').textContent = 'Select code + ⌘K to ask Blitz to edit it';
+    }
+  });
+
+  // Track content edits
+  editor.onDidChangeModelContent(() => {
+    tabs[currentTab].content = editor.getValue();
+    tabs[currentTab].modified = true;
+    markTabModified(currentTab, true);
+    updateContextInfo();
+  });
+
+  // Monaco keyboard shortcuts
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK, () => openCmdBar());
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => runCode());
+  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+    tabs[currentTab].modified = false;
+    markTabModified(currentTab, false);
+    toast('✓ Saved');
+    termLog('dim', `[Forge] ${tabs[currentTab].name} saved.`);
+  });
+
+  renderTabs();
+  renderExplorer();
+  updateContextInfo();
+  buildQuickBtns();
+
+  // Boot messages
+  termLog('dim', '════════════════════════════════════');
+  termLog('ai',  ' B.L.I.T.Z. FORGE ENGINE v3.0');
+  termLog('dim', '════════════════════════════════════');
+  termLog('ok',  '[✓] Monaco editor loaded');
+  termLog('ok',  '[✓] Syntax highlighting active');
+  termLog('ok',  '[✓] AI injection engine ready');
+  termLog('dim', '[i] Auto-loop: retries on error up to 3x');
+  termLog('dim', '[i] Select code → ⌘K to ask Blitz');
+  termLog('dim', '[i] Python & JS execute in-browser');
+  termLog('dim', '');
+
+  addForgeMsg('b', `🔥 **Forge online.** I'm watching your code.\n\nSelect any block → \`⌘K\` to run an AI command on it, or ask me anything below.\n\nI'll inject fixes directly into your editor. Toggle **Auto-loop** to let me retry errors automatically.`);
+
+  checkAPI();
+  setInterval(checkAPI, 8000);
+
+  // Pre-load Pyodide for Python tabs after a short delay
+  setTimeout(() => {
+    const check = () => { if (tabs[currentTab]?.lang === 'python') loadPyodide(); else setTimeout(check, 5000); };
+    setTimeout(check, 3000);
+  }, 2000);
+});
+
+// ── TABS ─────────────────────────────────────────────────
+function renderTabs() {
+  const container = document.getElementById('file-tabs');
+  container.innerHTML = tabs.map((t, i) => `
+    <div class="file-tab ${i === currentTab ? 'active' : ''} ${t.modified ? 'modified' : ''}"
+         onclick="switchTab(${i})" id="tab-${i}">
+      <span class="tab-dot"></span>
+      <span class="tab-lang">${t.lang.slice(0,2).toUpperCase()}</span>
+      ${t.name}
+      <span class="tab-close" onclick="closeTab(event,${i})">×</span>
+    </div>`).join('');
+}
+
+function switchTab(i) {
+  if (i === currentTab) return;
+  tabs[currentTab].content = editor.getValue();
+  currentTab = i;
+  const t = tabs[i];
+  const model = monaco.editor.createModel(t.content, t.lang);
+  editor.setModel(model);
+  renderTabs();
+  renderExplorer();
+  updateContextInfo();
+  document.getElementById('b-hint').textContent = `Working on ${t.name}`;
+  autoRetries = 0;
+  document.getElementById('retry-badge').textContent = '';
+}
+
+function markTabModified(i, on) {
+  document.getElementById('tab-'+i)?.classList.toggle('modified', on);
+}
+
+function closeTab(e, i) {
+  e.stopPropagation();
+  if (tabs.length === 1) { toast('Cannot close last tab'); return; }
+  if (tabs[i].modified && !confirm(`Close ${tabs[i].name}? Unsaved changes will be lost.`)) return;
+  tabs.splice(i, 1);
+  if (currentTab >= tabs.length) currentTab = tabs.length - 1;
+  else if (currentTab > i) currentTab--;
+  editor.setValue(tabs[currentTab].content);
+  monaco.editor.setModelLanguage(editor.getModel(), tabs[currentTab].lang);
+  renderTabs();
+  renderExplorer();
+  updateContextInfo();
+}
+
+function newFile() {
+  const name = prompt('File name (e.g. script.py):', 'untitled.py');
+  if (!name) return;
+  const ext = name.split('.').pop().toLowerCase();
+  const langMap = {py:'python',js:'javascript',ts:'typescript',html:'html',css:'css',json:'json',md:'markdown',java:'java',cpp:'cpp',c:'c',rs:'rust',go:'go',sql:'sql',sh:'shell'};
+  const lang = langMap[ext] || 'plaintext';
+  tabs.push({ id: Date.now(), name, lang, content: `# ${name}\n`, modified: false });
+  currentTab = tabs.length - 1;
+  editor.setValue(tabs[currentTab].content);
+  monaco.editor.setModelLanguage(editor.getModel(), lang);
+  renderTabs();
+  renderExplorer();
+  updateContextInfo();
+  toast(`+ ${name} created`, true);
+}
+
+// ── EXPLORER ─────────────────────────────────────────────
+function renderExplorer() {
+  const tree = document.getElementById('ex-tree');
+  tree.innerHTML = `<div class="ex-folder"><span class="ex-folder-icon">▾</span>📁 WORKSPACE</div>` +
+    tabs.map((t, i) => {
+      const icon = langIcons[t.lang] || '📄';
+      return `<div class="ex-file ${i === currentTab ? 'active' : ''}" onclick="switchTab(${i})">
+        <span class="ex-file-icon">${icon}</span>${t.name}
+        ${t.modified ? '<span class="ex-badge">•</span>' : ''}
+      </div>`;
+    }).join('');
+}
+
+function toggleExplorer() {
+  document.getElementById('explorer').classList.toggle('collapsed');
+}
+
+// ── CONTEXT INFO ─────────────────────────────────────────
+function updateContextInfo() {
+  const t = tabs[currentTab];
+  const lines = editor ? editor.getModel().getLineCount() : 0;
+  document.getElementById('ctx-file').textContent = t.name;
+  document.getElementById('ctx-lang').textContent = t.lang;
+  document.getElementById('ctx-lines').textContent = lines;
+  document.getElementById('sb-file').textContent = t.name;
+  document.getElementById('sb-lang').textContent = t.lang;
+  document.getElementById('sb-lines').textContent = lines;
+}
+
+// ── QUICK BUTTONS ─────────────────────────────────────────
+function buildQuickBtns() {
+  const row = document.getElementById('bq-row');
+  row.innerHTML = QUICK_CMDS.map(([lbl, pfx]) =>
+    `<button class="bq-btn" onclick="quickCmd(${JSON.stringify(pfx)})">${lbl}</button>`
+  ).join('');
+}
+
+function quickCmd(prefix) {
+  const sel = getEditorSelection();
+  const code = sel || editor.getValue();
+  document.getElementById('b-inp').value = prefix + '\n\n```\n' + code.slice(0, 1500) + '\n```';
+  document.getElementById('b-inp').focus();
+}
+
+// ── SELECTION ─────────────────────────────────────────────
+function getEditorSelection() {
+  if (!editor) return '';
+  const sel = editor.getSelection();
+  if (sel.isEmpty()) return '';
+  return editor.getModel().getValueInRange(sel);
+}
+
+// ── AUTO-LOOP TOGGLE ──────────────────────────────────────
+function toggleAutoLoop() {
+  const tog = document.getElementById('auto-tog');
+  tog.classList.toggle('on');
+  autoLoop = tog.classList.contains('on');
+  autoRetries = 0;
+  document.getElementById('retry-badge').textContent = '';
+  termLog('dim', `[Forge] Auto-loop ${autoLoop ? 'ON (max 3 retries)' : 'OFF'}`);
+  toast(`Auto-loop ${autoLoop ? 'on' : 'off'}`, autoLoop);
+}
+
+// ── FLOATING COMMAND BAR ─────────────────────────────────
+function openCmdBar() {
+  const sel = getEditorSelection();
+  const bar = document.getElementById('float-cmd');
+  const preview = document.getElementById('cmd-preview-code');
+  if (sel) {
+    preview.textContent = sel.slice(0, 300) + (sel.length > 300 ? '\n...' : '');
+    document.getElementById('cmd-preview').style.display = 'block';
+  } else {
+    document.getElementById('cmd-preview').style.display = 'none';
+  }
+  bar.classList.add('visible');
+  document.getElementById('cmd-inp').value = '';
+  document.getElementById('cmd-inp').focus();
+}
+
+function closeCmdBar() {
+  document.getElementById('float-cmd').classList.remove('visible');
+}
+
+function cmdQuick(prompt) {
+  document.getElementById('cmd-inp').value = prompt;
+  submitCmd();
+}
+
+async function submitCmd() {
+  const prompt = document.getElementById('cmd-inp').value.trim();
+  if (!prompt) return;
+  closeCmdBar();
+
+  const sel = getEditorSelection();
+  const code = sel || editor.getValue();
+  const t = tabs[currentTab];
+
+  const fullPrompt = `You are working on a file called \`${t.name}\` (${t.lang}).
+
+${sel ? 'The user has selected this code:\n```' + t.lang + '\n' + sel + '\n```\n' : 'Full file:\n```' + t.lang + '\n' + code.slice(0, 3000) + '\n```\n'}
+
+Instruction: ${prompt}
+
+IMPORTANT: Respond with the complete rewritten/fixed code in a \`\`\`${t.lang} code block. Do not explain unless asked to.`;
+
+  addForgeMsg('u', prompt);
+  await forgeChat(fullPrompt, sel ? sel : code, true);
+}
+
+// ── BLITZ CHAT ────────────────────────────────────────────
+async function sendForge() {
+  const inp = document.getElementById('b-inp');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+
+  const sel = getEditorSelection();
+  const t = tabs[currentTab];
+  const ctx = sel
+    ? `\n\nSelected code (${t.lang}):\n\`\`\`${t.lang}\n${sel.slice(0, 2000)}\n\`\`\``
+    : `\n\nCurrent file (${t.name}, ${t.lang}):\n\`\`\`${t.lang}\n${editor.getValue().slice(0, 2000)}\n\`\`\``;
+
+  addForgeMsg('u', text);
+  await forgeChat(text + ctx, sel || editor.getValue(), false);
+}
+
+// ── CORE AI CALL — uses /api/forge for code tasks, /api/command for chat ──
+async function forgeChat(prompt, codeContext, autoInject) {
+  showForgeTyping();
+  let response = '';
+  const t = tabs[currentTab];
+
+  try {
+    apiCalls++;
+    // For code-heavy requests (from ⌘K or quick cmds), use /api/forge for better code responses
+    const isCodeTask = autoInject || /debug|fix|refactor|optimize|explain|test|doc/i.test(prompt.slice(0, 200));
+    let r, d;
+    if (isCodeTask) {
+      r = await fetch(`${API}/api/forge`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codeContext, language: t.lang, instruction: prompt }),
+        signal: AbortSignal.timeout(20000)
+      });
+      d = await r.json();
+    } else {
+      r = await fetch(`${API}/api/command`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: prompt, active_modules: ['coding'] }),
+        signal: AbortSignal.timeout(20000)
+      });
+      d = await r.json();
+    }
+    response = d.response || d.error || '';
+    termLog('dim', `[Forge] Blitz responded in ${d.latency_ms || '?'}ms`);
+  } catch (err) {
+    response = simulateForge(prompt, codeContext);
+    termLog('warn', '[Forge] Backend offline — simulation mode');
+  }
+
+  hideForgeTyping();
+  const codeMatch = response.match(/```(?:\w*)\n([\s\S]+?)```/);
+  const hasCode = !!codeMatch;
+
+  addForgeMsg('b', response, hasCode, codeMatch ? codeMatch[1].trim() : null, autoInject);
+
+  if (hasCode) {
+    lastCode = codeMatch[1].trim();
+    lastCodeLang = t.lang;
+    document.getElementById('inject-all-btn').style.display = 'flex';
+    if (autoInject) {
+      await wait(300);
+      injectCode(lastCode);
+    }
+  }
+}
+
+// ── ORIGINAL /api/forge DIRECT CALL (for AI FIX button in terminal) ──
+async function aiDirectFix(code, instruction) {
+  const t = tabs[currentTab];
+  termLog('ai', `✦ Sending to B.L.I.T.Z.: "${instruction}"`);
+  setAPIStatus('gold', 'BLITZ THINKING...');
+  try {
+    const r = await fetch(`${API}/api/forge`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, language: t.lang, instruction })
+    });
+    if (!r.ok) throw new Error('Backend error ' + r.status);
+    const d = await r.json();
+    const resp = d.response || d.error || '';
+    termLog('ai', '✦ B.L.I.T.Z. responded.');
+    const match = resp.match(/```(?:\w*)\n([\s\S]+?)```/);
+    if (match) {
+      editor.setValue(match[1].trim());
+      tabs[currentTab].content = match[1].trim();
+      tabs[currentTab].modified = true;
+      markTabModified(currentTab, true);
+      updateContextInfo();
+      termLog('ok', '✓ Code updated by B.L.I.T.Z. Hit ▶ RUN to test.');
+      toast('⚡ Code injected by Blitz', true);
+    } else {
+      resp.split('\n').filter(l => l.trim()).forEach(l => termLog('ai', l));
+    }
+  } catch (e) {
+    termLog('err', 'AI Fix failed: ' + e.message + ' — Is backend running?');
+  }
+  setAPIStatus('green', 'FORGE READY');
+}
+
+async function aiAutoFix(code, error) {
+  await aiDirectFix(code, 'Fix this error: ' + error);
+}
+
+// ── CODE INJECTION ────────────────────────────────────────
+async function injectCode(code) {
+  if (!code || !editor) return;
+  const overlay = document.getElementById('inject-overlay');
+  overlay.classList.add('visible');
+  const sel = editor.getSelection();
+  const hasSelection = !sel.isEmpty();
+
+  if (hasSelection) {
+    await wait(400);
+    editor.executeEdits('blitz-inject', [{ range: sel, text: code, forceMoveMarkers: true }]);
+    overlay.classList.remove('visible');
+    toast('⚡ Code injected', true);
+    termLog('ai', '[Blitz] Code injected into selection');
+    tabs[currentTab].content = editor.getValue();
+    tabs[currentTab].modified = true;
+    markTabModified(currentTab, true);
+    updateContextInfo();
+  } else {
+    overlay.classList.remove('visible');
+    showDiff(editor.getValue(), code);
+  }
+}
+
+function injectLastCode() {
+  if (lastCode) injectCode(lastCode);
+}
+
+function showDiff(original, newCode) {
+  pendingDiff = newCode;
+  const origLines = original.split('\n');
+  const newLines = newCode.split('\n');
+  let html = '';
+  for (let i = 0; i < Math.min(newLines.length, 60); i++) {
+    const ol = origLines[i] || '';
+    const nl = newLines[i] || '';
+    if (ol === nl) {
+      html += `<div class="diff-neutral">${esc(nl)}</div>`;
+    } else {
+      if (ol) html += `<div class="diff-removed">- ${esc(ol)}</div>`;
+      if (nl) html += `<div class="diff-added">+ ${esc(nl)}</div>`;
+    }
+  }
+  if (newLines.length > 60) html += `<div class="diff-neutral">... ${newLines.length - 60} more lines</div>`;
+  document.getElementById('diff-body').innerHTML = html;
+  document.getElementById('diff-subtitle').textContent = `${newLines.length} lines · ${tabs[currentTab].name}`;
+  document.getElementById('diff-overlay').classList.add('visible');
+}
+
+function acceptDiff() {
+  if (!pendingDiff || !editor) return;
+  const fullRange = editor.getModel().getFullModelRange();
+  editor.executeEdits('blitz-accept', [{ range: fullRange, text: pendingDiff }]);
+  tabs[currentTab].content = editor.getValue();
+  tabs[currentTab].modified = true;
+  markTabModified(currentTab, true);
+  updateContextInfo();
+  closeDiff();
+  toast('✓ Changes accepted', true);
+  termLog('ok', '[Blitz] Diff accepted — code updated');
+}
+
+function closeDiff() {
+  document.getElementById('diff-overlay').classList.remove('visible');
+  pendingDiff = null;
+}
+
+// ── IN-BROWSER CODE EXECUTION (original forge.html logic) ────────────────
+async function runCode() {
+  const code = editor.getValue().trim();
+  if (!code) return;
+  const lang = tabs[currentTab].lang;
+  const t0 = performance.now();
+
+  document.getElementById('run-btn').style.display = 'none';
+  document.getElementById('stop-btn').style.display = 'flex';
+  document.getElementById('term-panel').classList.remove('collapsed');
+
+  termLog('dim', '');
+  termLog('ai', `[Forge] ▶ Running ${tabs[currentTab].name} (${lang})...`);
+  setAPIStatus('gold', 'RUNNING...');
+
+  if (lang === 'python' && pyodideReady) {
+    await runPython(code, t0);
+  } else if (lang === 'javascript') {
+    await runJavaScript(code, t0);
+  } else if (lang === 'html') {
+    await runHTML(code);
+  } else if (lang === 'typescript') {
+    termLog('warn', '[Runtime] TypeScript: stripping types for browser execution...');
+    const stripped = code.replace(/:\s*\w+(\[\])?/g, '').replace(/interface\s+\w+\s*\{[^}]*\}/g, '').replace(/type\s+\w+\s*=\s*[^;]+;/g, '');
+    await runJavaScript(stripped, t0);
+  } else if (lang === 'python' && !pyodideReady) {
+    termLog('dim', '[Runtime] Loading Python (Pyodide)...');
+    await loadPyodide();
+    if (pyodideReady) await runPython(code, t0);
+    else termLog('err', '[Runtime] Pyodide failed to load. Check your connection.');
+  } else {
+    termLog('warn', `[Runtime] ${lang} requires the backend for execution.`);
+    termLog('dim', '[Hint] Supported in-browser: JavaScript, TypeScript, HTML, Python (via Pyodide)');
+  }
+
+  setAPIStatus('green', 'FORGE READY');
+  document.getElementById('run-btn').style.display = 'flex';
+  document.getElementById('stop-btn').style.display = 'none';
+}
+
+function stopRun() {
+  setAPIStatus('green', 'FORGE READY');
+  document.getElementById('run-btn').style.display = 'flex';
+  document.getElementById('stop-btn').style.display = 'none';
+  termLog('dim', '[Forge] Execution interrupted.');
+}
+
+async function loadPyodide() {
+  if (pyodideReady || pyodideLoading) return;
+  pyodideLoading = true;
+  setAPIStatus('gold', 'LOADING PYTHON...');
+  termLog('dim', '[Runtime] Loading Pyodide Python runtime... ~10MB, first run only');
+  try {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
+    document.head.appendChild(script);
+    await new Promise((res, rej) => { script.onload = res; script.onerror = rej; });
+    pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/' });
+    await pyodide.runPythonAsync(`
+import sys, io
+class _Capture(io.StringIO): pass
+sys.stdout = _Capture()
+sys.stderr = _Capture()
+`);
+    pyodideReady = true;
+    pyodideLoading = false;
+    setAPIStatus('green', 'FORGE READY');
+    termLog('ok', `[Runtime] Pyodide ready ✓`);
+    toast('🐍 Python runtime ready!', true);
+  } catch (e) {
+    pyodideLoading = false;
+    termLog('err', `[Runtime] Failed to load Pyodide: ${e.message}`);
+    setAPIStatus('red', 'PYODIDE ERROR');
+  }
+}
+
+async function runPython(code, t0) {
+  try {
+    await pyodide.runPythonAsync(`
+import sys, io
+sys.stdout = io.StringIO()
+sys.stderr = io.StringIO()
+`);
+    await pyodide.runPythonAsync(code);
+    const stdout = await pyodide.runPythonAsync('sys.stdout.getvalue()');
+    const stderr = await pyodide.runPythonAsync('sys.stderr.getvalue()');
+    const ms = Math.round(performance.now() - t0);
+
+    if (stdout) stdout.split('\n').filter(Boolean).forEach(l => termLog('ok', l));
+    if (stderr) {
+      stderr.split('\n').filter(Boolean).forEach(l => termLog('warn', l));
+      // Auto-loop
+      lastErr = stderr;
+      if (autoLoop && autoRetries < 3) {
+        autoRetries++;
+        document.getElementById('retry-badge').textContent = `Retry ${autoRetries}/3`;
+        termLog('ai', `Auto-loop: retry ${autoRetries}/3 — asking B.L.I.T.Z...`);
+        await aiAutoFix(code, stderr);
+        return;
+      } else if (!autoLoop) {
+        termLog('dim', '[Hint] Enable Auto-loop to let B.L.I.T.Z. fix errors automatically.');
+      }
+    } else {
+      autoRetries = 0;
+      document.getElementById('retry-badge').textContent = '';
+      termLog('dim', `[Forge] ✓ Python completed in ${ms}ms — Pyodide WASM`);
+    }
+    if (!stdout && !stderr) termLog('dim', '(no output)');
+  } catch (err) {
+    const ms = Math.round(performance.now() - t0);
+    const errMsg = err.message || String(err);
+    errMsg.split('\n').forEach(l => termLog('err', l));
+    termLog('dim', `[Forge] ✗ Error after ${ms}ms`);
+    lastErr = errMsg;
+    if (autoLoop && autoRetries < 3) {
+      autoRetries++;
+      document.getElementById('retry-badge').textContent = `Retry ${autoRetries}/3`;
+      termLog('ai', `Auto-loop: retry ${autoRetries}/3...`);
+      await aiAutoFix(code, errMsg);
+    }
+  }
+}
+
+async function runJavaScript(code, t0) {
+  termLog('dim', '[Runtime] JavaScript — sandboxed iframe execution');
+  const sandbox = document.createElement('iframe');
+  sandbox.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:0;height:0;border:none;';
+  sandbox.sandbox = 'allow-scripts';
+  document.body.appendChild(sandbox);
+
+  const logs = [], errors = [];
+  const result = await new Promise((resolve) => {
+    const timer = setTimeout(() => resolve({ logs, errors: ['⏱ Execution timed out (10s)'] }), 10000);
+    const handler = (e) => {
+      if (e.source !== sandbox.contentWindow) return;
+      const { type, data } = e.data;
+      if (type === 'log') logs.push(data);
+      else if (type === 'error') errors.push(data);
+      else if (type === 'done') { clearTimeout(timer); window.removeEventListener('message', handler); resolve({ logs, errors }); }
+    };
+    window.addEventListener('message', handler);
+    const wrappedCode = `<!DOCTYPE html><html><body><script>
+const _log = (...a) => parent.postMessage({type:'log',data:a.map(String).join(' ')}, '*');
+const _err = (...a) => parent.postMessage({type:'error',data:a.map(String).join(' ')}, '*');
+const console = {log:_log, warn:_log, error:_err, info:_log, dir:_log, table:(t)=>_log(JSON.stringify(t,null,2))};
+window.onerror = (msg,_,__,___,err) => { _err('Error: '+msg); return true; };
+try { ${code} } catch(e) { _err('Runtime Error: ' + e.message); }
+parent.postMessage({type:'done'},'*');
+<\/script></body></html>`;
+    sandbox.srcdoc = wrappedCode;
+  });
+
+  document.body.removeChild(sandbox);
+  const ms = Math.round(performance.now() - t0);
+  result.logs.forEach(l => termLog('ok', l));
+  result.errors.forEach(e => termLog('err', e));
+  if (!result.logs.length && !result.errors.length) termLog('dim', '(no output)');
+  termLog('dim', `[Forge] ✓ Completed in ${ms}ms — browser JS`);
+}
+
+async function runHTML(code) {
+  termLog('dim', '[Runtime] HTML — opening live preview window');
+  const existing = document.getElementById('html-preview-win');
+  if (existing) existing.remove();
+
+  const win = document.createElement('div');
+  win.id = 'html-preview-win';
+  win.style.cssText = `
+    position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+    width:780px;height:520px;z-index:500;
+    background:rgba(5,6,14,.97);backdrop-filter:blur(24px);
+    border:1px solid rgba(253,186,116,.3);border-radius:14px;
+    display:flex;flex-direction:column;overflow:hidden;
+    box-shadow:0 30px 80px rgba(0,0,0,.8);
+    animation:win-in .2s cubic-bezier(.34,1.56,.64,1);
+  `;
+  win.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.06);cursor:move;flex-shrink:0;background:rgba(253,186,116,.05);">
+      <span style="font-family:var(--mono);font-size:9px;font-weight:700;color:var(--forge-orange);letter-spacing:.1em;">HTML PREVIEW</span>
+      <span style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-left:auto;">${esc(tabs[currentTab].name)}</span>
+      <button onclick="document.getElementById('html-preview-win').remove()" style="padding:3px 8px;border-radius:4px;font-family:var(--mono);font-size:9px;border:1px solid rgba(251,113,133,.3);background:transparent;color:var(--red);cursor:pointer;">✕ Close</button>
+    </div>
+    <iframe id="html-preview-frame" style="flex:1;border:none;background:#fff;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  `;
+  document.body.appendChild(win);
+  document.getElementById('html-preview-frame').srcdoc = code;
+
+  // Draggable
+  const titlebar = win.firstElementChild;
+  let drag=false,sx,sy,ox,oy;
+  titlebar.addEventListener('mousedown',e=>{if(e.target.tagName==='BUTTON')return;drag=true;sx=e.clientX;sy=e.clientY;ox=win.offsetLeft;oy=win.offsetTop;e.preventDefault();});
+  document.addEventListener('mousemove',e=>{if(!drag)return;win.style.left=(ox+e.clientX-sx)+'px';win.style.top=(oy+e.clientY-sy)+'px';win.style.transform='none';});
+  document.addEventListener('mouseup',()=>{drag=false;});
+  termLog('ok', `[Forge] HTML preview opened`);
+}
+
+// ── BLITZ FEED ────────────────────────────────────────────
+function addForgeMsg(role, text, hasCode = false, code = null, autoInject = false) {
+  const feed = document.getElementById('blitz-feed');
+  const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const div = document.createElement('div');
+  div.className = `b-msg ${role}`;
+
+  const content = role === 'b' ? renderMD(text) : esc(text);
+  div.innerHTML = `<div class="b-who">${role === 'u' ? 'YOU' : 'BLITZ'}</div><div class="b-bubble">${content}</div><div class="b-ts">${t}</div>`;
+
+  if (role === 'b' && hasCode && code && !autoInject) {
+    const btn = document.createElement('button');
+    btn.className = 'inject-btn';
+    btn.innerHTML = `<svg viewBox="0 0 12 12" fill="currentColor"><path d="M2 6h8M6 2l4 4-4 4"/></svg> Inject into editor`;
+    btn.onclick = () => injectCode(code);
+    div.appendChild(btn);
+  }
+
+  feed.appendChild(div);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function showForgeTyping() {
+  const feed = document.getElementById('blitz-feed');
+  const e = document.createElement('div');
+  e.className = 'b-typing'; e.id = 'b-typing';
+  e.innerHTML = '<div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>';
+  feed.appendChild(e);
+  feed.scrollTop = feed.scrollHeight;
+}
+
+function hideForgeTyping() { document.getElementById('b-typing')?.remove(); }
+
+// ── SIMULATE (offline fallback) ───────────────────────────
+function simulateForge(prompt, code) {
+  const p = prompt.toLowerCase();
+  if (p.includes('explain'))
+    return `This code defines functions that process input and return results. Connect the backend for detailed AI explanations.`;
+  if (p.includes('debug') || p.includes('fix'))
+    return `Here's a corrected version:\n\n\`\`\`python\n${code}\n# Bug fix: added error handling\n\`\`\`\n\nStart the backend for real debugging.`;
+  if (p.includes('optimize') || p.includes('refactor'))
+    return `Here's a cleaner version:\n\n\`\`\`python\n${code}\n\`\`\`\n\nStart backend for actual optimization.`;
+  return `I can help with your ${tabs[currentTab].lang} code. Connect the B.L.I.T.Z. backend for full AI responses. In the meantime, select code and press \`⌘K\`.`;
+}
+
+// ── TERMINAL ─────────────────────────────────────────────
+function termLog(cls, text) {
+  const body = document.getElementById('term-body');
+  const line = document.createElement('div');
+  line.className = `term-line ${cls}`;
+  line.textContent = text;
+  body.appendChild(line);
+  while (body.children.length > 500) body.firstChild.remove();
+  body.scrollTop = body.scrollHeight;
+}
+
+function clearTerm() { document.getElementById('term-body').innerHTML = ''; termLog('dim', '[Terminal cleared]'); }
+function toggleTerm() { document.getElementById('term-panel').classList.toggle('collapsed'); }
+function termTab(name) {
+  termTabActive = name;
+  document.querySelectorAll('.term-tab').forEach((t, i) =>
+    t.classList.toggle('active', ['output', 'terminal', 'problems'][i] === name));
+}
+
+// ── RESIZER ───────────────────────────────────────────────
+(function initResizer() {
+  const handle = document.getElementById('v-resizer');
+  const blitz = document.getElementById('blitz-panel');
+  let drag = false, sx = 0, sw = 0;
+  handle.addEventListener('mousedown', e => {
+    drag = true; sx = e.clientX; sw = blitz.offsetWidth;
+    handle.classList.add('dragging'); e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!drag) return;
+    const nw = Math.max(260, Math.min(600, sw - (e.clientX - sx)));
+    blitz.style.width = nw + 'px';
+  });
+  document.addEventListener('mouseup', () => { drag = false; handle.classList.remove('dragging'); });
+})();
+
+// ── TOGGLE BLITZ ─────────────────────────────────────────
+function toggleBlitz() {
+  const panel = document.getElementById('blitz-panel');
+  const resizer = document.getElementById('v-resizer');
+  const collapsed = panel.classList.toggle('collapsed');
+  resizer.style.display = collapsed ? 'none' : '';
+  toast(collapsed ? 'Blitz hidden' : 'Blitz panel open');
+}
+
+// ── STATUS ────────────────────────────────────────────────
+function setAPIStatus(color, text) {
+  // We just track it in the statusbar, no dedicated dot in this layout
+  // The api-dot/api-lbl in topbar-right handle online/offline
+}
+
+// ── API CHECK ─────────────────────────────────────────────
+async function checkAPI() {
+  try {
+    const r = await fetch(`${API}/`, { signal: AbortSignal.timeout(3000) });
+    if (r.ok) {
+      apiOnline = true;
+      document.getElementById('api-dot').className = 'api-dot on';
+      document.getElementById('api-lbl').textContent = 'online';
+      document.getElementById('sb-api').textContent = 'online';
+    }
+  } catch {
+    apiOnline = false;
+    document.getElementById('api-dot').className = 'api-dot off';
+    document.getElementById('api-lbl').textContent = 'offline';
+    document.getElementById('sb-api').textContent = 'offline';
+  }
+}
+
+// ── KEYBOARD SHORTCUTS ────────────────────────────────────
+document.addEventListener('keydown', e => {
+  const meta = e.metaKey || e.ctrlKey;
+  if (e.key === 'Escape') {
+    closeCmdBar(); closeDiff();
+    document.getElementById('html-preview-win')?.remove();
+    return;
+  }
+  if (meta && e.key === 'b') { e.preventDefault(); toggleBlitz(); return; }
+  if (meta && e.key === 'Enter') { e.preventDefault(); runCode(); return; }
+  if (meta && e.key === 'n') { e.preventDefault(); newFile(); return; }
+  if (meta && e.key === 'k' && document.activeElement !== document.getElementById('monaco-editor')) {
+    e.preventDefault(); openCmdBar(); return;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('b-inp')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendForge(); }
+  });
+  document.getElementById('cmd-inp')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); submitCmd(); }
+  });
+  document.getElementById('term-inp')?.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const v = document.getElementById('term-inp').value.trim();
+    if (!v) return;
+    document.getElementById('term-inp').value = '';
+    termLog('ok', `$ ${v}`);
+    termLog('dim', `[Forge] Terminal commands require a connected backend shell.`);
+  });
+});
+
+document.addEventListener('click', e => {
+  const bar = document.getElementById('float-cmd');
+  if (bar.classList.contains('visible') && !bar.contains(e.target)) closeCmdBar();
+});
+
+// ── HELPERS ───────────────────────────────────────────────
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+function renderMD(t) {
+  let s = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+    const id = 'cb' + Math.random().toString(36).slice(2,7);
+    return `<div style="position:relative"><pre id="${id}">${code.trim()}</pre><button style="position:absolute;top:5px;right:5px;padding:2px 7px;border-radius:4px;font-family:var(--mono);font-size:8px;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--muted);cursor:pointer" onclick="cpCode('${id}')">Copy</button></div>`;
+  });
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  s = s.replace(/^#{1,3} (.+)$/gm, '<strong style="display:block;margin:5px 0 3px">$1</strong>');
+  s = s.replace(/^[-*] (.+)$/gm, '<li style="margin-left:12px;margin-bottom:2px">$1</li>');
+  s = s.replace(/\n/g, '<br>');
+  return s;
+}
+
+function cpCode(id) {
+  const el = document.getElementById(id);
+  if (el) navigator.clipboard.writeText(el.textContent).then(() => toast('Copied!'));
+}
+
+function toast(msg, forge = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (forge ? ' forge' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+</script>
+</body>
+</html>

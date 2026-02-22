@@ -1,0 +1,4771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>B.L.I.T.Z.</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #04050a;
+      --bg2: #070810;
+      --border: rgba(255, 255, 255, 0.07);
+      --border2: rgba(255, 255, 255, 0.13);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.32);
+      --faint: rgba(255, 255, 255, 0.055);
+      --accent: #a78bfa;
+      --green: #4ade80;
+      --red: #fb7185;
+      --gold: #fbbf24;
+      --blue: #60a5fa;
+      --font: 'Syne', sans-serif;
+      --mono: 'Space Mono', monospace;
+      --panel: 420px;
+    }
+
+    /* THEMES */
+    body.t-ocean {
+      --bg: #020810;
+      --bg2: #030c18;
+      --accent: #38bdf8
+    }
+
+    body.t-matrix {
+      --bg: #020a06;
+      --bg2: #030e08;
+      --accent: #4ade80
+    }
+
+    body.t-crimson {
+      --bg: #0a0204;
+      --bg2: #120306;
+      --accent: #fb7185
+    }
+
+    body.t-gold {
+      --bg: #080600;
+      --bg2: #100900;
+      --accent: #fbbf24
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden
+    }
+
+    body {
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      letter-spacing: .02em;
+      transition: background .4s
+    }
+
+    /* scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .013) 2px, rgba(0, 0, 0, .013) 4px);
+      pointer-events: none
+    }
+
+    /* ── BACKGROUNDS ── */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 55% at 8% 90%, rgba(88, 28, 220, .14), transparent 60%),
+        radial-gradient(ellipse 55% 45% at 92% 8%, rgba(20, 50, 160, .12), transparent 60%),
+        radial-gradient(ellipse 45% 35% at 50% 50%, rgba(10, 12, 30, .8), transparent 70%)
+    }
+
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .02) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse 85% 80% at 50% 50%, black 30%, transparent 100%)
+    }
+
+    /* ── LAYOUT ── */
+    .app {
+      position: relative;
+      z-index: 1;
+      width: 100vw;
+      height: 100vh;
+      display: flex
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 236px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      background: rgba(255, 255, 255, .018);
+      backdrop-filter: blur(32px);
+      overflow: hidden
+    }
+
+    .sb-head {
+      padding: 18px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 5px
+    }
+
+    .logo-gem {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0
+    }
+
+    .logo-name {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.03em
+    }
+
+    .logo-ver {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .08em
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    .s-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all .4s
+    }
+
+    .s-dot.on {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(74, 222, 128, .7);
+      animation: blink 2.4s ease-in-out infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    .sb-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 10px 8px
+    }
+
+    .sb-scroll::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .sb-scroll::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px
+    }
+
+    .nav-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 12px 8px 5px;
+      border-top: 1px solid var(--border)
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      border-left: 2px solid transparent;
+      margin-bottom: 1px
+    }
+
+    .nav-item:hover {
+      background: var(--faint);
+      color: var(--text);
+      border-left-color: rgba(167, 139, 250, .4)
+    }
+
+    .nav-item.active {
+      background: rgba(167, 139, 250, .08);
+      color: var(--text);
+      border-left-color: var(--accent)
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-family: var(--mono);
+      font-size: 8px;
+      background: rgba(74, 222, 128, .14);
+      color: var(--green)
+    }
+
+    .mod-list {
+      padding: 3px 0
+    }
+
+    .mod-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .15s;
+      margin-bottom: 1px
+    }
+
+    .mod-item:hover,
+    .mod-item.on {
+      background: var(--faint)
+    }
+
+    .mod-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      transition: all .4s
+    }
+
+    .mod-name {
+      font-size: 11.5px;
+      font-weight: 600;
+      flex: 1
+    }
+
+    .mod-stat {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    .sb-foot {
+      padding: 10px 14px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0
+    }
+
+    .foot-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 2px
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0
+    }
+
+    .topbar {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .012);
+      backdrop-filter: blur(32px);
+      flex-shrink: 0;
+      z-index: 10
+    }
+
+    .tb-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      color: var(--muted);
+      text-transform: uppercase
+    }
+
+    .tb-sep {
+      width: 1px;
+      height: 13px;
+      background: var(--border)
+    }
+
+    .tb-info {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .tb-btns {
+      display: flex;
+      gap: 5px;
+      margin-left: auto
+    }
+
+    .tb-btn {
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .tb-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+      background: var(--faint)
+    }
+
+    .hz-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      padding: 2px 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px
+    }
+
+    /* ── CANVAS ── */
+    .canvas-wrap {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      position: relative
+    }
+
+    .canvas-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden
+    }
+
+    #bg-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0
+    }
+
+    #bonds-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      z-index: 2
+    }
+
+    /* ── ORBIT RINGS ── */
+    .orbit-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .04);
+      pointer-events: none;
+      transition: border-color .5s, box-shadow .5s
+    }
+
+    .orbit-ring.lit {
+      border-color: rgba(255, 255, 255, .09);
+      box-shadow: 0 0 40px rgba(255, 255, 255, .025)
+    }
+
+    .inner-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .04);
+      pointer-events: none;
+      transition: all .6s
+    }
+
+    @keyframes ring-breathe {
+
+      0%,
+      100% {
+        border-color: rgba(255, 255, 255, .13);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, .03), 0 0 40px rgba(180, 210, 255, .06)
+      }
+
+      50% {
+        border-color: rgba(255, 255, 255, .26);
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, .07), 0 0 70px rgba(180, 210, 255, .14)
+      }
+    }
+
+    .inner-ring.active {
+      border-color: rgba(255, 255, 255, .16);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .035), 0 0 50px rgba(180, 210, 255, .07);
+      animation: ring-breathe 4.5s ease-in-out infinite
+    }
+
+    /* ── DROP TARGET ── */
+    .drop-target {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 1.5px dashed rgba(255, 255, 255, .12);
+      pointer-events: none;
+      transition: all .3s
+    }
+
+    .drop-target.armed {
+      border-color: rgba(255, 255, 255, .3);
+      background: rgba(255, 255, 255, .04);
+      animation: drop-pulse .8s ease-in-out infinite
+    }
+
+    @keyframes drop-pulse {
+
+      0%,
+      100% {
+        border-color: rgba(255, 255, 255, .2)
+      }
+
+      50% {
+        border-color: rgba(255, 255, 255, .45)
+      }
+    }
+
+    /* ── CORE ── */
+    .core-wrap {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 5
+    }
+
+    .core-el {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .core {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center
+    }
+
+    .core-sphere {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 33% 28%, rgba(255, 255, 255, .97) 0%, rgba(215, 225, 255, .76) 26%, rgba(165, 185, 240, .5) 58%, rgba(95, 115, 205, .18) 82%, transparent 100%);
+      border: 1px solid rgba(255, 255, 255, .48);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, .07), 0 6px 60px rgba(110, 140, 255, .22), 0 0 110px rgba(90, 115, 255, .1), 0 22px 55px rgba(0, 0, 0, .55), inset 0 2px 0 rgba(255, 255, 255, .82), inset 0 -1px 0 rgba(0, 0, 40, .14);
+      animation: core-breathe 5.5s ease-in-out infinite
+    }
+
+    @keyframes core-breathe {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, .07), 0 6px 60px rgba(110, 140, 255, .20), 0 0 110px rgba(90, 115, 255, .08), 0 22px 55px rgba(0, 0, 0, .55), inset 0 2px 0 rgba(255, 255, 255, .82), inset 0 -1px 0 rgba(0, 0, 40, .14)
+      }
+
+      50% {
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, .11), 0 6px 80px rgba(110, 140, 255, .36), 0 0 150px rgba(90, 115, 255, .20), 0 22px 55px rgba(0, 0, 0, .5), inset 0 2px 0 rgba(255, 255, 255, .9), inset 0 -1px 0 rgba(0, 0, 40, .1)
+      }
+    }
+
+    .core-ring1 {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      border-top-color: rgba(255, 255, 255, .18);
+      border-right-color: rgba(255, 255, 255, .05);
+      width: 114px;
+      height: 114px;
+      animation: spin-cw 8s linear infinite
+    }
+
+    .core-ring2 {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      border-bottom-color: rgba(255, 255, 255, .09);
+      width: 132px;
+      height: 132px;
+      animation: spin-ccw 13s linear infinite
+    }
+
+    .core-orbit-dot {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      top: -2px;
+      left: 50%;
+      transform: translateX(-50%)
+    }
+
+    @keyframes spin-cw {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @keyframes spin-ccw {
+      to {
+        transform: rotate(-360deg)
+      }
+    }
+
+    .core-lbl {
+      position: relative;
+      z-index: 1;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      color: rgba(15, 25, 80, .9);
+      text-align: center
+    }
+
+    .core-sub {
+      position: relative;
+      z-index: 1;
+      font-family: var(--mono);
+      font-size: 7px;
+      color: rgba(40, 60, 130, .6);
+      margin-top: 1px;
+      letter-spacing: .04em
+    }
+
+    /* VOICE AURAS */
+    .vaura {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      pointer-events: none
+    }
+
+    .core-el.listening .vaura {
+      animation: vaura-listen 1s ease-in-out infinite
+    }
+
+    .core-el.speaking .vaura {
+      animation: vaura-speak .7s ease-in-out infinite
+    }
+
+    @keyframes vaura-listen {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 6px rgba(96, 165, 250, .12), 0 0 0 18px rgba(96, 165, 250, .06), 0 0 0 36px rgba(96, 165, 250, .03)
+      }
+
+      50% {
+        box-shadow: 0 0 0 12px rgba(96, 165, 250, .22), 0 0 0 28px rgba(96, 165, 250, .1), 0 0 0 50px rgba(96, 165, 250, .05)
+      }
+    }
+
+    @keyframes vaura-speak {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 8px rgba(167, 139, 250, .18), 0 0 0 22px rgba(167, 139, 250, .08), 0 0 0 42px rgba(167, 139, 250, .04)
+      }
+
+      50% {
+        box-shadow: 0 0 0 16px rgba(167, 139, 250, .32), 0 0 0 36px rgba(167, 139, 250, .15), 0 0 0 58px rgba(167, 139, 250, .07)
+      }
+    }
+
+    /* ── ATOMS (ORBS) ── */
+    /* Every orb is styled purely via JS inline — this CSS only handles structure & hover */
+    .atom {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 4;
+      cursor: grab;
+      transition: transform .1s
+    }
+
+    .atom:hover {
+      z-index: 10
+    }
+
+    .atom.dragging {
+      cursor: grabbing;
+      z-index: 20
+    }
+
+    /* Outer accent ring (two rings, always present) */
+    .a-ring {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      pointer-events: none
+    }
+
+    .a-ring-1 {
+      width: 66px;
+      height: 66px;
+      margin: -33px 0 0 -33px
+    }
+
+    .a-ring-2 {
+      width: 76px;
+      height: 76px;
+      margin: -38px 0 0 -38px
+    }
+
+    /* The glass ball */
+    .a-ball {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      transition: width .3s, height .3s, box-shadow .3s, transform .2s
+    }
+
+    .atom:hover .a-ball {
+      transform: scale(1.06)
+    }
+
+    .atom.connected .a-ball {
+      width: 58px;
+      height: 58px
+    }
+
+    /* Glass highlight (top glare) — always white, purely CSS */
+    .a-ball::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle at 32% 22%, rgba(255, 255, 255, .9) 0%, rgba(255, 255, 255, .2) 38%, transparent 65%)
+    }
+
+    /* Shadow at bottom */
+    .a-ball::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      z-index: 3;
+      pointer-events: none;
+      background: radial-gradient(circle at 60% 82%, rgba(0, 0, 0, .22) 0%, transparent 55%)
+    }
+
+    .a-icon {
+      font-size: 19px;
+      line-height: 1;
+      z-index: 4;
+      position: relative;
+      pointer-events: none
+    }
+
+    .a-lbl {
+      font-family: var(--mono);
+      font-size: 6px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(20, 30, 80, .6);
+      z-index: 4;
+      position: relative;
+      margin-top: 2px;
+      transition: color .3s
+    }
+
+    .atom.connected .a-lbl {
+      color: rgba(10, 15, 50, .9)
+    }
+
+    /* Tip tooltip */
+    .a-tip {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      background: rgba(7, 8, 18, .94);
+      border: 1px solid var(--border2);
+      border-radius: 9px;
+      padding: 8px 12px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s;
+      z-index: 100
+    }
+
+    .atom:hover .a-tip {
+      opacity: 1
+    }
+
+    .a-tip-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px
+    }
+
+    .a-tip-desc {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 2px
+    }
+
+    .a-tip-lat {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    /* Ping ring on connect */
+    .ping-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid currentColor;
+      animation: ping-out .7s ease-out forwards;
+      pointer-events: none;
+      z-index: 10
+    }
+
+    @keyframes ping-out {
+      0% {
+        transform: scale(1);
+        opacity: .7
+      }
+
+      100% {
+        transform: scale(2.4);
+        opacity: 0
+      }
+    }
+
+    /* Data packets */
+    .pkt {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 3
+    }
+
+    /* Pop animation */
+    @keyframes orb-pop {
+      0% {
+        transform: scale(1)
+      }
+
+      40% {
+        transform: scale(1.45)
+      }
+
+      70% {
+        transform: scale(.92)
+      }
+
+      100% {
+        transform: scale(1)
+      }
+    }
+
+    .atom.popping .a-ball {
+      animation: orb-pop .38s cubic-bezier(.34, 1.56, .64, 1)
+    }
+
+    /* Per-module connected animations (applied via JS) */
+    @keyframes pulse-slow {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .8
+      }
+    }
+
+    @keyframes pulse-fast {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .75
+      }
+    }
+
+    @keyframes orb-flicker {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      43% {
+        opacity: .84
+      }
+
+      50% {
+        opacity: 1
+      }
+
+      80% {
+        opacity: .9
+      }
+    }
+
+    @keyframes orb-scan {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .68
+      }
+    }
+
+    @keyframes orb-spark {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      30% {
+        opacity: .9;
+        transform: scale(1.03)
+      }
+
+      65% {
+        opacity: 1;
+        transform: scale(.97)
+      }
+    }
+
+    /* ── VOICE WAVE ── */
+    .vwave {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 36px;
+      opacity: 0;
+      transition: opacity .3s;
+      z-index: 6
+    }
+
+    .vwave.on {
+      opacity: 1
+    }
+
+    .vw-bar {
+      width: 3px;
+      border-radius: 2px;
+      background: linear-gradient(to top, #a78bfa, #60a5fa66);
+      min-height: 4px;
+      transition: height .05s
+    }
+
+    /* Corner brackets */
+    .corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-color: rgba(255, 255, 255, .1);
+      border-style: solid
+    }
+
+    .corner.tl {
+      top: 16px;
+      left: 16px;
+      border-width: 1px 0 0 1px
+    }
+
+    .corner.tr {
+      top: 16px;
+      right: 16px;
+      border-width: 1px 1px 0 0
+    }
+
+    .corner.bl {
+      bottom: 16px;
+      left: 16px;
+      border-width: 0 0 1px 1px
+    }
+
+    .corner.br {
+      bottom: 16px;
+      right: 16px;
+      border-width: 0 1px 1px 0
+    }
+
+    /* AI thinking */
+    .ai-think {
+      position: absolute;
+      bottom: 56px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      display: none;
+      align-items: center;
+      gap: 5px;
+      z-index: 20;
+      background: rgba(10, 11, 22, .85);
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--border)
+    }
+
+    .ai-think.on {
+      display: flex
+    }
+
+    .td {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: tdot 1.2s ease-in-out infinite
+    }
+
+    .td:nth-child(2) {
+      animation-delay: .15s
+    }
+
+    .td:nth-child(3) {
+      animation-delay: .3s
+    }
+
+    @keyframes tdot {
+
+      0%,
+      80%,
+      100% {
+        transform: translateY(0)
+      }
+
+      40% {
+        transform: translateY(-5px)
+      }
+    }
+
+    /* ── HUD WINDOWS ── */
+    .hud-win {
+      position: absolute;
+      z-index: 30;
+      min-width: 280px;
+      max-width: 440px;
+      background: rgba(5, 6, 16, .93);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 12px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .06);
+      overflow: hidden;
+      cursor: default;
+      user-select: text;
+      animation: hud-in .3s cubic-bezier(.34, 1.56, .64, 1)
+    }
+
+    @keyframes hud-in {
+      from {
+        opacity: 0;
+        transform: scale(.86) translateY(12px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .hud-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      background: rgba(255, 255, 255, .03);
+      cursor: grab
+    }
+
+    .hud-bar:active {
+      cursor: grabbing
+    }
+
+    .hud-dots {
+      display: flex;
+      gap: 5px
+    }
+
+    .hud-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%
+    }
+
+    .hud-dot:nth-child(1) {
+      background: #ff5f56
+    }
+
+    .hud-dot:nth-child(2) {
+      background: #ffbd2e
+    }
+
+    .hud-dot:nth-child(3) {
+      background: #27c93f
+    }
+
+    .hud-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      padding: 2px 8px;
+      border-radius: 5px;
+      margin-left: 2px
+    }
+
+    .hud-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(255, 255, 255, .45);
+      flex: 1
+    }
+
+    .hud-x {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .3);
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      padding: 0
+    }
+
+    .hud-x:hover {
+      color: rgba(255, 255, 255, .8)
+    }
+
+    .hud-body {
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, .75);
+      max-height: 340px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word
+    }
+
+    .hud-body::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .hud-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .1);
+      border-radius: 2px
+    }
+
+    .hud-body code,
+    .hud-body pre {
+      font-family: var(--mono);
+      font-size: 11px
+    }
+
+    .hud-body pre {
+      background: rgba(0, 0, 0, .4);
+      border-radius: 7px;
+      padding: 10px;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 4px 0
+    }
+
+    .hud-copy {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background: rgba(255, 255, 255, .04);
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+      letter-spacing: .08em
+    }
+
+    .hud-copy:hover {
+      background: rgba(255, 255, 255, .09);
+      color: var(--text)
+    }
+
+    /* ── RIGHT PANEL ── */
+    .rpanel {
+      width: var(--panel);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+      background: rgba(4, 5, 12, .72);
+      backdrop-filter: blur(32px);
+      overflow: hidden;
+      position: relative
+    }
+
+    .rp-drag {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      cursor: col-resize;
+      z-index: 100;
+      transition: background .15s
+    }
+
+    .rp-drag:hover {
+      background: rgba(167, 139, 250, .3)
+    }
+
+    .rp-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 10px 12px 0;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .015);
+      flex-shrink: 0
+    }
+
+    .rp-tab {
+      padding: 6px 12px;
+      border-radius: 7px 7px 0 0;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-bottom: -1px
+    }
+
+    .rp-tab:hover {
+      color: var(--text)
+    }
+
+    .rp-tab.on {
+      background: rgba(255, 255, 255, .06);
+      color: var(--text);
+      border-color: var(--border)
+    }
+
+    .pane {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: none;
+      flex-direction: column
+    }
+
+    .pane.on {
+      display: flex
+    }
+
+    .pane::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .pane::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px
+    }
+
+    /* ── CHAT PANE ── */
+    .mod-badge {
+      padding: 7px 13px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, .02);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      flex-wrap: wrap
+    }
+
+    .mp {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700
+    }
+
+    .csearch {
+      display: none;
+      padding: 6px 13px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .014);
+      flex-shrink: 0;
+      align-items: center;
+      gap: 7px
+    }
+
+    .csearch.on {
+      display: flex
+    }
+
+    .cs-inp {
+      flex: 1;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 5px 9px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      outline: none
+    }
+
+    .cs-inp:focus {
+      border-color: rgba(167, 139, 250, .4)
+    }
+
+    .cs-cnt {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted)
+    }
+
+    .cs-x {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0 2px
+    }
+
+    .cs-x:hover {
+      color: var(--text)
+    }
+
+    .feed {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px
+    }
+
+    .feed::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .feed::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px
+    }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      max-width: 95%
+    }
+
+    .msg.u {
+      align-self: flex-end;
+      align-items: flex-end
+    }
+
+    .msg.b {
+      align-self: flex-start;
+      align-items: flex-start
+    }
+
+    .msg-who {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .08em
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 13px;
+      font-size: 13px;
+      line-height: 1.62;
+      cursor: text;
+      user-select: text
+    }
+
+    .msg.u .bubble {
+      background: rgba(96, 165, 250, .1);
+      border: 1px solid rgba(96, 165, 250, .2);
+      color: rgba(255, 255, 255, .88)
+    }
+
+    .msg.b .bubble {
+      background: rgba(167, 139, 250, .08);
+      border: 1px solid rgba(167, 139, 250, .18);
+      color: rgba(255, 255, 255, .82)
+    }
+
+    .msg-ts {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--muted)
+    }
+
+    .bubble code {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      background: rgba(255, 255, 255, .08);
+      padding: 1px 5px;
+      border-radius: 4px
+    }
+
+    .bubble pre {
+      background: rgba(0, 0, 0, .42);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px;
+      margin: 7px 0;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.5;
+      cursor: text;
+      user-select: text;
+      white-space: pre-wrap
+    }
+
+    .cbwrap {
+      position: relative
+    }
+
+    .cpbtn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 9px;
+      background: rgba(255, 255, 255, .09);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .cpbtn:hover {
+      background: rgba(255, 255, 255, .16);
+      color: var(--text)
+    }
+
+    .spawn-hud-btn {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 10px;
+      border-radius: 5px;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      background: rgba(167, 139, 250, .1);
+      border: 1px solid rgba(167, 139, 250, .25);
+      color: var(--accent);
+      cursor: pointer;
+      transition: all .15s;
+      letter-spacing: .05em
+    }
+
+    .spawn-hud-btn:hover {
+      background: rgba(167, 139, 250, .2)
+    }
+
+    .msg.hl .bubble {
+      outline: 2px solid rgba(251, 191, 36, .5);
+      outline-offset: 2px
+    }
+
+    .typing {
+      align-self: flex-start;
+      padding: 10px 14px;
+      background: rgba(167, 139, 250, .08);
+      border: 1px solid rgba(167, 139, 250, .15);
+      border-radius: 12px;
+      display: flex;
+      gap: 5px;
+      align-items: center
+    }
+
+    .tdot2 {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(167, 139, 250, .6);
+      animation: tdot 1.2s ease-in-out infinite
+    }
+
+    .tdot2:nth-child(2) {
+      animation-delay: .2s
+    }
+
+    .tdot2:nth-child(3) {
+      animation-delay: .4s
+    }
+
+    .chat-foot {
+      padding: 10px 13px;
+      border-top: 1px solid var(--border);
+      background: rgba(255, 255, 255, .013);
+      flex-shrink: 0
+    }
+
+    .mod-hint {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      min-height: 13px;
+      transition: all .3s
+    }
+
+    .chat-row {
+      display: flex;
+      gap: 6px;
+      align-items: center
+    }
+
+    .ci {
+      flex: 1;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 13px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--text);
+      outline: none;
+      caret-color: rgba(255, 255, 255, .7);
+      transition: border-color .2s
+    }
+
+    .ci:focus {
+      border-color: rgba(167, 139, 250, .4)
+    }
+
+    .mic-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0
+    }
+
+    .mic-btn:hover {
+      background: rgba(167, 139, 250, .1);
+      border-color: rgba(167, 139, 250, .35)
+    }
+
+    .mic-btn.on {
+      background: rgba(167, 139, 250, .18);
+      border-color: rgba(167, 139, 250, .6);
+      animation: mic-pulse 1.2s ease-in-out infinite
+    }
+
+    @keyframes mic-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, .5)
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(167, 139, 250, 0)
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, 0)
+      }
+    }
+
+    .stop-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(251, 113, 133, .3);
+      background: rgba(251, 113, 133, .08);
+      font-size: 13px;
+      color: var(--red);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s
+    }
+
+    .stop-btn:hover {
+      background: rgba(251, 113, 133, .18)
+    }
+
+    .send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid rgba(96, 165, 250, .3);
+      background: rgba(96, 165, 250, .08);
+      font-size: 14px;
+      color: rgba(96, 165, 250, .7);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s
+    }
+
+    .send-btn:hover {
+      background: rgba(96, 165, 250, .18);
+      color: var(--blue)
+    }
+
+    .tool-row {
+      display: flex;
+      gap: 5px;
+      margin-top: 7px;
+      flex-wrap: wrap
+    }
+
+    .tool-btn {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .tool-btn:hover {
+      border-color: var(--border2);
+      color: var(--text);
+      background: var(--faint)
+    }
+
+    /* ── TERMINAL PANE ── */
+    .term-head {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0
+    }
+
+    .term-dots {
+      display: flex;
+      gap: 5px
+    }
+
+    .term-d {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%
+    }
+
+    .term-d:nth-child(1) {
+      background: #ff5f56
+    }
+
+    .term-d:nth-child(2) {
+      background: #ffbd2e
+    }
+
+    .term-d:nth-child(3) {
+      background: #4ade80
+    }
+
+    .term-ttl {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-left: 4px;
+      flex: 1
+    }
+
+    .term-st {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    .term-sd {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s ease-in-out infinite
+    }
+
+    .term-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.9
+    }
+
+    .term-body::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .term-body::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px
+    }
+
+    .tline {
+      display: flex;
+      gap: 9px;
+      align-items: baseline
+    }
+
+    .t-ts {
+      color: rgba(255, 255, 255, .2);
+      flex-shrink: 0
+    }
+
+    .t-pre {
+      flex-shrink: 0;
+      font-weight: 700
+    }
+
+    .t-pre.resp {
+      color: #a78bfa88
+    }
+
+    .t-pre.info {
+      color: #22d3ee
+    }
+
+    .t-pre.sys {
+      color: #4ade8088
+    }
+
+    .t-pre.warn {
+      color: #fbbf24aa
+    }
+
+    .t-pre.err {
+      color: #fb718588
+    }
+
+    .t-pre.cmd {
+      color: rgba(255, 255, 255, .45)
+    }
+
+    .t-txt {
+      word-break: break-all
+    }
+
+    .t-txt.sys {
+      color: #4ade8088
+    }
+
+    .t-txt.warn {
+      color: #fbbf24aa
+    }
+
+    .t-txt.err {
+      color: #fb718588
+    }
+
+    .tcursor {
+      display: inline-block;
+      width: 7px;
+      height: 12px;
+      background: rgba(255, 255, 255, .5);
+      animation: cur-blink 1s step-end infinite;
+      vertical-align: middle
+    }
+
+    @keyframes cur-blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0
+      }
+    }
+
+    /* ── CONFIG PANE ── */
+    .cfg-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px
+    }
+
+    .cfg-scroll::-webkit-scrollbar {
+      width: 3px
+    }
+
+    .cfg-scroll::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 2px
+    }
+
+    .sec-lbl {
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+      margin-top: 20px
+    }
+
+    .sec-lbl:first-child {
+      margin-top: 0
+    }
+
+    .cfg-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .cfg-lbl {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .cfg-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px
+    }
+
+    .toggle {
+      width: 36px;
+      height: 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--faint);
+      position: relative;
+      cursor: pointer;
+      transition: all .28s;
+      flex-shrink: 0
+    }
+
+    .toggle.on {
+      background: rgba(255, 255, 255, .22);
+      border-color: rgba(255, 255, 255, .32)
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .38);
+      top: 2px;
+      left: 2px;
+      transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), background .28s
+    }
+
+    .toggle.on::after {
+      transform: translateX(16px);
+      background: #fff
+    }
+
+    .rrow {
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .rhead {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px
+    }
+
+    .rname {
+      font-size: 13px;
+      font-weight: 600
+    }
+
+    .rval {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    input[type=range] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 3px;
+      background: var(--faint);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .82);
+      box-shadow: 0 2px 7px rgba(0, 0, 0, .45);
+      cursor: pointer
+    }
+
+    .voice-sel {
+      width: 100%;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      outline: none;
+      cursor: pointer;
+      margin-bottom: 10px
+    }
+
+    .voice-sel option {
+      background: #04050a
+    }
+
+    /* Themes */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 4px
+    }
+
+    .th-btn {
+      height: 32px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .th-btn:hover,
+    .th-btn.on {
+      border-color: rgba(255, 255, 255, .3);
+      transform: scale(1.06)
+    }
+
+    .th-btn.on::after {
+      content: '✓';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+      font-weight: 700
+    }
+
+    /* Pomodoro */
+    .pomo-wrap {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 14px;
+      margin-bottom: 8px
+    }
+
+    .pomo-time {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      margin: 6px 0 2px
+    }
+
+    .pomo-lbl {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    .pomo-btns {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 8px
+    }
+
+    .p-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: var(--faint);
+      color: var(--text);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .p-btn:hover {
+      background: rgba(255, 255, 255, .1)
+    }
+
+    .p-btn.on {
+      border-color: rgba(167, 139, 250, .5);
+      background: rgba(167, 139, 250, .12);
+      color: var(--accent)
+    }
+
+    .pomo-bar-wrap {
+      height: 3px;
+      background: var(--faint);
+      border-radius: 2px;
+      margin-top: 11px;
+      overflow: hidden
+    }
+
+    .pomo-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      border-radius: 2px;
+      transition: width 1s linear
+    }
+
+    /* Memory */
+    .mem-row {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 7px
+    }
+
+    .mem-inp {
+      flex: 1;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      outline: none
+    }
+
+    .mem-inp:focus {
+      border-color: rgba(167, 139, 250, .4)
+    }
+
+    .mem-save {
+      padding: 7px 12px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid rgba(74, 222, 128, .3);
+      background: rgba(74, 222, 128, .07);
+      color: var(--green);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .mem-save:hover {
+      background: rgba(74, 222, 128, .14);
+      border-color: rgba(74, 222, 128, .5)
+    }
+
+    .mem-view {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 11px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.7
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px
+    }
+
+    .stat-card {
+      background: var(--faint);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px;
+      text-align: center
+    }
+
+    .stat-n {
+      font-size: 19px;
+      font-weight: 800;
+      margin-bottom: 2px
+    }
+
+    .stat-l {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: .07em
+    }
+
+    /* Export */
+    .exp-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: 7px;
+      font-family: var(--mono);
+      font-size: 10px;
+      border: 1px solid var(--border);
+      background: var(--faint);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+      width: 100%;
+      margin-bottom: 5px
+    }
+
+    .exp-btn:hover {
+      background: rgba(255, 255, 255, .09);
+      color: var(--text);
+      border-color: var(--border2)
+    }
+
+    /* Selected module */
+    .sel-card {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border)
+    }
+
+    .sel-head {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px
+    }
+
+    .sel-orb {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .sel-name {
+      font-size: 13px;
+      font-weight: 800
+    }
+
+    .sel-status {
+      font-family: var(--mono);
+      font-size: 9px;
+      margin-top: 2px
+    }
+
+    .sel-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 13px 13px;
+      gap: 7px
+    }
+
+    .sel-mv {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center
+    }
+
+    .sel-ml {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--muted);
+      margin-top: 1px;
+      text-align: center
+    }
+
+    .sel-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      border: none;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .sel-none {
+      padding: 18px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center
+    }
+
+    /* ── MARKET PANE ── */
+    .mkt-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 7px
+    }
+
+    .mkt-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 11px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--faint);
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .mkt-item:hover {
+      border-color: var(--border2);
+      background: rgba(255, 255, 255, .05)
+    }
+
+    .mkt-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0
+    }
+
+    .mkt-info {
+      flex: 1
+    }
+
+    .mkt-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 2px
+    }
+
+    .mkt-desc {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    .mkt-add {
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      border: 1px solid rgba(74, 222, 128, .3);
+      background: rgba(74, 222, 128, .07);
+      color: var(--green);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap
+    }
+
+    .mkt-add:hover {
+      background: rgba(74, 222, 128, .16)
+    }
+
+    .mkt-add.done {
+      border-color: rgba(255, 255, 255, .08);
+      background: transparent;
+      color: var(--muted);
+      cursor: default
+    }
+
+    /* ── OVERLAYS ── */
+    .notif-bar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+      z-index: 8500;
+      background: rgba(8, 9, 20, .97);
+      border: 1px solid var(--border2);
+      border-top: none;
+      border-radius: 0 0 11px 11px;
+      padding: 9px 22px;
+      font-family: var(--mono);
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+      transition: transform .4s cubic-bezier(.34, 1.56, .64, 1);
+      pointer-events: none
+    }
+
+    .notif-bar.on {
+      transform: translateX(-50%) translateY(0)
+    }
+
+    .nb-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .nb-dot.online {
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(74, 222, 128, .8)
+    }
+
+    .nb-dot.offline {
+      background: var(--red);
+      box-shadow: 0 0 8px rgba(251, 113, 133, .8)
+    }
+
+    .wake-pill {
+      position: fixed;
+      top: 11px;
+      right: 11px;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 13px;
+      background: rgba(8, 9, 20, .93);
+      border: 1px solid rgba(167, 139, 250, .3);
+      border-radius: 20px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(167, 139, 250, .8);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+
+    .wake-pill.on {
+      opacity: 1
+    }
+
+    .wake-d {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #a78bfa;
+      animation: blink 1s ease-in-out infinite
+    }
+
+    .file-ov {
+      position: fixed;
+      inset: 0;
+      z-index: 7000;
+      background: rgba(4, 5, 10, .9);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s
+    }
+
+    .file-ov.on {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .file-icon {
+      font-size: 46px
+    }
+
+    .file-text {
+      font-size: 17px;
+      font-weight: 700
+    }
+
+    .file-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted)
+    }
+
+    .shortcuts-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: rgba(4, 5, 10, .9);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center
+    }
+
+    .shortcuts-modal.on {
+      display: flex
+    }
+
+    .sk-box {
+      background: rgba(8, 9, 20, .98);
+      border: 1px solid var(--border2);
+      border-radius: 15px;
+      padding: 26px;
+      min-width: 400px;
+      max-width: 500px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .7)
+    }
+
+    .sk-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .sk-x {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 17px;
+      padding: 0
+    }
+
+    .sk-x:hover {
+      color: var(--text)
+    }
+
+    .sk-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .sk-row:last-child {
+      border: none
+    }
+
+    .sk-desc {
+      font-size: 12.5px;
+      color: var(--muted)
+    }
+
+    .sk-key {
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--border2);
+      background: var(--faint);
+      color: var(--text)
+    }
+
+    .toast {
+      position: fixed;
+      top: 58px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-10px);
+      z-index: 9000;
+      background: rgba(8, 9, 20, .96);
+      border: 1px solid var(--border2);
+      border-radius: 9px;
+      padding: 7px 15px;
+      font-size: 12px;
+      font-family: var(--mono);
+      color: var(--text);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .55);
+      opacity: 0;
+      pointer-events: none;
+      transition: all .35s cubic-bezier(.34, 1.56, .64, 1)
+    }
+
+    .toast.on {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    /* CMD bar */
+    .cmd-wrap {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      width: clamp(300px, 46vw, 520px)
+    }
+
+    .cmd-inner {
+      background: rgba(8, 9, 20, .9);
+      backdrop-filter: blur(28px);
+      border: 1px solid var(--border2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .05)
+    }
+
+    .cmd-pre {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--muted);
+      flex-shrink: 0
+    }
+
+    .cmd-inp {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text);
+      caret-color: rgba(255, 255, 255, .7)
+    }
+
+    .cmd-hint {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      flex-shrink: 0
+    }
+
+    /* API bar */
+    .api-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 21px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 13px;
+      background: rgba(4, 5, 10, .93);
+      border-top: 1px solid var(--border);
+      z-index: 40;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted)
+    }
+
+    .api-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all .4s
+    }
+
+    .api-dot.on {
+      background: var(--green);
+      box-shadow: 0 0 6px rgba(74, 222, 128, .6);
+      animation: blink 2.4s ease-in-out infinite
+    }
+
+    .api-dot.off {
+      background: var(--red)
+    }
+
+    /* Buttons */
+    .btn-d {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 700;
+      border: 1px solid rgba(251, 113, 133, .3);
+      background: rgba(251, 113, 133, .07);
+      color: rgba(251, 113, 133, .7);
+      cursor: pointer;
+      transition: all .15s;
+      width: 100%;
+      margin-top: 4px
+    }
+
+    .btn-d:hover {
+      background: rgba(251, 113, 133, .15);
+      color: var(--red);
+      border-color: var(--red)
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-mesh"></div>
+  <div class="bg-grid"></div>
+
+  <div class="wake-pill" id="wake-pill">
+    <div class="wake-d"></div><span>Listening for "Hey Blitz"</span>
+  </div>
+  <div class="file-ov" id="file-ov">
+    <div class="file-icon">📁</div>
+    <div class="file-text">Drop file to inject</div>
+    <div class="file-sub">.txt · .py · .js · .md · .csv · .json</div>
+  </div>
+  <div class="notif-bar" id="notif-bar">
+    <div class="nb-dot" id="nb-dot"></div><span id="nb-txt"></span>
+  </div>
+
+  <div class="shortcuts-modal" id="sk-modal">
+    <div class="sk-box">
+      <div class="sk-title">⌨ Shortcuts<button class="sk-x" onclick="toggleSk()">✕</button></div>
+      <div class="sk-row"><span class="sk-desc">Toggle fullscreen</span><span class="sk-key">F</span></div>
+      <div class="sk-row"><span class="sk-desc">Toggle microphone</span><span class="sk-key">Space</span></div>
+      <div class="sk-row"><span class="sk-desc">Stop speaking</span><span class="sk-key">Esc</span></div>
+      <div class="sk-row"><span class="sk-desc">Search chat</span><span class="sk-key">Ctrl+F</span></div>
+      <div class="sk-row"><span class="sk-desc">Connect all modules</span><span class="sk-key">Ctrl+A</span></div>
+      <div class="sk-row"><span class="sk-desc">Disconnect all</span><span class="sk-key">Ctrl+D</span></div>
+      <div class="sk-row"><span class="sk-desc">Reset orbit layout</span><span class="sk-key">Ctrl+R</span></div>
+      <div class="sk-row"><span class="sk-desc">Clear chat</span><span class="sk-key">Ctrl+L</span></div>
+      <div class="sk-row"><span class="sk-desc">This panel</span><span class="sk-key">?</span></div>
+      <div
+        style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--muted);padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">
+        JARVIS SYSTEMS</div>
+      <div class="sk-row"><span class="sk-desc">Quick command</span><span class="sk-key">Ctrl+K</span></div>
+      <div class="sk-row"><span class="sk-desc">Launch protocol</span><span class="sk-key">Ctrl+P</span></div>
+      <div class="sk-row"><span class="sk-desc">Activate screen vision</span><span class="sk-key">Ctrl+Shift+V</span>
+      </div>
+      <div class="sk-row"><span class="sk-desc">Run clipboard as Python</span><span class="sk-key">Ctrl+Shift+R</span>
+      </div>
+      <div class="sk-row"><span class="sk-desc">Launch agent swarm</span><span class="sk-key">Ctrl+Shift+S</span></div>
+      <div
+        style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:var(--muted);padding:8px 0 4px;border-top:1px solid var(--border);margin-top:2px">
+        CHAT COMMANDS</div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">run:
+          &lt;python&gt;</span><span class="sk-key" style="color:#4ade80">Execute Python</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">swarm:
+          &lt;task&gt;</span><span class="sk-key" style="color:#a78bfa">5-Agent workflow</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">activate
+          vision</span><span class="sk-key" style="color:#60a5fa">Screen capture</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">full sync</span><span
+          class="sk-key" style="color:#fbbf24">All online</span></div>
+    </div>
+  </div>
+
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-head">
+        <div class="logo-row">
+          <div class="logo-gem">
+            <svg viewBox="0 0 28 28" fill="none">
+              <polygon points="14,2 26,8 26,20 14,26 2,20 2,8" fill="rgba(255,255,255,.07)"
+                stroke="rgba(255,255,255,.25)" stroke-width="1" />
+              <polygon points="14,6 22,10.5 22,17.5 14,22 6,17.5 6,10.5" fill="rgba(255,255,255,.12)"
+                stroke="rgba(255,255,255,.18)" stroke-width=".5" />
+              <circle cx="14" cy="14" r="3.5" fill="rgba(255,255,255,.72)" />
+            </svg>
+          </div>
+          <span class="logo-name">BLITZ</span><span class="logo-ver" style="margin-left:2px">v3</span>
+        </div>
+        <div class="status-pill">
+          <div class="s-dot" id="sb-dot"></div><span id="sb-txt">No modules active</span>
+        </div>
+      </div>
+      <div class="sb-scroll">
+        <div class="nav-label">Navigation</div>
+        <div class="nav-item active" onclick="navClick(this)">⬡ Hub</div>
+        <div class="nav-item" onclick="navClick(this);rpTab('chat')">💬 Chat</div>
+        <div class="nav-item" onclick="navClick(this);rpTab('term')">⬛ Terminal</div>
+        <div class="nav-item" onclick="navClick(this);rpTab('cfg')">⚙ Config</div>
+        <div class="nav-item" onclick="navClick(this);rpTab('mkt')">🛒 Market</div>
+        <div class="nav-label">Environments</div>
+        <div class="nav-item" onclick="enterEnv('forge')"
+          style="border:1px solid rgba(253,186,116,.18);background:rgba(253,186,116,.05);color:rgba(253,186,116,.8);margin-bottom:2px;cursor:pointer">
+          🔥 The Forge<span class="nav-badge" style="background:rgba(253,186,116,.15);color:#fdba74">IDE</span></div>
+        <div class="nav-item" onclick="enterEnv('canvas')"
+          style="border:1px solid rgba(240,234,216,.1);background:rgba(240,234,216,.03);color:rgba(240,234,216,.7);margin-bottom:2px;cursor:pointer">
+          ✦ The Canvas<span class="nav-badge"
+            style="background:rgba(240,234,216,.08);color:rgba(240,234,216,.5)">NOTES</span></div>
+        <div class="nav-item" onclick="enterEnv('nexus')"
+          style="border:1px solid rgba(56,189,248,.18);background:rgba(56,189,248,.04);color:rgba(56,189,248,.75);margin-bottom:2px;cursor:pointer">
+          ⬡ The Nexus<span class="nav-badge" style="background:rgba(56,189,248,.12);color:#38bdf8">WEB</span></div>
+        <div class="nav-item" onclick="enterEnv('studio')"
+          style="border:1px solid rgba(192,132,252,.18);background:rgba(192,132,252,.04);color:rgba(192,132,252,.75);margin-bottom:2px;cursor:pointer">
+          ◈ The Studio<span class="nav-badge" style="background:rgba(192,132,252,.12);color:#c084fc">3D</span></div>
+        <div class="nav-label">Protocols</div>
+        <div class="nav-item" onclick="runProtocol('study')" style="cursor:pointer">📚 Study Protocol</div>
+        <div class="nav-item" onclick="runProtocol('code')" style="cursor:pointer">💻 Code Protocol</div>
+        <div class="nav-item" onclick="runProtocol('full')"
+          style="cursor:pointer;border:1px solid rgba(167,139,250,.18)">⚡ Full Sync<span class="nav-badge">ALL</span>
+        </div>
+        <div class="nav-label">JARVIS Systems</div>
+        <div class="nav-item" onclick="activateVision('screen')" style="cursor:pointer">👁 Activate Vision</div>
+        <div class="nav-item" onclick="(function(){const t=prompt('Agent task:');if(t)runAgentSwarm(t);})()"
+          style="cursor:pointer">🤖 Agent Swarm</div>
+        <div class="nav-item" onclick="loadPyodide().then(()=>toast('Python ready'))" style="cursor:pointer">🐍 Load
+          Runtime</div>
+        <div class="nav-label">Modules</div>
+        <div class="mod-list" id="mod-list"></div>
+        <div class="nav-label">Telemetry</div>
+        <div class="nav-item" style="pointer-events:none"><span
+            style="font-family:var(--mono);font-size:10px">Uptime</span><span class="nav-badge"
+            id="uptime">00:00:00</span></div>
+        <div class="nav-item" style="pointer-events:none"><span
+            style="font-family:var(--mono);font-size:10px">Freq</span><span class="nav-badge" id="hz-val">—</span></div>
+        <div class="nav-item" style="pointer-events:none"><span
+            style="font-family:var(--mono);font-size:10px">Backend</span><span class="nav-badge"
+            id="api-txt">offline</span></div>
+      </div>
+      <div class="sb-foot">
+        <div class="foot-row"><span>B.L.I.T.Z.</span><span id="conn-count">0/7</span></div>
+        <div class="foot-row"><span style="color:var(--green)">■</span><span>Spatial AI Hub</span></div>
+      </div>
+    </aside>
+
+    <!-- CANVAS -->
+    <div class="main">
+      <div class="topbar">
+        <span class="tb-title">B.L.I.T.Z.</span>
+        <div class="tb-sep"></div>
+        <span class="tb-info" id="tb-info">Orbital Module Hub</span>
+        <div class="tb-btns">
+          <button class="tb-btn" onclick="connectAll()">⚡ All</button>
+          <button class="tb-btn" onclick="disconnectAll()">○ None</button>
+          <button class="tb-btn" onclick="resetLayout()">↺ Reset</button>
+          <button class="tb-btn" onclick="toggleSk()">? Keys</button>
+          <button class="tb-btn" onclick="toggleFS()">⛶</button>
+          <button class="tb-btn" onclick="enterEnv('forge')"
+            style="border-color:rgba(253,186,116,.35);color:#fdba74;background:rgba(253,186,116,.08)">🔥 Forge</button>
+          <button class="tb-btn" onclick="runProtocol('full')"
+            style="border-color:rgba(167,139,250,.35);color:var(--accent);background:rgba(167,139,250,.08)">⚡
+            Sync</button>
+        </div>
+        <div class="hz-badge"><span id="hz-val2">0Hz</span> · <span id="api-txt2">offline</span></div>
+      </div>
+      <div class="canvas-wrap">
+        <div class="canvas-area" id="ca">
+          <canvas id="bgc"></canvas>
+          <svg id="bonds-svg"></svg>
+          <div class="scene" id="scene">
+            <div class="orbit-ring" id="ring0"></div>
+            <div class="orbit-ring" id="ring1"></div>
+            <div class="orbit-ring" id="ring2"></div>
+            <div class="inner-ring" id="iring"></div>
+            <div class="drop-target" id="drop-t"></div>
+            <div class="core-wrap" id="core-wrap">
+              <div class="core-el" id="core-el">
+                <div class="core-ring2"></div>
+                <div class="core-ring1"></div>
+                <div class="core">
+                  <div class="core-sphere"></div>
+                  <div class="vaura"></div>
+                  <div class="core-lbl" id="core-lbl">BLITZ</div>
+                  <div class="core-sub" id="core-sub">IDLE</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="vwave" id="vwave"></div>
+          <div class="ai-think" id="ai-think">
+            <div class="td"></div>
+            <div class="td"></div>
+            <div class="td"></div><span id="think-txt">Processing...</span>
+          </div>
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <aside class="rpanel" id="rpanel">
+          <div class="rp-drag" id="rp-drag"></div>
+          <div class="rp-tabs">
+            <div class="rp-tab on" onclick="rpTab('chat')">Chat</div>
+            <div class="rp-tab" onclick="rpTab('term')">Terminal</div>
+            <div class="rp-tab" onclick="rpTab('cfg')">Config</div>
+            <div class="rp-tab" onclick="rpTab('mkt')">Shop</div>
+          </div>
+
+          <!-- CHAT -->
+          <div class="pane on" id="pane-chat" style="display:flex;flex-direction:column">
+            <div class="mod-badge" id="mod-badge">No modules connected</div>
+            <div class="csearch" id="csearch">
+              <input class="cs-inp" id="cs-inp" placeholder="Search messages..." oninput="searchChat(this.value)">
+              <span class="cs-cnt" id="cs-cnt"></span>
+              <button class="cs-x" onclick="closeSearch()">✕</button>
+            </div>
+            <div class="feed" id="feed"></div>
+            <div class="chat-foot">
+              <div class="mod-hint" id="mod-hint"></div>
+              <div class="chat-row">
+                <input class="ci" id="ci" placeholder="Talk to Blitz..." autocomplete="off">
+                <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Mic (Space)"><span
+                    id="mic-ico">🎙</span></button>
+                <button class="stop-btn" onclick="stopSpeak()" title="Stop (Esc)">■</button>
+                <button class="send-btn" onclick="sendChat()" title="Send (Enter)">↵</button>
+              </div>
+              <div class="tool-row" id="tool-row"></div>
+            </div>
+          </div>
+
+          <!-- TERMINAL -->
+          <div class="pane" id="pane-term" style="flex-direction:column">
+            <div class="term-head">
+              <div class="term-dots">
+                <div class="term-d"></div>
+                <div class="term-d"></div>
+                <div class="term-d"></div>
+              </div>
+              <span class="term-ttl">blitz — process log</span>
+              <div class="term-st">
+                <div class="term-sd"></div>RUNNING
+              </div>
+            </div>
+            <div class="term-body" id="term-body"></div>
+          </div>
+
+          <!-- CONFIG -->
+          <div class="pane" id="pane-cfg">
+            <div class="cfg-scroll">
+              <div class="sec-lbl">Theme</div>
+              <div class="theme-grid">
+                <button class="th-btn on" id="th-default" onclick="setTheme('default')"
+                  style="background:linear-gradient(135deg,#04050a,#1a0a3a)" title="Default"></button>
+                <button class="th-btn" id="th-ocean" onclick="setTheme('ocean')"
+                  style="background:linear-gradient(135deg,#020810,#0a2040)" title="Ocean"></button>
+                <button class="th-btn" id="th-matrix" onclick="setTheme('matrix')"
+                  style="background:linear-gradient(135deg,#020a06,#0a2a14)" title="Matrix"></button>
+                <button class="th-btn" id="th-crimson" onclick="setTheme('crimson')"
+                  style="background:linear-gradient(135deg,#0a0204,#2a0810)" title="Crimson"></button>
+                <button class="th-btn" id="th-gold" onclick="setTheme('gold')"
+                  style="background:linear-gradient(135deg,#080600,#2a1e00)" title="Gold"></button>
+              </div>
+              <div class="sec-lbl">Study Timer</div>
+              <div class="pomo-wrap">
+                <div class="pomo-time" id="pomo-time">25:00</div>
+                <div class="pomo-lbl" id="pomo-lbl">Focus Session</div>
+                <div class="pomo-btns">
+                  <button class="p-btn on" id="pb-focus" onclick="setPomoMode('focus')">25 min</button>
+                  <button class="p-btn" id="pb-short" onclick="setPomoMode('short')">5 min</button>
+                  <button class="p-btn" id="pb-long" onclick="setPomoMode('long')">15 min</button>
+                </div>
+                <div class="pomo-btns" style="margin-top:5px">
+                  <button class="p-btn on" id="pb-start" onclick="togglePomo()">▶ Start</button>
+                  <button class="p-btn" onclick="resetPomo()">↺ Reset</button>
+                </div>
+                <div class="pomo-bar-wrap">
+                  <div class="pomo-bar" id="pomo-bar" style="width:100%"></div>
+                </div>
+              </div>
+              <div class="sec-lbl">Voice</div>
+              <select class="voice-sel" id="voice-sel" onchange="setVoice(this)">
+                <option>Loading...</option>
+              </select>
+              <div class="rrow">
+                <div class="rhead"><span class="rname" style="font-size:12px">Speed</span><span class="rval"
+                    id="rv-rate">1.0×</span></div><input type="range" min="5" max="20" value="10"
+                  oninput="setSRate(this)">
+              </div>
+              <div class="rrow">
+                <div class="rhead"><span class="rname" style="font-size:12px">Pitch</span><span class="rval"
+                    id="rv-pitch">0.9</span></div><input type="range" min="5" max="15" value="9"
+                  oninput="setSPitch(this)">
+              </div>
+              <div class="sec-lbl">Behavior</div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Voice (TTS)</div>
+                  <div class="cfg-sub">Blitz speaks replies</div>
+                </div>
+                <div class="toggle on" id="tog-tts" onclick="togCfg(this,'tts')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Wake Word</div>
+                  <div class="cfg-sub">"Hey Blitz" activates mic</div>
+                </div>
+                <div class="toggle" id="tog-wake" onclick="togCfg(this,'wake')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Auto-orbit</div>
+                </div>
+                <div class="toggle on" id="tog-orbit" onclick="togCfg(this,'orbit')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Sound effects</div>
+                </div>
+                <div class="toggle on" id="tog-sfx" onclick="togCfg(this,'sfx')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Bond particles</div>
+                </div>
+                <div class="toggle on" id="tog-ptcl" onclick="togCfg(this,'ptcl')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Orbit rings</div>
+                </div>
+                <div class="toggle on" id="tog-rings" onclick="togCfg(this,'rings')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">Persist chat</div>
+                  <div class="cfg-sub">Save across sessions</div>
+                </div>
+                <div class="toggle on" id="tog-persist" onclick="togCfg(this,'persist')"></div>
+              </div>
+              <div class="cfg-row">
+                <div>
+                  <div class="cfg-lbl">HUD windows</div>
+                  <div class="cfg-sub">Spawn floating widgets</div>
+                </div>
+                <div class="toggle on" id="tog-hud" onclick="togCfg(this,'hud')"></div>
+              </div>
+              <div class="sec-lbl">Orbit Speed</div>
+              <div class="rrow">
+                <div class="rhead"><span class="rname">Speed</span><span class="rval" id="rv-spd">1.0×</span></div>
+                <input type="range" min="0" max="30" value="10" oninput="setSOrbit(this)">
+              </div>
+              <div class="sec-lbl">Memory Vault</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:7px">Inject personal
+                context into Blitz's awareness:</div>
+              <div class="mem-row"><input class="mem-inp" id="mem-inp" placeholder="e.g. I'm preparing for JEE..."
+                  autocomplete="off"><button class="mem-save" onclick="saveMemory()">SAVE</button></div>
+              <div class="mem-view" id="mem-view">Connect backend to view memory vault.</div>
+              <button class="btn-d" onclick="clearMemory()">🗑 Clear Memory</button>
+              <div class="sec-lbl">Export</div>
+              <button class="exp-btn" onclick="exportChat()">📄 Export chat as .txt</button>
+              <button class="exp-btn" onclick="exportJSON()">📦 Export chat as .json</button>
+              <div class="sec-lbl">Diagnostics</div>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-n" id="si-conn">0</div>
+                  <div class="stat-l">Connected</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-n" id="si-total">7</div>
+                  <div class="stat-l">Modules</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-n" id="si-calls">0</div>
+                  <div class="stat-l">API Calls</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-n" id="si-lat">—</div>
+                  <div class="stat-l">Latency</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-n" id="si-cpu">—</div>
+                  <div class="stat-l">CPU %</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-n" id="si-mem">—</div>
+                  <div class="stat-l">RAM MB</div>
+                </div>
+              </div>
+              <div class="sec-lbl">Selected Module</div>
+              <div id="sel-panel">
+                <div class="sel-none">Click a module to inspect</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MARKET -->
+          <div class="pane" id="pane-mkt">
+            <div class="cfg-scroll">
+              <div class="sec-lbl">Module Marketplace</div>
+              <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:12px">Add new engines
+                to your hub</div>
+              <div class="mkt-grid" id="mkt-grid"></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div class="cmd-wrap">
+    <div class="cmd-inner">
+      <span class="cmd-pre">❯_</span>
+      <input class="cmd-inp" id="cmd-inp" placeholder="Type command or message... (HELP, STATUS, QUIZ, TIMER)"
+        autocomplete="off">
+      <span class="cmd-hint">↵</span>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="api-bar">
+    <div class="api-dot" id="api-dot"></div>
+    <span id="api-lbl">Backend</span>
+    <span style="margin-left:auto;font-size:9px" id="api-lat"></span>
+  </div>
+
+  <!-- CONTEXT MENU -->
+  <div
+    style="position:fixed;z-index:8000;background:rgba(8,9,20,.96);backdrop-filter:blur(24px);border:1px solid var(--border2);border-radius:11px;padding:5px;min-width:170px;display:none;box-shadow:0 18px 55px rgba(0,0,0,.65)"
+    id="ctx">
+    <div
+      style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .14s"
+      id="ctx-con" onmouseover="this.style.background='var(--faint)';this.style.color='var(--text)'"
+      onmouseout="this.style.background='';this.style.color='var(--muted)'">⚡ Connect</div>
+    <div
+      style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .14s"
+      id="ctx-dis" onmouseover="this.style.background='var(--faint)';this.style.color='var(--text)'"
+      onmouseout="this.style.background='';this.style.color='var(--muted)'">○ Disconnect</div>
+    <div style="height:1px;background:var(--border);margin:3px 6px"></div>
+    <div
+      style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:var(--muted);cursor:pointer"
+      id="ctx-r0" onmouseover="this.style.background='var(--faint)';this.style.color='var(--text)'"
+      onmouseout="this.style.background='';this.style.color='var(--muted)'">▲ Inner ring</div>
+    <div
+      style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:var(--muted);cursor:pointer"
+      id="ctx-r1" onmouseover="this.style.background='var(--faint)';this.style.color='var(--text)'"
+      onmouseout="this.style.background='';this.style.color='var(--muted)'">→ Middle ring</div>
+    <div
+      style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:var(--muted);cursor:pointer"
+      id="ctx-r2" onmouseover="this.style.background='var(--faint)';this.style.color='var(--text)'"
+      onmouseout="this.style.background='';this.style.color='var(--muted)'">▼ Outer ring</div>
+    <div style="height:1px;background:var(--border);margin:3px 6px"></div>
+    <div
+      style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12px;color:rgba(251,113,133,.7);cursor:pointer"
+      id="ctx-del" onmouseover="this.style.background='rgba(251,113,133,.08)';this.style.color='var(--red)'"
+      onmouseout="this.style.background='';this.style.color='rgba(251,113,133,.7)'">✕ Remove</div>
+  </div>
+
+  <script>
+    const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+      ? 'http://localhost:8000'
+      : location.origin;
+
+    // ─── MODULE DEFINITIONS ───────────────────────────────────
+    // color: hue-shifted glass tint for each orb
+    // anim: CSS animation name applied when connected
+    const MODULES = [
+      { id: 'vision', name: 'Vision', icon: '👁', orbit: 0, angle: 50, color: '#a78bfa', hue: [167, 139, 250], anim: 'pulse-slow 3.2s ease-in-out infinite', ringSpd: ['spin-cw 6s linear infinite', 'spin-ccw 10s linear infinite'], desc: 'Image analysis & visual understanding', hint: 'Drop an image or describe what you see' },
+      { id: 'voice', name: 'Voice', icon: '🎙', orbit: 1, angle: 130, color: '#60a5fa', hue: [96, 165, 250], anim: 'pulse-fast 1.8s ease-in-out infinite', ringSpd: ['spin-ccw 4s linear infinite', 'spin-cw 8s linear infinite'], desc: 'Speech, wake word & TTS control', hint: 'Voice mode active — try speaking' },
+      { id: 'memory', name: 'Memory', icon: '🧠', orbit: 2, angle: 20, color: '#34d399', hue: [52, 211, 153], anim: 'pulse-slow 4s ease-in-out infinite', ringSpd: ['spin-cw 9s linear infinite', 'spin-ccw 15s linear infinite'], desc: 'SCTM Vault — persistent context injection', hint: 'Personal context will be injected into every prompt' },
+      { id: 'research', name: 'Research', icon: '🔬', orbit: 1, angle: 230, color: '#22d3ee', hue: [34, 211, 238], anim: 'orb-scan 1.4s ease-in-out infinite', ringSpd: ['spin-ccw 3s linear infinite', 'spin-cw 6s linear infinite'], desc: 'LangChain + Tavily live web search', hint: 'Ask anything — Blitz will search the web' },
+      { id: 'coding', name: 'Coding', icon: '💻', orbit: 0, angle: 200, color: '#fdba74', hue: [253, 186, 116], anim: 'orb-flicker .9s ease-in-out infinite', ringSpd: ['spin-cw 5s linear infinite', 'spin-ccw 9s linear infinite'], desc: 'Developer mode — code, debug, terminal output', hint: 'Describe a problem or paste code to debug' },
+      { id: 'studying', name: 'Studying', icon: '📚', orbit: 2, angle: 168, color: '#f472b6', hue: [244, 114, 182], anim: 'pulse-slow 3.5s ease-in-out infinite', ringSpd: ['spin-ccw 8s linear infinite', 'spin-cw 13s linear infinite'], desc: 'Tutor mode — flashcards, quizzes, Feynman', hint: 'Ask to explain, make flashcards, or quiz me' },
+      { id: 'create', name: 'Create', icon: '✍️', orbit: 2, angle: 290, color: '#fbbf24', hue: [251, 191, 36], anim: 'orb-spark 2.5s ease-in-out infinite', ringSpd: ['spin-cw 7s linear infinite', 'spin-ccw 11s linear infinite'], desc: 'Copywriting, emails, essays & content', hint: 'Choose a template or describe what to write' },
+    ];
+
+    const MARKET_MODULES = [
+      { id: 'math', name: 'Math', icon: '📐', color: '#818cf8', hue: [129, 140, 248], desc: 'Equation solver, LaTeX, step-by-step proofs' },
+      { id: 'translate', name: 'Translate', icon: '🌍', color: '#34d399', hue: [52, 211, 153], desc: 'Real-time translation across 100+ languages' },
+      { id: 'health', name: 'Health', icon: '❤️', color: '#fb7185', hue: [251, 113, 133], desc: 'Fitness plans, nutrition, wellness tracker' },
+      { id: 'finance', name: 'Finance', icon: '📈', color: '#fbbf24', hue: [251, 191, 36], desc: 'Market data, portfolio, analysis' },
+      { id: 'music', name: 'Music', icon: '🎵', color: '#f472b6', hue: [244, 114, 182], desc: 'Chords, lyrics, music theory, notation' },
+      { id: 'legal', name: 'Legal', icon: '⚖️', color: '#94a3b8', hue: [148, 163, 184], desc: 'Contract review, legal research, clause finder' },
+      { id: 'design', name: 'Design', icon: '🎨', color: '#fb923c', hue: [251, 146, 60], desc: 'Color palettes, UI critique, design systems' },
+      { id: 'debate', name: 'Debate', icon: '🗣️', color: '#e879f9', hue: [232, 121, 249], desc: 'Argue both sides, steel-man any position' },
+    ];
+
+    const ORBIT_R = { 0: 90, 1: 152, 2: 218 };
+    const SPEEDS = { 0: .48, 1: .27, 2: .155 };
+    const DIRS = { 0: 1, 1: -1, 2: 1 };
+    const INNER_R = 138, INNER_SPD = .34;
+
+    const S = {
+      connected: {}, angles: {}, innerAngles: {}, positions: {}, driftV: {},
+      selected: null, orbiting: true, showRings: true, showPtcl: true, showPkts: true, showHUD: true,
+      speedMult: 1, sfx: true, tts: true, wakeEnabled: false, persist: true,
+      listening: false, speaking: false,
+      speechRate: 1, speechPitch: .9, preferredVoice: null,
+      backendOnline: false, lastBackend: null,
+      apiCalls: 0, t0: Date.now(),
+      theme: 'default',
+    };
+
+    const els = {}, bonds = {};
+    let W = 0, H = 0, cx = 0, cy = 0;
+    let activeDrag = null, ctxTarget = null, toastTmr = null;
+    let chatHistory = [];
+    let audioCtx = null, recognition = null, wakeRecog = null, synthRef = window.speechSynthesis;
+    let waveAnim = null, waveVals = Array.from({ length: 16 }, () => 4);
+    let hudZ = 31, hudCount = 0;
+
+    // ─── UTILS ───────────────────────────────────────────────
+    const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const wait = ms => new Promise(r => setTimeout(r, ms));
+    const now12 = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    // ─── ORB STYLE ENGINE ─────────────────────────────────────
+    // Builds an orb's radial gradient from a [r,g,b] hue array
+    // So ANY module — core or marketplace — gets a proper glass orb
+    function orbStyles(hue, connected = false) {
+      const [r, g, b] = hue;
+      // Lighten toward white for highlight zone
+      const hl = `rgba(${Math.round(r * .18 + 255 * .82)},${Math.round(g * .18 + 255 * .82)},${Math.round(b * .18 + 255 * .82)},.95)`;
+      const mid = `rgba(${r},${g},${b},.70)`;
+      const deep = `rgba(${Math.round(r * .55)},${Math.round(g * .55)},${Math.round(b * .55)},.36)`;
+      const base = `rgba(${Math.round(r * .25)},${Math.round(g * .25)},${Math.round(b * .25)},.10)`;
+      const border = `rgba(${r},${g},${b},.55)`;
+      const gS = `rgba(${r},${g},${b},.38)`;
+      const gL = `rgba(${r},${g},${b},.13)`;
+      const gC = `rgba(${r},${g},${b},.65)`;
+      const gCL = `rgba(${r},${g},${b},.28)`;
+      const bg = `radial-gradient(circle at 32% 26%,${hl} 0%,${mid} 36%,${deep} 68%,${base} 100%)`;
+      const shadow = connected
+        ? `0 4px 32px ${gC},0 0 80px ${gCL},0 0 120px rgba(${r},${g},${b},.08),inset 0 1px 0 rgba(255,255,255,.88),inset 0 -1px 0 rgba(${Math.round(r * .4)},${Math.round(g * .4)},${Math.round(b * .4)},.12)`
+        : `0 4px 22px ${gS},0 0 48px ${gL},inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 0 rgba(${Math.round(r * .4)},${Math.round(g * .4)},${Math.round(b * .4)},.10)`;
+      return { bg, border, shadow, ringTop: `rgba(${r},${g},${b},.55)`, ringSide: `rgba(${r},${g},${b},.14)` };
+    }
+
+    function applyOrbStyle(el, m, connected) {
+      const ball = el.querySelector('.a-ball');
+      if (!ball) return;
+      const st = orbStyles(m.hue || [167, 139, 250], connected);
+      ball.style.background = st.bg;
+      ball.style.border = `1px solid ${st.border}`;
+      ball.style.boxShadow = st.shadow;
+      if (connected) {
+        ball.style.animation = m.anim || 'pulse-slow 3s ease-in-out infinite';
+      } else {
+        ball.style.animation = '';
+      }
+      // also update accent rings
+      const r1 = el.querySelector('.a-ring-1');
+      const r2 = el.querySelector('.a-ring-2');
+      if (r1) { r1.style.borderTopColor = st.ringTop; r1.style.borderRightColor = st.ringSide; }
+      if (r2) { r2.style.borderBottomColor = st.ringTop; r2.style.borderLeftColor = st.ringSide; }
+    }
+
+    // ─── MAKE ATOM ────────────────────────────────────────────
+    function mkAtom(m) {
+      const rs = m.ringSpd || ['spin-cw 8s linear infinite', 'spin-ccw 13s linear infinite'];
+      const d = document.createElement('div');
+      d.className = 'atom'; d.id = 'atom-' + m.id; d.dataset.id = m.id;
+      d.innerHTML = `
+    <div class="a-ring a-ring-1" style="animation:${rs[0]}"></div>
+    <div class="a-ring a-ring-2" style="animation:${rs[1]}"></div>
+    <div class="a-ball">
+      <div class="a-icon">${m.icon}</div>
+      <div class="a-lbl">${m.name}</div>
+    </div>
+    <div class="a-tip">
+      <div class="a-tip-name">${m.name}</div>
+      <div class="a-tip-desc">${m.desc}</div>
+      <div class="a-tip-lat" id="tlat-${m.id}">Drag to core to connect</div>
+    </div>`;
+      applyOrbStyle(d, m, false);
+      d.addEventListener('click', e => { e.stopPropagation(); selectMod(m.id) });
+      d.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); showCtx(e, m.id) });
+      d.addEventListener('mousedown', e => startDrag(e, m.id));
+      d.addEventListener('touchstart', e => startDrag(e, m.id), { passive: true });
+      document.getElementById('scene').appendChild(d);
+      els[m.id] = d;
+      placeAtom(m.id);
+    }
+
+    function mkBond(m) {
+      const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      l.setAttribute('x1', cx); l.setAttribute('y1', cy);
+      l.setAttribute('stroke-width', '1'); l.setAttribute('stroke-linecap', 'round');
+      l.style.strokeDasharray = '4 10'; l.style.opacity = '0'; l.style.transition = 'opacity .6s';
+      l._off = 0;
+      document.getElementById('bonds-svg').appendChild(l);
+      bonds[m.id] = l;
+    }
+
+    function mkSideItem(m) {
+      const list = document.getElementById('mod-list');
+      const d = document.createElement('div'); d.className = 'mod-item'; d.id = 'smod-' + m.id;
+      d.innerHTML = `<div class="mod-dot" id="sdot-${m.id}" style="background:rgba(${m.hue?.join(',') ?? '167,139,250'},.2);border:1px solid rgba(${m.hue?.join(',') ?? '167,139,250'},.4)"></div><span class="mod-name">${m.icon} ${m.name}</span><span class="mod-stat" id="sst-${m.id}">idle</span>`;
+      d.addEventListener('click', () => selectMod(m.id));
+      list.appendChild(d);
+    }
+
+    // ─── CONNECT / DISCONNECT ─────────────────────────────────
+    async function connectMod(id) {
+      if (S.connected[id]) return;
+      const m = MODULES.find(x => x.id === id);
+      tlog('info', 'NET ', 'Handshaking ' + m.name + '...');
+      try {
+        const r = await fetch(`${API}/api/connect/${id}`, { method: 'POST', signal: AbortSignal.timeout(3000) });
+        if (r.ok) { const d = await r.json(); document.getElementById('tlat-' + id).textContent = 'Latency: ' + d.latency_ms + 'ms'; tlog('sys', 'NET ', m.name + ' →' + d.latency_ms + 'ms'); }
+      } catch { tlog('warn', 'NET ', 'Backend offline — simulated bond'); }
+      S.connected[id] = true;
+      const el = els[id];
+      el.classList.add('popping');
+      setTimeout(() => { el.classList.remove('popping'); el.classList.add('connected') }, 50);
+      applyOrbStyle(el, m, true);
+      respaceInner();
+      const b = bonds[id]; b.setAttribute('stroke', m.color); b.style.opacity = '.6';
+      const sdot = document.getElementById('sdot-' + id);
+      if (sdot) { sdot.style.background = `rgba(${m.hue?.join(',') ?? '167,139,250'},.5)`; sdot.style.border = `1px solid ${m.color}`; sdot.style.boxShadow = `0 0 8px ${m.color}88`; }
+      const sst = document.getElementById('sst-' + id); if (sst) { sst.textContent = 'active'; sst.style.color = m.color; }
+      document.getElementById('smod-' + id)?.classList.add('on');
+      if (S.showPkts) spawnPkts(id);
+      playConnect(); spawnPing(id);
+      tlog('sys', 'SYS ', m.name + ' online');
+      toast(`${m.icon} ${m.name} connected`);
+      updateStats(); updBadge(); updPlaceholder(); tCursor();
+    }
+
+    async function disconnectMod(id) {
+      if (!S.connected[id]) return;
+      const m = MODULES.find(x => x.id === id);
+      try { await fetch(`${API}/api/disconnect/${id}`, { method: 'POST', signal: AbortSignal.timeout(2000) }); } catch { }
+      S.connected[id] = false; S.angles[id] = S.innerAngles[id];
+      const el = els[id]; el.classList.remove('connected');
+      applyOrbStyle(el, m, false);
+      bonds[id].style.opacity = '0';
+      respaceInner();
+      const sdot = document.getElementById('sdot-' + id);
+      if (sdot) { const h = m.hue?.join(',') ?? '167,139,250'; sdot.style.background = `rgba(${h},.2)`; sdot.style.border = `1px solid rgba(${h},.4)`; sdot.style.boxShadow = ''; }
+      const sst = document.getElementById('sst-' + id); if (sst) { sst.textContent = 'idle'; sst.style.color = ''; }
+      document.getElementById('smod-' + id)?.classList.remove('on');
+      playDisconnect(); tlog('warn', 'SYS ', m.name + ' disconnected');
+      toast(`○ ${m.name} — off`);
+      updateStats(); updBadge(); updPlaceholder(); tCursor();
+    }
+
+    function respaceInner() {
+      const c = MODULES.filter(m => S.connected[m.id]).map(m => m.id);
+      if (!c.length) return;
+      const step = 360 / c.length;
+      c.forEach((id, i) => { S.innerAngles[id] = i * step; });
+    }
+
+    function connectAll() { MODULES.forEach((m, i) => setTimeout(() => connectMod(m.id), i * 80)); }
+    function disconnectAll() { MODULES.forEach(m => disconnectMod(m.id)); }
+
+    // ─── DRAG ─────────────────────────────────────────────────
+    function startDrag(e, id) {
+      e.stopPropagation();
+      const touch = e.touches?.[0];
+      const rect = document.getElementById('ca').getBoundingClientRect();
+      const px = (touch ? touch.clientX : e.clientX) - rect.left;
+      const py = (touch ? touch.clientY : e.clientY) - rect.top;
+      activeDrag = { id, ox: px - S.positions[id].x, oy: py - S.positions[id].y };
+      els[id].classList.add('dragging');
+      const mv = ev => {
+        if (!activeDrag) return;
+        const t = ev.touches?.[0];
+        const nx = (t ? t.clientX : ev.clientX) - rect.left - activeDrag.ox;
+        const ny = (t ? t.clientY : ev.clientY) - rect.top - activeDrag.oy;
+        S.positions[id] = { x: nx, y: ny };
+        document.getElementById('drop-t').classList.toggle('armed', Math.hypot(nx - cx, ny - cy) < 88);
+      };
+      const up = () => {
+        if (!activeDrag) return;
+        const did = activeDrag.id;
+        els[did].classList.remove('dragging');
+        document.getElementById('drop-t').classList.remove('armed');
+        const { x, y } = S.positions[did];
+        if (Math.hypot(x - cx, y - cy) < 88) { S.connected[did] ? disconnectMod(did) : connectMod(did); }
+        activeDrag = null;
+        document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up);
+        document.removeEventListener('touchmove', mv); document.removeEventListener('touchend', up);
+      };
+      document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up);
+      document.addEventListener('touchmove', mv, { passive: true }); document.addEventListener('touchend', up);
+    }
+
+    // ─── MAIN LOOP ─────────────────────────────────────────────
+    let lastT = null; loop._lc = 0;
+    function loop(ts) {
+      if (!lastT) lastT = ts;
+      const dt = Math.min((ts - lastT) / 1000, .05); lastT = ts;
+      MODULES.forEach(m => {
+        if (activeDrag?.id === m.id) return;
+        if (S.orbiting) {
+          if (S.connected[m.id]) {
+            S.innerAngles[m.id] -= INNER_SPD * S.speedMult * dt * 60;
+            const rad = S.innerAngles[m.id] * Math.PI / 180;
+            S.positions[m.id] = { x: cx + INNER_R * Math.cos(rad), y: cy + INNER_R * Math.sin(rad) };
+          } else {
+            S.angles[m.id] += SPEEDS[m.orbit] * DIRS[m.orbit] * S.speedMult * dt * 60;
+            const rad = S.angles[m.id] * Math.PI / 180, r = ORBIT_R[m.orbit];
+            S.positions[m.id] = { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+          }
+        } else {
+          const v = S.driftV[m.id], p = S.positions[m.id];
+          v.x += (Math.random() - .5) * .04; v.y += (Math.random() - .5) * .04; v.x *= .985; v.y *= .985;
+          const dx = p.x - cx, dy = p.y - cy, dist = Math.hypot(dx, dy) || 1;
+          if (dist < 82) { v.x += dx / dist * .5; v.y += dy / dist * .5; }
+          const mg = 55;
+          if (p.x < mg) v.x += .28; if (p.x > W - mg) v.x -= .28;
+          if (p.y < mg) v.y += .28; if (p.y > H - mg) v.y -= .28;
+          p.x += v.x; p.y += v.y;
+        }
+        placeAtom(m.id);
+      });
+      if (S.showPtcl) MODULES.forEach(m => { const l = bonds[m.id]; if (!l) return; l._off = (l._off || 0) - .5; l.setAttribute('stroke-dashoffset', l._off); });
+      if (S.showRings) [0, 1, 2].forEach(i => { const lit = MODULES.some(m => m.orbit === i && S.connected[m.id]); document.getElementById('ring' + i).classList.toggle('lit', lit); });
+      const cc = MODULES.filter(m => S.connected[m.id]).length;
+      document.getElementById('iring').classList.toggle('active', cc > 0);
+      if (cc !== loop._lc) { loop._lc = cc; if (cc > 0) respaceInner(); }
+      requestAnimationFrame(loop);
+    }
+
+    function placeAtom(id) {
+      const pos = S.positions[id], el = els[id]; if (!el) return;
+      el.style.left = pos.x + 'px'; el.style.top = pos.y + 'px';
+      const b = bonds[id]; if (b) { b.setAttribute('x2', pos.x); b.setAttribute('y2', pos.y); }
+    }
+
+    // ─── BG CANVAS ────────────────────────────────────────────
+    const pts = Array.from({ length: 60 }, () => ({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: Math.random() * 1.1 + .2, vx: (Math.random() - .5) * .12, vy: (Math.random() - .5) * .12, op: Math.random() * .2 + .03 }));
+    function initBgCanvas() {
+      const draw = () => {
+        const c = document.getElementById('bgc'), ctx = c.getContext('2d');
+        ctx.clearRect(0, 0, c.width, c.height);
+        pts.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
+          if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(175,200,255,${p.op})`; ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }; draw();
+    }
+
+    // ─── RESIZE ───────────────────────────────────────────────
+    function resize() {
+      const rect = document.getElementById('ca').getBoundingClientRect();
+      const ox = cx || rect.width / 2, oy = cy || rect.height / 2;
+      W = rect.width; H = rect.height; cx = W / 2; cy = H / 2;
+      const bgc = document.getElementById('bgc'); bgc.width = W; bgc.height = H;
+      [0, 1, 2].forEach(i => { const r = ORBIT_R[i] * 2, el = document.getElementById('ring' + i); el.style.width = r + 'px'; el.style.height = r + 'px'; });
+      const ir = document.getElementById('iring'); ir.style.width = INNER_R * 2 + 'px'; ir.style.height = INNER_R * 2 + 'px';
+      document.getElementById('core-wrap').style.left = cx + 'px'; document.getElementById('core-wrap').style.top = cy + 'px';
+      document.getElementById('drop-t').style.left = cx + 'px'; document.getElementById('drop-t').style.top = cy + 'px';
+      Object.values(bonds).forEach(l => { l.setAttribute('x1', cx); l.setAttribute('y1', cy); });
+      const dx = cx - ox, dy = cy - oy;
+      MODULES.forEach(m => { if (S.positions[m.id]) { S.positions[m.id].x += dx; S.positions[m.id].y += dy; placeAtom(m.id); } });
+    }
+
+    // ─── FULLSCREEN ───────────────────────────────────────────
+    let isFS = false;
+    function toggleFS() {
+      isFS = !isFS;
+      document.querySelector('.sidebar').style.display = isFS ? 'none' : '';
+      document.getElementById('rpanel').style.display = isFS ? 'none' : '';
+      toast(isFS ? 'Fullscreen — press F to exit' : 'Normal view');
+      requestAnimationFrame(() => requestAnimationFrame(() => resize()));
+    }
+
+    // ─── PANEL RESIZE ─────────────────────────────────────────
+    function initPanelResize() {
+      const handle = document.getElementById('rp-drag');
+      const panel = document.getElementById('rpanel');
+      let drag = false, sx = 0, sw = 0;
+      handle.addEventListener('mousedown', e => { drag = true; sx = e.clientX; sw = panel.offsetWidth; e.preventDefault(); });
+      document.addEventListener('mousemove', e => { if (!drag) return; const nw = Math.max(300, Math.min(700, sw + (sx - e.clientX))); panel.style.width = nw + 'px'; document.documentElement.style.setProperty('--panel', nw + 'px'); });
+      document.addEventListener('mouseup', () => { drag = false; });
+    }
+
+    // ─── HUD WINDOWS ──────────────────────────────────────────
+    function spawnHUD(title, content, type = 'CODE', color = '#a78bfa') {
+      if (!S.showHUD) return;
+      hudCount++;
+      const id = 'hud-' + hudCount;
+      // Position: stagger them
+      const x = Math.min(Math.max(80, (W || 600) * .15 + hudCount * 30), Math.max(80, (W || 600) * .5));
+      const y = Math.min(Math.max(60, (H || 400) * .15 + hudCount * 30), Math.max(60, (H || 400) * .5));
+      const tagColors = { CODE: '#fdba74', DATA: '#22d3ee', RESULT: '#4ade80', ERROR: '#fb7185', INFO: '#a78bfa' };
+      const tagBg = tagColors[type] || color;
+      const div = document.createElement('div');
+      div.className = 'hud-win'; div.id = id;
+      div.style.left = x + 'px'; div.style.top = y + 'px';
+      div.innerHTML = `
+    <div class="hud-bar" id="${id}-bar">
+      <div class="hud-dots"><div class="hud-dot"></div><div class="hud-dot"></div><div class="hud-dot"></div></div>
+      <span class="hud-tag" style="background:${tagBg}22;color:${tagBg};border:1px solid ${tagBg}44">${type}</span>
+      <span class="hud-title">${esc(title)}</span>
+      <button class="hud-x" onclick="document.getElementById('${id}').remove()">✕</button>
+    </div>
+    <div class="hud-body"><pre>${esc(content)}</pre></div>
+    <button class="hud-copy" onclick="copyHUD('${id}')">⎘ COPY TO CLIPBOARD</button>`;
+      document.getElementById('scene').appendChild(div);
+      div.style.zIndex = ++hudZ;
+      // Make draggable
+      const bar = document.getElementById(id + '-bar');
+      let drag = false, ox = 0, oy = 0;
+      bar.addEventListener('mousedown', e => { drag = true; ox = e.clientX - div.offsetLeft; oy = e.clientY - div.offsetTop; div.style.zIndex = ++hudZ; e.preventDefault(); });
+      document.addEventListener('mousemove', e => { if (!drag) return; div.style.left = (e.clientX - ox) + 'px'; div.style.top = (e.clientY - oy) + 'px'; });
+      document.addEventListener('mouseup', () => { drag = false; });
+    }
+
+    function copyHUD(id) {
+      const pre = document.querySelector('#' + id + ' .hud-body pre');
+      if (pre) navigator.clipboard.writeText(pre.textContent).then(() => toast('Copied!')).catch(() => { });
+    }
+
+    // ─── CHAT ─────────────────────────────────────────────────
+    function addMsg(role, text, skipHistory = false) {
+      const feed = document.getElementById('feed');
+      const t = now12();
+      const div = document.createElement('div'); div.className = `msg ${role}`;
+      const who = role === 'u' ? 'YOU' : 'BLITZ';
+      const content = role === 'b' ? renderMD(text) : esc(text);
+      div.innerHTML = `<div class="msg-who">${who}</div><div class="bubble">${content}</div><div class="msg-ts">${t}</div>`;
+      // If blitz msg contains code block, add "open in HUD" button
+      if (role === 'b' && text.includes('```')) {
+        const codeMatch = text.match(/```(\w*)\n([\s\S]+?)```/);
+        if (codeMatch) {
+          const btn = document.createElement('span'); btn.className = 'spawn-hud-btn';
+          btn.textContent = '⬡ Open in HUD';
+          btn.onclick = () => spawnHUD(codeMatch[1] || 'Code', codeMatch[2].trim(), 'CODE');
+          div.appendChild(btn);
+        }
+      }
+      feed.appendChild(div); feed.scrollTop = feed.scrollHeight;
+      if (!skipHistory) { chatHistory.push({ role, text, time: t }); savePersist(); }
+    }
+
+    function renderMD(t) {
+      let s = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => { const id = 'cb' + Math.random().toString(36).slice(2, 6); return `<div class="cbwrap"><pre id="${id}">${code.trim()}</pre><button class="cpbtn" onclick="cpCode('${id}')">Copy</button></div>`; });
+      s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+      s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      s = s.replace(/^### (.+)$/gm, '<strong style="display:block;margin:5px 0 2px">$1</strong>');
+      s = s.replace(/^## (.+)$/gm, '<strong style="display:block;font-size:14px;margin:7px 0 3px">$1</strong>');
+      s = s.replace(/^# (.+)$/gm, '<strong style="display:block;font-size:15px;margin:8px 0 4px">$1</strong>');
+      s = s.replace(/^[\-\*] (.+)$/gm, '<li style="margin-left:14px;margin-bottom:2px">$1</li>');
+      s = s.replace(/\n/g, '<br>');
+      return s;
+    }
+    function cpCode(id) { const el = document.getElementById(id); if (!el) return; navigator.clipboard.writeText(el.textContent).then(() => toast('Copied!')); }
+
+    function showTyping() {
+      const f = document.getElementById('feed');
+      const e = document.createElement('div'); e.className = 'typing'; e.id = 'typing';
+      e.innerHTML = '<div class="tdot2"></div><div class="tdot2"></div><div class="tdot2"></div>';
+      f.appendChild(e); f.scrollTop = f.scrollHeight;
+      document.getElementById('ai-think').classList.add('on');
+    }
+    function hideTyping() { document.getElementById('typing')?.remove(); document.getElementById('ai-think').classList.remove('on'); }
+
+    function getMode() {
+      const a = MODULES.filter(m => S.connected[m.id]).map(m => m.id);
+      if (a.includes('coding')) return 'coding';
+      if (a.includes('studying')) return 'studying';
+      if (a.includes('create')) return 'create';
+      if (a.includes('research')) return 'research';
+      if (a.length > 0) return 'general';
+      return 'none';
+    }
+
+    function updBadge() {
+      const active = MODULES.filter(m => S.connected[m.id]);
+      const badge = document.getElementById('mod-badge');
+      if (!active.length) { badge.textContent = 'No modules connected — drag a module to the core'; return; }
+      badge.innerHTML = active.map(m => `<span class="mp" style="background:rgba(${m.hue?.join(',') ?? '167,139,250'},.15);color:${m.color};border:1px solid rgba(${m.hue?.join(',') ?? '167,139,250'},.3)">${m.icon} ${m.name}</span>`).join('');
+    }
+
+    function updPlaceholder() {
+      const ph = { coding: 'Describe a problem or paste code to debug...', studying: 'Ask to explain a topic, make flashcards, or quiz you...', create: 'Choose a template or describe what to write...', research: 'Ask anything — Blitz will search the web...', general: 'Talk to Blitz...', none: 'Connect a module to activate Blitz...' };
+      document.getElementById('ci').placeholder = ph[getMode()] || 'Talk to Blitz...';
+      // Update tool buttons
+      const row = document.getElementById('tool-row'); row.innerHTML = '';
+      const mode = getMode();
+      const tools = {
+        studying: [['📇 Flashcards', 'Make me flashcards on: '], ['❓ Quiz me', 'Quiz me on: '], ['🧒 ELI5', 'Explain simply: ']],
+        coding: [['🐛 Debug', 'Debug this: '], ['💡 Explain', 'Explain this code: '], ['✨ Optimize', 'Optimize this: ']],
+        create: [['📧 Email', 'Write a professional email about: '], ['📝 Essay', 'Write an essay about: '], ['📱 Post', 'Write a social post about: ']],
+        research: [['🔍 Search', 'Search for: '], ['📋 Compare', 'Compare: '], ['📰 Summarize', 'Summarize: ']],
+      };
+      (tools[mode] || []).forEach(([lbl, pfx]) => { const b = document.createElement('button'); b.className = 'tool-btn'; b.textContent = lbl; b.onclick = () => { document.getElementById('ci').value = pfx; document.getElementById('ci').focus(); }; row.appendChild(b); });
+    }
+
+    async function sendChat() {
+      const inp = document.getElementById('ci'); const text = inp.value.trim(); if (!text) return;
+      inp.value = '';
+      addMsg('u', text);
+      const active = MODULES.filter(m => S.connected[m.id]).map(m => m.id);
+      tlog('cmd', 'CMD ', '> ' + text);
+      if (active.length) tlog('info', 'PROC', 'Routing via: ' + active.join(', ') + '...');
+      showTyping();
+      let response, hudData = null;
+      try {
+        S.apiCalls++; document.getElementById('si-calls').textContent = S.apiCalls;
+        const r = await fetch(`${API}/api/command`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text, active_modules: active }), signal: AbortSignal.timeout(15000) });
+        const d = await r.json();
+        response = d.response;
+        // HUD window support — backend returns {spawn_hud: true, hud_type, hud_title, hud_content}
+        if (d.spawn_hud && d.hud_content) { hudData = { title: d.hud_title || 'Output', content: d.hud_content, type: d.hud_type || 'CODE' }; }
+        if (d.latency_ms) { document.getElementById('si-lat').textContent = d.latency_ms; document.getElementById('api-lat').textContent = d.latency_ms + 'ms'; }
+        tlog('sys', 'OUT ', 'Response via ' + d.route);
+      } catch {
+        response = simFallback(text, active);
+        tlog('warn', 'NET ', 'Backend offline — simulation mode');
+      }
+      hideTyping();
+      await wait(60);
+      addMsg('b', response);
+      // Check if response has code → auto spawn HUD
+      if (S.showHUD && hudData) { spawnHUD(hudData.title, hudData.content, hudData.type); }
+      else if (S.showHUD && response.includes('```') && MODULES.find(m => m.id === 'coding' && S.connected[m.id])) {
+        const match = response.match(/```(\w*)\n([\s\S]+?)```/);
+        if (match) setTimeout(() => spawnHUD(match[1] || 'Output', match[2].trim(), 'CODE'), 400);
+      }
+      speak(response);
+      tlog('resp', 'OUT ', '→ ' + response.slice(0, 90) + (response.length > 90 ? '...' : ''));
+    }
+
+    function simFallback(text, active) {
+      const t = text.toLowerCase(); const mode = getMode();
+      if (t === 'status' || t.includes('status')) return `${active.length}/${MODULES.length} modules active. Mode: ${mode.toUpperCase()}. Systems nominal.`;
+      if (t === 'help') return `Connected: ${active.join(', ') || 'none'}. Commands: STATUS, HELP, QUIZ, TIMER, POMODORO.`;
+      if (t.includes('quiz') || t.includes('flashcard')) return 'Connect the 📚 Studying module and describe your topic to begin.';
+      if (mode === 'coding') return 'Coding module active. Describe your problem or paste your code.';
+      if (mode === 'studying') return 'Studying mode active. What are you working on today?';
+      if (mode === 'create') return 'Create module active. What would you like to write?';
+      if (mode === 'research') return 'Research module active. What should I look up?';
+      if (t.match(/^(hi|hello|hey)/)) return 'Hello. All systems online. What can I help you with?';
+      return `Processing: "${text}". Start the backend at localhost:8000 for full AI responses.`;
+    }
+
+    function clearChat() { if (!confirm('Clear chat history?')) return; chatHistory = []; document.getElementById('feed').innerHTML = ''; localStorage.removeItem('blitz_chat'); toast('Chat cleared'); }
+
+    // ─── CHAT SEARCH ──────────────────────────────────────────
+    function openSearch() { document.getElementById('csearch').classList.add('on'); document.getElementById('cs-inp').focus(); }
+    function closeSearch() { document.getElementById('csearch').classList.remove('on'); document.querySelectorAll('.msg.hl').forEach(m => m.classList.remove('hl')); document.getElementById('cs-inp').value = ''; document.getElementById('cs-cnt').textContent = ''; }
+    function searchChat(q) {
+      document.querySelectorAll('.msg.hl').forEach(m => m.classList.remove('hl'));
+      if (!q.trim()) { document.getElementById('cs-cnt').textContent = ''; return; }
+      const msgs = [...document.querySelectorAll('.msg')].filter(m => m.querySelector('.bubble')?.textContent.toLowerCase().includes(q.toLowerCase()));
+      msgs.forEach(m => m.classList.add('hl'));
+      document.getElementById('cs-cnt').textContent = msgs.length ? `${msgs.length} found` : 'No results';
+      if (msgs.length) msgs[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ─── MEMORY ───────────────────────────────────────────────
+    async function loadMemView() { try { const r = await fetch(`${API}/api/memory-view`, { signal: AbortSignal.timeout(3000) }); if (r.ok) { const d = await r.json(); document.getElementById('mem-view').textContent = d.content || 'Memory vault empty.'; } } catch { document.getElementById('mem-view').textContent = 'Connect backend to view memory.' } }
+    async function saveMemory() { const inp = document.getElementById('mem-inp'); const e = inp.value.trim(); if (!e) return; try { const r = await fetch(`${API}/api/memory`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entry: e }) }); if (r.ok) { inp.value = ''; toast('Memory saved ✓'); tlog('sys', 'MEM ', 'Vault: ' + e.slice(0, 50)); loadMemView(); } } catch { toast('Backend offline'); } }
+    async function clearMemory() { if (!confirm('Clear all memory?')) return; try { await fetch(`${API}/api/memory-clear`, { method: 'POST' }); toast('Memory cleared'); loadMemView(); } catch { toast('Backend offline'); } }
+
+    // ─── PERSIST ──────────────────────────────────────────────
+    function savePersist() { try { if (S.persist) localStorage.setItem('blitz_chat', JSON.stringify(chatHistory.slice(-100))); localStorage.setItem('blitz_theme', S.theme); } catch { } }
+    function loadPersist() {
+      try {
+        const th = localStorage.getItem('blitz_theme'); if (th) setTheme(th, true);
+        const saved = JSON.parse(localStorage.getItem('blitz_chat') || '[]');
+        if (saved.length && S.persist) { chatHistory = saved; saved.forEach(m => addMsg(m.role, m.text, true)); }
+      } catch { }
+    }
+
+    // ─── EXPORT ───────────────────────────────────────────────
+    function dlText(text, name) { const a = document.createElement('a'); a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+    function exportChat() { dlText(chatHistory.map(m => `[${m.time}] ${m.role === 'u' ? 'YOU' : 'BLITZ'}: ${m.text}`).join('\n\n'), 'blitz-chat-' + new Date().toISOString().slice(0, 10) + '.txt'); toast('Chat exported!'); }
+    function exportJSON() { dlText(JSON.stringify(chatHistory, null, 2), 'blitz-chat-' + new Date().toISOString().slice(0, 10) + '.json'); toast('JSON exported!'); }
+
+    // ─── FILE DROP ────────────────────────────────────────────
+    function initFileDrop() {
+      const ov = document.getElementById('file-ov');
+      document.addEventListener('dragenter', e => { e.preventDefault(); ov.classList.add('on'); });
+      ov.addEventListener('dragleave', e => { if (!ov.contains(e.relatedTarget)) ov.classList.remove('on'); });
+      ov.addEventListener('dragover', e => e.preventDefault());
+      ov.addEventListener('drop', e => {
+        e.preventDefault(); ov.classList.remove('on');
+        const file = e.dataTransfer.files[0]; if (!file) return;
+        const ok = ['txt', 'py', 'js', 'ts', 'jsx', 'tsx', 'md', 'csv', 'json', 'html', 'css', 'java', 'cpp', 'c', 'rs', 'go'];
+        if (!ok.includes(file.name.split('.').pop().toLowerCase())) { toast('File type not supported'); return; }
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const content = ev.target.result;
+          const preview = content.slice(0, 4000) + (content.length > 4000 ? '\n\n...[truncated]' : '');
+          document.getElementById('ci').value = `File: ${file.name}\n\n${preview}\n\nPlease analyse this.`;
+          toast(`📁 ${file.name} loaded`); tlog('info', 'FILE', 'Loaded: ' + file.name); rpTab('chat');
+        }; reader.readAsText(file);
+      });
+    }
+
+    // ─── AUDIO ───────────────────────────────────────────────
+    function getAC() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+    function tone(freq, dur = .08, type = 'sine', vol = .07) { if (!S.sfx) return; try { const c = getAC(); const o = c.createOscillator(); const g = c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value = freq; o.type = type; g.gain.setValueAtTime(vol, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + dur); o.start(); o.stop(c.currentTime + dur); } catch { } }
+    function playConnect() { tone(523, .06, 'sine', .07); setTimeout(() => tone(659, .08, 'sine', .07), 80); setTimeout(() => tone(784, .12, 'sine', .06), 160); }
+    function playDisconnect() { tone(400, .12, 'sine', .05); setTimeout(() => tone(300, .15, 'sine', .04), 100); }
+    function playNotify() { tone(880, .05, 'sine', .05); setTimeout(() => tone(1108, .08, 'sine', .04), 60); }
+
+    // ─── SPEECH ───────────────────────────────────────────────
+    function initSpeech() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { tlog('warn', 'WARN', 'SpeechRecognition not available'); return; }
+      recognition = new SR(); recognition.continuous = false; recognition.interimResults = true; recognition.lang = 'en-US';
+      recognition.onstart = () => { S.listening = true; document.getElementById('mic-btn').classList.add('on'); document.getElementById('mic-ico').textContent = '🔴'; document.getElementById('core-el').classList.add('listening'); document.getElementById('core-sub').textContent = 'LISTENING'; showWave(true, 'l'); tlog('info', 'MIC ', 'Microphone active...'); };
+      recognition.onresult = e => { let f = '', i = ''; for (let r = e.resultIndex; r < e.results.length; r++) { if (e.results[r].isFinal) f += e.results[r][0].transcript; else i += e.results[r][0].transcript; } if (i) document.getElementById('ci').value = i; if (f) { document.getElementById('ci').value = f; recognition.stop(); setTimeout(() => sendChat(), 120); } };
+      recognition.onend = () => { S.listening = false; document.getElementById('mic-btn').classList.remove('on'); document.getElementById('mic-ico').textContent = '🎙'; if (!S.speaking) { document.getElementById('core-el').classList.remove('listening'); document.getElementById('core-sub').textContent = coreSub(); } showWave(false); };
+      recognition.onerror = e => { S.listening = false; document.getElementById('mic-btn').classList.remove('on'); document.getElementById('mic-ico').textContent = '🎙'; showWave(false); tlog('err', 'ERR ', 'Speech: ' + e.error); };
+      // Load voices
+      const loadV = () => { const vs = synthRef.getVoices().filter(v => v.lang.startsWith('en')); const sel = document.getElementById('voice-sel'); sel.innerHTML = ''; vs.forEach((v, i) => { const o = document.createElement('option'); o.value = i; o.textContent = v.name + ' (' + v.lang + ')'; sel.appendChild(o); }); const pref = vs.find(v => /daniel|alex|google uk|english uk/i.test(v.name)) || vs[0]; if (pref) { S.preferredVoice = pref; const idx = vs.indexOf(pref); if (idx > -1) sel.value = idx; } };
+      loadV(); if (synthRef.onvoiceschanged !== undefined) synthRef.onvoiceschanged = loadV;
+    }
+    function setVoice(sel) { const vs = synthRef.getVoices().filter(v => v.lang.startsWith('en')); S.preferredVoice = vs[parseInt(sel.value)] || null; }
+    function setSRate(inp) { S.speechRate = inp.value / 10; document.getElementById('rv-rate').textContent = S.speechRate.toFixed(1) + '×'; }
+    function setSPitch(inp) { S.speechPitch = inp.value / 10; document.getElementById('rv-pitch').textContent = S.speechPitch.toFixed(1); }
+    function toggleMic() { if (!recognition) { toast('Voice not available in this browser'); return; } if (S.listening) recognition.stop(); else { synthRef.cancel(); recognition.start(); } }
+    function stopSpeak() { synthRef.cancel(); S.speaking = false; document.getElementById('core-el').classList.remove('speaking'); document.getElementById('core-sub').textContent = coreSub(); showWave(false); }
+    function cleanTTS(text) { return text.replace(/```[\s\S]*?```/g, 'code block').replace(/`[^`]+`/g, m => m.slice(1, -1)).replace(/#{1,6}\s/g, '').replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/^\s*[-*]\s/gm, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n{3,}/g, '\n\n').replace(/[^\w\s.,!?;:'"()\-]/g, ' ').replace(/\s{2,}/g, ' ').trim(); }
+    function speak(text) { if (!S.tts || !synthRef) return; synthRef.cancel(); const c = cleanTTS(text); if (!c) return; const u = new SpeechSynthesisUtterance(c); u.rate = S.speechRate; u.pitch = S.speechPitch; u.volume = .95; if (S.preferredVoice) u.voice = S.preferredVoice; u.onstart = () => { S.speaking = true; document.getElementById('core-el').classList.add('speaking'); document.getElementById('core-sub').textContent = 'SPEAKING'; showWave(true, 's'); }; u.onend = u.onerror = () => { S.speaking = false; document.getElementById('core-el').classList.remove('speaking'); document.getElementById('core-sub').textContent = coreSub(); showWave(false); }; synthRef.speak(u); }
+    function coreSub() { const n = MODULES.filter(m => S.connected[m.id]).length; return n === 0 ? 'IDLE' : n === MODULES.length ? 'FULL SYNC' : 'ACTIVE'; }
+
+    function startWake() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { toast('Wake word not supported'); return; }
+      document.getElementById('wake-pill').classList.add('on');
+      wakeRecog = new SR(); wakeRecog.continuous = true; wakeRecog.interimResults = true; wakeRecog.lang = 'en-US';
+      wakeRecog.onresult = e => { const t = Array.from(e.results).map(r => r[0].transcript).join(' ').toLowerCase(); if (t.includes('hey blitz') || t.includes('blitz')) { wakeRecog.stop(); document.getElementById('wake-pill').classList.remove('on'); setTimeout(() => { if (recognition && !S.listening) { recognition.start(); playNotify(); } }, 300); } };
+      wakeRecog.onend = () => { if (S.wakeEnabled) { document.getElementById('wake-pill').classList.add('on'); setTimeout(() => { try { wakeRecog.start(); } catch { } }, 500); } };
+      try { wakeRecog.start(); } catch { }
+    }
+    function stopWake() { document.getElementById('wake-pill').classList.remove('on'); try { wakeRecog?.stop(); } catch { } wakeRecog = null; }
+
+    // ─── WAVEFORM ────────────────────────────────────────────
+    function initWave() { const w = document.getElementById('vwave'); w.innerHTML = ''; for (let i = 0; i < 16; i++) { const b = document.createElement('div'); b.className = 'vw-bar'; w.appendChild(b); } }
+    function showWave(on, mode = 'l') { const w = document.getElementById('vwave'); w.classList.toggle('on', on); if (on) { if (waveAnim) cancelAnimationFrame(waveAnim); animWave(mode); } else { if (waveAnim) cancelAnimationFrame(waveAnim); waveAnim = null; document.querySelectorAll('.vw-bar').forEach(b => b.style.height = '4px'); } }
+    function animWave(mode) { const bars = document.getElementById('vwave').querySelectorAll('.vw-bar'); const step = () => { waveVals = waveVals.map((v, i) => { const t = mode === 's' ? 4 + Math.abs(Math.sin(Date.now() / 200 + i * .6)) * 28 : 4 + Math.random() * 26; return v + (t - v) * .25; }); bars.forEach((b, i) => b.style.height = waveVals[i].toFixed(1) + 'px'); waveAnim = requestAnimationFrame(step); }; step(); }
+
+    // ─── TERMINAL ────────────────────────────────────────────
+    function tlog(type, prefix, text) {
+      const body = document.getElementById('term-body');
+      const t = new Date().toTimeString().slice(0, 8);
+      const line = document.createElement('div'); line.className = 'tline';
+      line.innerHTML = `<span class="t-ts">[${t}]</span><span class="t-pre ${type}">${prefix}</span><span class="t-txt ${type}">${esc(text)}</span>`;
+      body.appendChild(line);
+      while (body.children.length > 400) body.firstChild.remove();
+      body.scrollTop = body.scrollHeight;
+    }
+    function tCursor() {
+      const body = document.getElementById('term-body');
+      body.querySelector('.tcursor-line')?.remove();
+      const l = document.createElement('div'); l.className = 'tline tcursor-line';
+      l.innerHTML = `<span class="t-ts">[——:——:——]</span><span class="t-pre sys">SYS </span><span class="tcursor"></span>`;
+      body.appendChild(l); body.scrollTop = body.scrollHeight;
+    }
+
+    // ─── STATS ───────────────────────────────────────────────
+    function updateStats() {
+      const n = MODULES.filter(m => S.connected[m.id]).length, tot = MODULES.length;
+      document.getElementById('si-conn').textContent = n;
+      document.getElementById('si-total').textContent = tot;
+      document.getElementById('conn-count').textContent = `${n}/${tot}`;
+      document.getElementById('tb-info').textContent = `${n}/${tot} modules active`;
+      const hz = document.getElementById('hz-val'); if (hz) hz.textContent = n > 0 ? n * 12 + 'Hz' : '—';
+      const hz2 = document.getElementById('hz-val2'); if (hz2) hz2.textContent = n > 0 ? n * 12 + 'Hz' : '0Hz';
+      document.getElementById('sb-dot').classList.toggle('on', n > 0);
+      document.getElementById('sb-txt').textContent = n === 0 ? 'No modules active' : n === tot ? 'All systems online' : `${n} of ${tot} online`;
+      document.getElementById('core-sub').textContent = coreSub();
+    }
+
+    // ─── BACKEND ─────────────────────────────────────────────
+    let lastBS = null;
+    async function checkBackend() {
+      try {
+        const t0 = Date.now();
+        const r = await fetch(`${API}/`, { signal: AbortSignal.timeout(3000) });
+        const lat = Date.now() - t0;
+        if (r.ok) {
+          if (lastBS !== true) { lastBS = true; notif('Backend connected · ' + lat + 'ms', 'online'); }
+          S.backendOnline = true;
+          document.getElementById('api-dot').className = 'api-dot on';
+          document.getElementById('api-lbl').textContent = 'API online';
+          document.getElementById('api-txt').textContent = 'online';
+          document.getElementById('api-txt2').textContent = 'online';
+          document.getElementById('api-lat').textContent = lat + 'ms';
+        }
+      } catch {
+        if (lastBS !== false) { lastBS = false; notif('Backend offline — simulation active', 'offline'); }
+        S.backendOnline = false;
+        document.getElementById('api-dot').className = 'api-dot off';
+        document.getElementById('api-lbl').textContent = 'API offline';
+        document.getElementById('api-txt').textContent = 'offline';
+        document.getElementById('api-txt2').textContent = 'offline';
+        document.getElementById('api-lat').textContent = '';
+      }
+    }
+    async function fetchMetrics() {
+      try {
+        const r = await fetch(`${API}/api/metrics`, { signal: AbortSignal.timeout(3000) });
+        const d = await r.json();
+        document.getElementById('si-cpu').textContent = d.cpu_percent?.toFixed(1) || '—';
+        document.getElementById('si-mem').textContent = d.memory_mb || '—';
+        if (d.latency_ms) document.getElementById('si-lat').textContent = d.latency_ms;
+      } catch { document.getElementById('si-cpu').textContent = '—'; document.getElementById('si-mem').textContent = '—'; }
+    }
+
+    // ─── DATA PACKETS ─────────────────────────────────────────
+    function spawnPkts(id) { const m = MODULES.find(x => x.id === id); for (let i = 0; i < 3; i++)setTimeout(() => { if (!S.connected[id]) return; const p = document.createElement('div'); p.className = 'pkt'; const c = m.color; p.style.background = c; p.style.boxShadow = `0 0 5px ${c}`; p.style.left = cx + 'px'; p.style.top = cy + 'px'; const start = { x: cx, y: cy }, dur = 500 + Math.random() * 400, t0 = Date.now(); document.getElementById('scene').appendChild(p); const anim = () => { const t = Math.min(1, (Date.now() - t0) / dur); const pos = S.positions[id]; p.style.left = (start.x + (pos.x - start.x) * t) + 'px'; p.style.top = (start.y + (pos.y - start.y) * t) + 'px'; p.style.opacity = Math.sin(t * Math.PI) * .8; if (t < 1) requestAnimationFrame(anim); else p.remove(); }; requestAnimationFrame(anim); }, i * 380); }
+
+    function spawnPing(id) { const m = MODULES.find(x => x.id === id); const p = document.createElement('div'); p.className = 'ping-ring'; p.style.color = m.color; p.style.left = '50%'; p.style.top = '50%'; els[id].appendChild(p); setTimeout(() => p.remove(), 700); }
+
+    // ─── SELECT MODULE ────────────────────────────────────────
+    function selectMod(id) {
+      S.selected = id;
+      const m = MODULES.find(x => x.id === id); const on = S.connected[id];
+      const p = document.getElementById('sel-panel');
+      const h = m.hue?.join(',') ?? '167,139,250';
+      p.innerHTML = `<div class="sel-card">
+    <div class="sel-head">
+      <div class="sel-orb" style="background:rgba(${h},.18);border:1px solid rgba(${h},${on ? .5 : .25})">${m.icon}</div>
+      <div><div class="sel-name" style="color:${on ? m.color : 'var(--text)'}">${m.name.toUpperCase()}</div><div class="sel-status" style="color:${on ? m.color : 'var(--muted)'}">${on ? '● ACTIVE' : '○ IDLE'}</div></div>
+    </div>
+    <div class="sel-metrics">
+      <div><div class="sel-mv" style="color:${on ? m.color : 'var(--muted)'}">${on ? Math.round(30 + Math.random() * 100) + 'ms' : '—'}</div><div class="sel-ml">Latency</div></div>
+      <div><div class="sel-mv" style="color:var(--accent)">Ring ${m.orbit}</div><div class="sel-ml">Position</div></div>
+    </div>
+    <div style="padding:0 13px 11px;font-family:var(--mono);font-size:10px;color:var(--muted)">${m.desc}</div>
+    <button class="sel-btn" onclick="${on ? 'disconnectMod' : 'connectMod'}('${id}')" style="background:${on ? 'rgba(251,113,133,.08)' : 'rgba(255,255,255,.04)'};color:${on ? 'var(--red)' : 'var(--text)'};border-top:1px solid ${on ? 'rgba(251,113,133,.2)' : 'rgba(255,255,255,.08)'}">${on ? '○ DISCONNECT' : '⚡ CONNECT'}</button>
+  </div>`;
+      tlog('info', 'MOD ', 'Inspect: ' + m.name + ' | ' + (on ? 'ACTIVE' : 'IDLE'));
+    }
+
+    // ─── CONTEXT MENU ─────────────────────────────────────────
+    function showCtx(e, id) {
+      ctxTarget = id; const on = S.connected[id];
+      const menu = document.getElementById('ctx');
+      document.getElementById('ctx-con').style.display = on ? 'none' : 'flex';
+      document.getElementById('ctx-dis').style.display = on ? 'flex' : 'none';
+      menu.style.display = 'block';
+      menu.style.left = Math.min(e.clientX, window.innerWidth - 190) + 'px';
+      menu.style.top = Math.min(e.clientY, window.innerHeight - 230) + 'px';
+      document.getElementById('ctx-con').onclick = () => { connectMod(ctxTarget); hideCtx(); };
+      document.getElementById('ctx-dis').onclick = () => { disconnectMod(ctxTarget); hideCtx(); };
+      document.getElementById('ctx-r0').onclick = () => { mvRing(ctxTarget, 0); hideCtx(); };
+      document.getElementById('ctx-r1').onclick = () => { mvRing(ctxTarget, 1); hideCtx(); };
+      document.getElementById('ctx-r2').onclick = () => { mvRing(ctxTarget, 2); hideCtx(); };
+      document.getElementById('ctx-del').onclick = () => { rmMod(ctxTarget); hideCtx(); };
+    }
+    function hideCtx() { document.getElementById('ctx').style.display = 'none'; }
+    function mvRing(id, o) { const m = MODULES.find(x => x.id === id); if (m) { m.orbit = o; toast(m.name + ' → Ring ' + o); } }
+    function rmMod(id) {
+      const m = MODULES.find(x => x.id === id);
+      disconnectMod(id);
+      setTimeout(() => {
+        els[id]?.remove(); bonds[id]?.remove();
+        document.getElementById('smod-' + id)?.remove();
+        const i = MODULES.findIndex(x => x.id === id); if (i > -1) MODULES.splice(i, 1);
+        updateStats(); initMarket();
+      }, 200);
+    }
+
+    // ─── NOTIFICATIONS ────────────────────────────────────────
+    let notifTmr = null;
+    function notif(msg, type = 'online') {
+      const bar = document.getElementById('notif-bar');
+      const dot = document.getElementById('nb-dot');
+      dot.className = 'nb-dot ' + type;
+      document.getElementById('nb-txt').textContent = msg;
+      bar.classList.add('on');
+      clearTimeout(notifTmr); notifTmr = setTimeout(() => bar.classList.remove('on'), 3500);
+    }
+
+    let toastTmr2 = null;
+    function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastTmr2); toastTmr2 = setTimeout(() => t.classList.remove('on'), 2400); }
+
+    // ─── TABS ─────────────────────────────────────────────────
+    function rpTab(name) {
+      document.querySelectorAll('.rp-tab').forEach((t, i) => { t.classList.toggle('on', ['chat', 'term', 'cfg', 'mkt'][i] === name); });
+      ['chat', 'term', 'cfg', 'mkt'].forEach(n => {
+        const el = document.getElementById('pane-' + n);
+        if (!el) return;
+        if (name === n) { el.classList.add('on'); if (n === 'chat') el.style.display = 'flex'; }
+        else { el.classList.remove('on'); if (n === 'chat') el.style.display = 'none'; }
+      });
+    }
+
+    function navClick(el) { document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active')); el.classList.add('active'); }
+
+    // ─── THEME ────────────────────────────────────────────────
+    function setTheme(name, silent = false) {
+      S.theme = name;
+      const map = { default: '', ocean: 't-ocean', matrix: 't-matrix', crimson: 't-crimson', gold: 't-gold' };
+      document.body.className = map[name] || '';
+      document.querySelectorAll('.th-btn').forEach(b => b.classList.remove('on'));
+      document.getElementById('th-' + name)?.classList.add('on');
+      if (!silent) { toast('Theme: ' + name); savePersist(); }
+    }
+
+    // ─── CONFIG TOGGLES ───────────────────────────────────────
+    function togCfg(el, key) {
+      el.classList.toggle('on'); const on = el.classList.contains('on');
+      if (key === 'tts') { S.tts = on; if (!on) synthRef?.cancel(); }
+      if (key === 'wake') { S.wakeEnabled = on; on ? startWake() : stopWake(); }
+      if (key === 'orbit') S.orbiting = on;
+      if (key === 'sfx') S.sfx = on;
+      if (key === 'ptcl') { S.showPtcl = on; Object.values(bonds).forEach(l => l.style.strokeDasharray = on ? '4 10' : '0'); }
+      if (key === 'rings') { S.showRings = on;[0, 1, 2].forEach(i => document.getElementById('ring' + i).style.opacity = on ? '' : '0'); }
+      if (key === 'persist') { S.persist = on; if (!on) localStorage.removeItem('blitz_chat'); }
+      if (key === 'hud') S.showHUD = on;
+    }
+
+    // ─── ORBIT CONTROLS ───────────────────────────────────────
+    function setSOrbit(inp) { S.speedMult = inp.value / 10; document.getElementById('rv-spd').textContent = S.speedMult.toFixed(1) + '×'; }
+    function resetLayout() {
+      MODULES.forEach(m => {
+        S.angles[m.id] = m.angle;
+        const rad = m.angle * Math.PI / 180, r = ORBIT_R[m.orbit];
+        S.positions[m.id] = { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+        S.driftV[m.id] = { x: 0, y: 0 };
+      }); toast('Layout reset');
+    }
+
+    // ─── POMODORO ─────────────────────────────────────────────
+    const POMO = { focus: 25 * 60, short: 5 * 60, long: 15 * 60 };
+    let pomoMode = 'focus', pomoLeft = POMO.focus, pomoTotal = POMO.focus, pomoRun = false, pomoInv = null;
+    function setPomoMode(m) {
+      pomoMode = m; pomoLeft = POMO[m]; pomoTotal = POMO[m];
+      const labels = { focus: 'Focus Session', short: 'Short Break', long: 'Long Break' };
+      document.getElementById('pomo-lbl').textContent = labels[m];
+      ['focus', 'short', 'long'].forEach(k => { document.getElementById('pb-' + k).classList.toggle('on', k === m); });
+      resetPomo();
+    }
+    function togglePomo() { if (pomoRun) { clearInterval(pomoInv); pomoRun = false; document.getElementById('pb-start').textContent = '▶ Start'; } else { pomoRun = true; document.getElementById('pb-start').textContent = '⏸ Pause'; pomoInv = setInterval(tickPomo, 1000); } }
+    function tickPomo() { if (pomoLeft <= 0) { clearInterval(pomoInv); pomoRun = false; document.getElementById('pb-start').textContent = '▶ Start'; playNotify(); speak('Pomodoro session complete!'); toast('⏱ Session done!'); return; } pomoLeft--; const m = Math.floor(pomoLeft / 60), s = pomoLeft % 60; document.getElementById('pomo-time').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0'); document.getElementById('pomo-bar').style.width = (pomoLeft / pomoTotal * 100) + '%'; }
+    function resetPomo() { clearInterval(pomoInv); pomoRun = false; pomoLeft = POMO[pomoMode]; document.getElementById('pb-start').textContent = '▶ Start'; const m = Math.floor(pomoLeft / 60), s = pomoLeft % 60; document.getElementById('pomo-time').textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0'); document.getElementById('pomo-bar').style.width = '100%'; }
+
+    // ─── MARKETPLACE ──────────────────────────────────────────
+    function initMarket() {
+      const grid = document.getElementById('mkt-grid'); grid.innerHTML = '';
+      const installed = new Set(MODULES.map(m => m.id));
+      MARKET_MODULES.forEach(m => {
+        const inst = installed.has(m.id);
+        const h = m.hue?.join(',') ?? '167,139,250';
+        const div = document.createElement('div'); div.className = 'mkt-item';
+        div.innerHTML = `<div class="mkt-icon" style="background:rgba(${h},.18);border:1px solid rgba(${h},.35)">${m.icon}</div><div class="mkt-info"><div class="mkt-name">${m.name}</div><div class="mkt-desc">${m.desc}</div></div><button class="mkt-add${inst ? ' done' : ''}" onclick="installMod('${m.id}')" ${inst ? 'disabled' : ''}>${inst ? 'Installed' : '+ Add'}</button>`;
+        grid.appendChild(div);
+      });
+    }
+
+    function installMod(id) {
+      const m = MARKET_MODULES.find(x => x.id === id);
+      if (!m || MODULES.find(x => x.id === id)) return;
+      const nm = {
+        ...m,
+        orbit: 2, angle: Math.random() * 360,
+        anim: 'pulse-slow 3s ease-in-out infinite',
+        ringSpd: ['spin-cw 8s linear infinite', 'spin-ccw 13s linear infinite'],
+        hint: 'Module ready — connect to activate',
+      };
+      MODULES.push(nm);
+      S.angles[id] = nm.angle; S.innerAngles[id] = nm.angle;
+      const rad = nm.angle * Math.PI / 180, r = ORBIT_R[2];
+      S.positions[id] = { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+      S.driftV[id] = { x: 0, y: 0 };
+      mkAtom(nm); mkBond(nm); mkSideItem(nm);
+      updateStats();
+      toast(`${m.icon} ${m.name} installed!`);
+      tlog('sys', 'MOD ', 'Installed: ' + m.name);
+      initMarket();
+    }
+
+    // ─── KEYBOARD ─────────────────────────────────────────────
+    function initKeys() {
+      document.addEventListener('keydown', e => {
+        const typing = document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA');
+        if (e.key === 'Escape') { synthRef.cancel(); stopSpeak(); if (S.listening && recognition) recognition.stop(); document.getElementById('sk-modal').classList.remove('on'); return; }
+        if (e.key === ' ' && !typing) { e.preventDefault(); toggleMic(); return; }
+        if (e.key === '?' && !typing) { toggleSk(); return; }
+        if (e.key === 'f' && !typing) { toggleFS(); return; }
+        if (e.ctrlKey && e.key === 'f') { e.preventDefault(); openSearch(); return; }
+        if (e.ctrlKey && e.key === 'a' && !typing) { e.preventDefault(); connectAll(); return; }
+        if (e.ctrlKey && e.key === 'd' && !typing) { e.preventDefault(); disconnectAll(); return; }
+        if (e.ctrlKey && e.key === 'r' && !typing) { e.preventDefault(); resetLayout(); return; }
+        if (e.ctrlKey && e.key === 'l' && !typing) { e.preventDefault(); clearChat(); return; }
+      });
+    }
+
+    function toggleSk() { document.getElementById('sk-modal').classList.toggle('on'); }
+
+    // ─── TICK ─────────────────────────────────────────────────
+    function tick() {
+      const s = Math.floor((Date.now() - S.t0) / 1000);
+      const h = String(Math.floor(s / 3600)).padStart(2, '0');
+      const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const sc = String(s % 60).padStart(2, '0');
+      document.getElementById('uptime').textContent = `${h}:${m}:${sc}`;
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────
+    function init() {
+      resize();
+      window.addEventListener('resize', resize);
+      document.addEventListener('click', hideCtx);
+      document.addEventListener('contextmenu', e => e.preventDefault());
+
+      MODULES.forEach(m => {
+        S.angles[m.id] = m.angle; S.innerAngles[m.id] = m.angle;
+        const rad = m.angle * Math.PI / 180, r = ORBIT_R[m.orbit];
+        S.positions[m.id] = { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+        S.driftV[m.id] = { x: (Math.random() - .5) * .3, y: (Math.random() - .5) * .3 };
+        mkAtom(m); mkBond(m); mkSideItem(m);
+      });
+
+      initBgCanvas(); initWave(); initSpeech(); initFileDrop(); initKeys(); initPanelResize(); initMarket();
+
+      document.getElementById('ci').addEventListener('keydown', e => { if (e.key === 'Enter') sendChat(); });
+      document.getElementById('cmd-inp').addEventListener('keydown', e => {
+        if (e.key !== 'Enter') return;
+        const v = document.getElementById('cmd-inp').value.trim(); if (!v) return;
+        document.getElementById('cmd-inp').value = '';
+        document.getElementById('ci').value = v; sendChat();
+      });
+
+      loadPersist();
+
+      requestAnimationFrame(loop);
+      setInterval(tick, 1000);
+      setInterval(checkBackend, 8000); checkBackend();
+      setInterval(fetchMetrics, 5000); fetchMetrics();
+      setInterval(loadMemView, 10000); loadMemView();
+      updateStats();
+
+      // Boot sequence
+      const boot = [
+        ['sys', 'SYS ', 'B.L.I.T.Z. v4 — JARVIS Edition'],
+        ['sys', 'SYS ', `Loading ${MODULES.length} modules with unique orb renderer...`],
+        ['sys', 'SYS ', 'ORB-STYLE ENGINE: inline dynamic gradients active'],
+        ['sys', 'SYS ', 'HUD window system: armed'],
+        ['ok', 'ENV ', '🔥 Forge | ✦ Canvas | ⬡ Nexus | ◈ Studio — all online'],
+      ];
+      boot.forEach(([t, p, m], i) => setTimeout(() => tlog(t, p, m), i * 90));
+      setTimeout(tCursor, boot.length * 90 + 200);
+
+      setTimeout(() => {
+        if (chatHistory.length === 0) {
+          // Welcome handled by jarvisBoot()
+        }
+      }, 800);
+    }
+
+    // ─── ENVIRONMENT SWITCHER ─────────────────────────────────
+    const ENV_CFG = {
+      forge: { href: 'forge.html', color: 'rgba(253,186,116,0.07)', label: '🔥 Entering The Forge...', voice: 'Entering the Forge. IDE ready.' },
+      canvas: { href: 'canvas.html', color: 'rgba(240,234,216,0.05)', label: '✦ Opening The Canvas...', voice: 'Opening the Canvas. Writing space ready.' },
+      nexus: { href: 'nexus.html', color: 'rgba(56,189,248,0.06)', label: '⬡ Entering The Nexus...', voice: 'Entering the Nexus. Research mode online.' },
+      studio: { href: 'studio.html', color: 'rgba(192,132,252,0.07)', label: '◈ Launching The Studio...', voice: 'Launching the Studio. Three D engine ready.' },
+    };
+    function enterEnv(key) {
+      const cfg = ENV_CFG[key] || ENV_CFG.forge;
+      toast(cfg.label);
+      try { speak(cfg.voice); } catch { }
+      const flash = document.createElement('div');
+      flash.style.cssText = `position:fixed;inset:0;z-index:99999;background:${cfg.color};pointer-events:none;opacity:0;transition:opacity .28s`;
+      document.body.appendChild(flash);
+      requestAnimationFrame(() => { flash.style.opacity = '1'; setTimeout(() => { flash.style.opacity = '0'; setTimeout(() => { flash.remove(); window.location.href = cfg.href; }, 260); }, 200); });
+    }
+    function enterForge() { enterEnv('forge'); }
+
+    // ══════════════════════════════════════════════════════════
+    // ███████╗ JARVIS UPGRADE — 5 CORE SYSTEMS ████████████████
+    // ══════════════════════════════════════════════════════════
+
+    // ─────────────────────────────────────────────────────────
+    // SYSTEM 1: RUNTIME ENGINE
+    // Pyodide WASM Python executor with autonomous error-retry loop
+    // B.L.I.T.Z. writes → runs → reads error → rewrites → re-runs
+    // ─────────────────────────────────────────────────────────
+    let pyodide = null, pyodideReady = false, pyodideLoading = false;
+    const RUNTIME = {
+      maxRetries: 3,
+      history: [],   // [{code, output, error, retries, ts}]
+    };
+
+    async function loadPyodide() {
+      if (pyodideReady || pyodideLoading) return;
+      pyodideLoading = true;
+      tlog('info', 'PY  ', 'Loading Pyodide runtime (Python 3.11 WASM)...');
+      try {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js';
+        document.head.appendChild(script);
+        await new Promise((res, rej) => { script.onload = res; script.onerror = rej; });
+        pyodide = await window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.25.0/full/' });
+        // Redirect Python stdout/stderr
+        await pyodide.runPythonAsync(`
+import sys, io
+class _Cap:
+    def __init__(self): self.buf=[]
+    def write(self,s): self.buf.append(s)
+    def flush(self): pass
+    def getvalue(self): return ''.join(self.buf)
+    def clear(self): self.buf=[]
+sys.stdout=_Cap(); sys.stderr=_Cap()
+`);
+        pyodideReady = true;
+        pyodideLoading = false;
+        tlog('sys', 'PY  ', 'Pyodide runtime ONLINE — autonomous execution enabled');
+        toast('🐍 Python runtime ready');
+      } catch (e) {
+        pyodideLoading = false;
+        tlog('err', 'PY  ', 'Pyodide load failed: ' + e.message);
+      }
+    }
+
+    async function runPython(code, attempt = 1) {
+      if (!pyodideReady) { await loadPyodide(); if (!pyodideReady) return { out: '', err: 'Runtime not ready', ok: false }; }
+      try {
+        await pyodide.runPythonAsync('sys.stdout.clear();sys.stderr.clear()');
+        await pyodide.runPythonAsync(code);
+        const out = await pyodide.runPythonAsync('sys.stdout.getvalue()');
+        const err = await pyodide.runPythonAsync('sys.stderr.getvalue()');
+        return { out: out || '', err: err || '', ok: !err };
+      } catch (e) {
+        return { out: '', err: e.message, ok: false };
+      }
+    }
+
+    // Autonomous: B.L.I.T.Z. runs, detects error, asks backend to fix, re-runs
+    async function autonomousRun(code, context = '') {
+      tlog('sys', 'RUN ', 'Autonomous execution initiated...');
+      let currentCode = code;
+      for (let attempt = 1; attempt <= RUNTIME.maxRetries; attempt++) {
+        tlog('info', 'RUN ', `Attempt ${attempt}/${RUNTIME.maxRetries}...`);
+        const result = await runPython(currentCode);
+        RUNTIME.history.push({ code: currentCode, output: result.out, error: result.err, attempt, ts: Date.now() });
+        if (result.ok) {
+          tlog('sys', 'RUN ', '✓ Execution successful');
+          const output = result.out || '[No output]';
+          spawnHUD('Python Output', output, 'RESULT', '#4ade80');
+          addMsg('b', `✓ Execution complete (attempt ${attempt})\n\`\`\`\n${output.slice(0, 500)}\n\`\`\``);
+          return result;
+        }
+        tlog('err', 'RUN ', `Error: ${result.err.slice(0, 120)}`);
+        if (attempt < RUNTIME.maxRetries) {
+          tlog('info', 'RUN ', 'Sending error to B.L.I.T.Z. for self-correction...');
+          addMsg('b', `⚠ Runtime error on attempt ${attempt}:\n\`\`\`\n${result.err.slice(0, 300)}\n\`\`\`\nSelf-correcting...`);
+          try {
+            const fixResp = await fetch(`${API}/api/command`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ text: `Fix this Python code. Return ONLY the corrected code with no explanation.\n\nOriginal code:\n${currentCode}\n\nError:\n${result.err}`, active_modules: ['coding'] }),
+              signal: AbortSignal.timeout(15000)
+            });
+            const fixData = await fixResp.json();
+            const match = fixData.response.match(/```(?:python)?\n?([\s\S]+?)```/);
+            if (match) currentCode = match[1].trim();
+            else currentCode = fixData.response.trim();
+            tlog('sys', 'RUN ', 'Code corrected. Retrying...');
+          } catch { tlog('warn', 'RUN ', 'Backend offline — cannot self-correct'); }
+        }
+      }
+      tlog('err', 'RUN ', `Failed after ${RUNTIME.maxRetries} attempts`);
+      spawnHUD('Execution Failed', `Max retries reached.\n\nLast error:\n${RUNTIME.history.at(-1)?.error || 'Unknown'}`, 'ERROR', '#fb7185');
+      return { ok: false };
+    }
+
+    // Intercept Coding module to offer autonomous run
+    function interceptCodeOutput(text) {
+      const match = text.match(/```(?:python|py)\n?([\s\S]+?)```/);
+      if (!match) return false;
+      const code = match[1].trim();
+      const btn = document.createElement('span');
+      btn.className = 'spawn-hud-btn';
+      btn.style.cssText = 'background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:#4ade80;margin-left:6px';
+      btn.textContent = '▶ Run Autonomously';
+      btn.onclick = () => {
+        btn.textContent = '⏳ Running...'; btn.style.pointerEvents = 'none';
+        autonomousRun(code).finally(() => { btn.textContent = '▶ Run Again'; btn.style.pointerEvents = ''; });
+      };
+      return btn;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // SYSTEM 2: OMNISCIENT VISION
+    // Screen capture + webcam → Vision module passive awareness
+    // Screenshots every 5s → Groq vision → injected context
+    // ─────────────────────────────────────────────────────────
+    const VISION = {
+      stream: null,
+      mediaType: null,   // 'screen' | 'camera'
+      interval: null,
+      lastCaption: '',
+      active: false,
+      canvas: null,
+      ctx: null,
+    };
+
+    async function activateVision(type = 'screen') {
+      if (VISION.active) { deactivateVision(); return; }
+      try {
+        const constraints = type === 'camera'
+          ? { video: { facingMode: 'user' } }
+          : { video: { cursor: 'always' }, audio: false };
+        VISION.stream = type === 'camera'
+          ? await navigator.mediaDevices.getUserMedia(constraints)
+          : await navigator.mediaDevices.getDisplayMedia(constraints);
+        VISION.mediaType = type;
+        VISION.active = true;
+        // Hidden video element for frame capture
+        let vid = document.getElementById('_blitz_vision_vid');
+        if (!vid) { vid = document.createElement('video'); vid.id = '_blitz_vision_vid'; vid.style.display = 'none'; vid.autoplay = true; vid.muted = true; document.body.appendChild(vid); }
+        vid.srcObject = VISION.stream;
+        await new Promise(r => { vid.onloadedmetadata = r; });
+        // Hidden canvas for frame extraction
+        VISION.canvas = document.createElement('canvas');
+        VISION.canvas.width = 640; VISION.canvas.height = 360;
+        VISION.ctx = VISION.canvas.getContext('2d');
+        tlog('sys', 'VIS ', 'Vision module ONLINE — ' + type + ' capture active');
+        toast(`👁 Vision active (${type})`);
+        speak('Vision online. I can now see your ' + (type === 'camera' ? 'camera feed' : 'screen') + '.');
+        // Connect vision orb
+        if (!S.connected['vision']) connectMod('vision');
+        // Start passive caption loop every 5s
+        VISION.interval = setInterval(captureAndDescribe, 5000);
+        captureAndDescribe(); // immediate first capture
+        // Handle stream ending
+        VISION.stream.getVideoTracks()[0].addEventListener('ended', deactivateVision);
+      } catch (e) {
+        if (e.name === 'NotAllowedError') toast('Vision permission denied');
+        else { tlog('err', 'VIS ', 'Vision error: ' + e.message); toast('Vision failed: ' + e.message); }
+      }
+    }
+
+    async function captureAndDescribe() {
+      if (!VISION.active || !VISION.ctx) return;
+      try {
+        const vid = document.getElementById('_blitz_vision_vid');
+        if (!vid || !vid.videoWidth) return;
+        VISION.ctx.drawImage(vid, 0, 0, 640, 360);
+        const base64 = VISION.canvas.toDataURL('image/jpeg', 0.6).split(',')[1];
+        // Send to backend vision endpoint
+        const resp = await fetch(`${API}/api/vision`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: base64, context: VISION.lastCaption }),
+          signal: AbortSignal.timeout(8000)
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          VISION.lastCaption = data.caption || '';
+          // Inject into ambient context (silent — only surfaces if user asks)
+          VISION.ambientContext = `[VISION CONTEXT — ${new Date().toLocaleTimeString()}]: ${VISION.lastCaption}`;
+          tlog('info', 'VIS ', 'Scene: ' + VISION.lastCaption.slice(0, 80));
+        }
+      } catch {
+        // Silent fail — vision is ambient, not blocking
+      }
+    }
+
+    function deactivateVision() {
+      VISION.active = false;
+      clearInterval(VISION.interval);
+      VISION.stream?.getTracks().forEach(t => t.stop());
+      VISION.stream = null;
+      VISION.lastCaption = '';
+      VISION.ambientContext = '';
+      document.getElementById('_blitz_vision_vid')?.remove();
+      tlog('warn', 'VIS ', 'Vision module offline');
+      toast('👁 Vision deactivated');
+    }
+
+    // Called when user asks about their screen — attaches current vision frame
+    function getVisionContext() {
+      return VISION.ambientContext || '';
+    }
+
+    // Patch sendChat to inject vision context automatically
+    const _origSendChat = sendChat;
+    // (actual patch applied after sendChat is defined — see bottom of init block)
+
+    // ─────────────────────────────────────────────────────────
+    // SYSTEM 3: DEEP SCTM MEMORY (Semantic Search over localStorage)
+    // Every chat message is indexed. Semantic retrieval via TF-IDF-lite.
+    // "What did I write about quantum states last month?" → instant recall
+    // ─────────────────────────────────────────────────────────
+    const SCTM = {
+      index: [],       // [{text, embedding, ts, role, tags}]
+      maxEntries: 2000,
+    };
+
+    // Simple TF-IDF-lite term extraction
+    function sctmTokenize(text) {
+      return text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !['the', 'and', 'for', 'are', 'was', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'his', 'how', 'its', 'may', 'nor', 'our', 'out', 'own', 'per', 'say', 'she', 'too', 'use', 'was', 'who', 'why'].includes(w));
+    }
+
+    function sctmScore(query, entry) {
+      const qTerms = sctmTokenize(query);
+      const eTerms = sctmTokenize(entry.text);
+      let score = 0;
+      qTerms.forEach(qt => {
+        if (eTerms.includes(qt)) score += 2;
+        else if (eTerms.some(et => et.includes(qt) || qt.includes(et))) score += 1;
+      });
+      // Recency bonus (last 7 days = +1)
+      const age = (Date.now() - entry.ts) / (1000 * 60 * 60 * 24);
+      if (age < 7) score += 0.5;
+      if (age < 1) score += 0.5;
+      return score;
+    }
+
+    function sctmIndex(text, role, tags = []) {
+      if (!text || text.length < 10) return;
+      const entry = { text: text.slice(0, 1000), ts: Date.now(), role, tags, id: 'sctm_' + Date.now() };
+      SCTM.index.push(entry);
+      if (SCTM.index.length > SCTM.maxEntries) SCTM.index.shift();
+      try { localStorage.setItem('blitz_sctm', JSON.stringify(SCTM.index.slice(-500))); } catch { }
+    }
+
+    function sctmRetrieve(query, topK = 5) {
+      const scored = SCTM.index.map(e => ({ ...e, score: sctmScore(query, e) })).filter(e => e.score > 0);
+      scored.sort((a, b) => b.score - a.score);
+      return scored.slice(0, topK);
+    }
+
+    function sctmLoadPersisted() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('blitz_sctm') || '[]');
+        SCTM.index = saved;
+        if (saved.length) tlog('sys', 'MEM ', 'SCTM Vault loaded: ' + saved.length + ' memories');
+      } catch { }
+    }
+
+    // Build memory context string for a given query
+    function sctmContext(query) {
+      const hits = sctmRetrieve(query, 4);
+      if (!hits.length) return '';
+      const lines = hits.map(h => {
+        const d = new Date(h.ts).toLocaleDateString();
+        return `[${d}|${h.role === 'u' ? 'YOU' : 'BLITZ'}]: ${h.text.slice(0, 200)}`;
+      });
+      return `\n\n[MEMORY RECALL — relevant past context]:\n${lines.join('\n')}`;
+    }
+
+    // Auto-save Canvas notes into SCTM when they change
+    function sctmIndexNote(title, content) {
+      sctmIndex(`[NOTE: ${title}] ${content}`, 'canvas', ['note', title]);
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // SYSTEM 4: PROTOCOL SYSTEM (OS-Level Automation)
+    // Named macro sequences B.L.I.T.Z. executes step-by-step
+    // "Blitz, initiate Study Protocol" → sequence runs
+    // ─────────────────────────────────────────────────────────
+    const PROTOCOLS = {
+      'study': {
+        name: 'Study Protocol',
+        steps: [
+          { act: 'connect', mod: 'studying', label: 'Activating Studying module' },
+          { act: 'connect', mod: 'memory', label: 'Activating Memory module' },
+          { act: 'connect', mod: 'research', label: 'Activating Research module' },
+          { act: 'hud', title: 'Study Session', content: 'Focus mode active.\n\nB.L.I.T.Z. is in tutor mode.\nAsk me to explain anything, quiz you, or make flashcards.', type: 'INFO', color: '#f472b6' },
+          { act: 'speak', text: 'Study protocol initiated. Memory, research, and tutor modules online. What are we studying today?' },
+          { act: 'chat', text: 'Study protocol activated. I am now in tutor mode with Memory and Research online. Tell me your topic and I will build a full learning session.' },
+        ]
+      },
+      'code': {
+        name: 'Code Protocol',
+        steps: [
+          { act: 'connect', mod: 'coding', label: 'Activating Coding module' },
+          { act: 'connect', mod: 'memory', label: 'Activating Memory module' },
+          { act: 'runtime', label: 'Loading Python runtime (Pyodide)' },
+          { act: 'hud', title: 'Dev Environment', content: 'Code protocol active.\n\nPython runtime: ONLINE\nDebug mode: ACTIVE\nAuto-retry: ENABLED (3 attempts)\n\nPaste code or describe a problem.', type: 'CODE', color: '#fdba74' },
+          { act: 'speak', text: 'Code protocol initiated. Python runtime loaded. Autonomous debug loop enabled. Ready to code.' },
+          { act: 'nav', env: 'forge', label: 'Opening The Forge...' },
+        ]
+      },
+      'research': {
+        name: 'Research Protocol',
+        steps: [
+          { act: 'connect', mod: 'research', label: 'Activating Research module' },
+          { act: 'connect', mod: 'memory', label: 'Activating Memory module' },
+          { act: 'hud', title: 'Research Mode', content: 'Research protocol active.\n\nWeb search: ONLINE\nMemory injection: ENABLED\nSource tracking: ACTIVE\n\nWhat should I research?', type: 'INFO', color: '#22d3ee' },
+          { act: 'speak', text: 'Research protocol initiated. Web search and memory online. What do you want me to investigate?' },
+          { act: 'nav', env: 'nexus', label: 'Opening The Nexus...' },
+        ]
+      },
+      'create': {
+        name: 'Create Protocol',
+        steps: [
+          { act: 'connect', mod: 'create', label: 'Activating Create module' },
+          { act: 'connect', mod: 'memory', label: 'Activating Memory module' },
+          { act: 'hud', title: 'Create Mode', content: 'Create protocol active.\n\nContent module: ONLINE\nCanvas integration: ARMED\nTemplate library: READY\n\nWhat shall we create?', type: 'INFO', color: '#fbbf24' },
+          { act: 'speak', text: 'Create protocol initiated. Writing module and canvas integration online.' },
+          { act: 'nav', env: 'canvas', label: 'Opening The Canvas...' },
+        ]
+      },
+      'full': {
+        name: 'Full Sync Protocol',
+        steps: [
+          { act: 'connectAll', label: 'Syncing all modules...' },
+          { act: 'runtime', label: 'Loading Python runtime' },
+          { act: 'hud', title: 'FULL SYNC', content: 'ALL SYSTEMS ONLINE\n\nModules: 7/7 connected\nPython runtime: ACTIVE\nMemory: ARMED\nVision: STANDBY\n\nB.L.I.T.Z. at full capacity.', type: 'INFO', color: '#a78bfa' },
+          { act: 'speak', text: 'Full sync protocol complete. All seven modules online. Runtime active. I am at full capacity.' },
+          { act: 'chat', text: '**Full sync complete.** All 7 modules connected, Python runtime loaded, SCTM memory armed. I am operating at full capacity. What is the mission?' },
+        ]
+      },
+    };
+
+    let protocolRunning = false;
+
+    async function runProtocol(name) {
+      const key = name.toLowerCase().replace(/\s+protocol$/, '').trim();
+      const proto = PROTOCOLS[key];
+      if (!proto) { toast('Unknown protocol: ' + name); return; }
+      if (protocolRunning) { toast('Protocol already running'); return; }
+      protocolRunning = true;
+      tlog('sys', 'PROT', 'Initiating: ' + proto.name);
+      toast('⚡ ' + proto.name + ' initiated');
+      for (const step of proto.steps) {
+        tlog('info', 'PROT', step.label || step.act);
+        await wait(320);
+        if (step.act === 'connect' && step.mod) await connectMod(step.mod);
+        else if (step.act === 'connectAll') connectAll();
+        else if (step.act === 'runtime') loadPyodide();
+        else if (step.act === 'speak' && step.text) speak(step.text);
+        else if (step.act === 'hud') spawnHUD(step.title, step.content, step.type || 'INFO', step.color || '#a78bfa');
+        else if (step.act === 'chat' && step.text) addMsg('b', step.text);
+        else if (step.act === 'nav' && step.env) setTimeout(() => enterEnv(step.env), 600);
+      }
+      tlog('sys', 'PROT', proto.name + ' complete');
+      protocolRunning = false;
+    }
+
+    // Parse protocol triggers from chat input
+    function checkProtocolTrigger(text) {
+      const t = text.toLowerCase();
+      if (t.includes('study protocol') || t === 'study mode' || t === 'initiate study') return runProtocol('study');
+      if (t.includes('code protocol') || t.includes('coding protocol') || t === 'code mode') return runProtocol('code');
+      if (t.includes('research protocol') || t === 'research mode') return runProtocol('research');
+      if (t.includes('create protocol') || t === 'create mode' || t === 'writing mode') return runProtocol('create');
+      if (t.includes('full sync') || t.includes('full protocol') || t === 'sync all') return runProtocol('full');
+      if (t.includes('run ') || t.includes('execute ')) {
+        const m = t.match(/(?:run|execute)\s+(.+?)(?:\s+protocol)?$/);
+        if (m && PROTOCOLS[m[1]]) return runProtocol(m[1]);
+      }
+      return false;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // SYSTEM 5: MULTI-AGENT WORKFLOW (LangGraph-style Swarm)
+    // Planner → Scout → Critic → Writer → Injector
+    // Live progress shown in terminal and HUD windows
+    // ─────────────────────────────────────────────────────────
+    const AGENTS = {
+      running: false,
+      currentTask: null,
+      history: [],
+    };
+
+    const AGENT_DEFS = {
+      planner: { icon: '🧭', name: 'Planner', color: '#a78bfa', role: 'You are the Planner agent. Break the user task into 3-5 specific subtasks for specialist agents. Respond with a JSON array of {agent, task} objects. Agents available: scout, critic, writer. Be concise.' },
+      scout: { icon: '🔭', name: 'Scout', color: '#22d3ee', role: 'You are the Scout agent. Search for information and gather raw data on the given topic. Return a detailed summary of your findings. Be thorough.' },
+      critic: { icon: '⚖️', name: 'Critic', color: '#fb7185', role: 'You are the Critic agent. Review the provided research and identify the most relevant, accurate, and high-quality information. Filter out noise. Return a refined summary.' },
+      writer: { icon: '✍️', name: 'Writer', color: '#fbbf24', role: 'You are the Writer agent. Using the refined research, write the requested output. Be clear, structured, and compelling.' },
+      injector: { icon: '📥', name: 'Injector', color: '#4ade80', role: 'You are the Injector agent. Format the final output cleanly for the user. Add structure, headers, and finalize.' },
+    };
+
+    function agentLog(agentKey, msg, type = 'info') {
+      const a = AGENT_DEFS[agentKey] || { icon: '🤖', name: agentKey, color: '#a78bfa' };
+      tlog(type, 'AGT ', '[' + a.icon + ' ' + a.name.toUpperCase() + '] ' + msg);
+    }
+
+    async function callAgent(agentKey, prompt, context = '') {
+      const a = AGENT_DEFS[agentKey];
+      if (!a) return 'Agent not found';
+      agentLog(agentKey, 'Processing...');
+      const active = MODULES.filter(m => S.connected[m.id]).map(m => m.id);
+      try {
+        const resp = await fetch(`${API}/api/command`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: prompt + (context ? '\n\nContext from previous agents:\n' + context : ''),
+            active_modules: active,
+            system_override: a.role
+          }),
+          signal: AbortSignal.timeout(25000)
+        });
+        const data = await resp.json();
+        agentLog(agentKey, 'Complete ✓', 'sys');
+        return data.response || '';
+      } catch (e) {
+        agentLog(agentKey, 'Failed: ' + e.message, 'err');
+        return simAgentFallback(agentKey, prompt);
+      }
+    }
+
+    function simAgentFallback(agentKey, prompt) {
+      const sims = {
+        planner: `[{"agent":"scout","task":"Research: ${prompt.slice(0, 60)}"},{"agent":"critic","task":"Review and filter research"},{"agent":"writer","task":"Write final output based on research"}]`,
+        scout: `Research findings on "${prompt.slice(0, 60)}":\n\n1. Key concept overview gathered\n2. Recent developments noted\n3. Primary sources identified\n\n[Connect backend for live web search via Tavily]`,
+        critic: `Filtered research:\n\n✓ High confidence: Core concepts verified\n✓ Recent: Last 6 months data flagged\n✗ Removed: 2 low-quality sources\n\nRefined context ready for Writer agent.`,
+        writer: `# Research Summary\n\nBased on the Scout's findings and Critic's review:\n\n## Key Findings\n[Backend offline — connect for AI-generated content]\n\n## Conclusion\nSwarm workflow complete. Start backend for full agent responses.`,
+        injector: `**Mission Complete**\n\nAll agents finished. Output ready.\n\n[Connect backend at localhost:8000 for full multi-agent responses]`,
+      };
+      return sims[agentKey] || 'Agent offline';
+    }
+
+    async function runAgentSwarm(task) {
+      if (AGENTS.running) { toast('Agent swarm already running'); return; }
+      AGENTS.running = true;
+      AGENTS.currentTask = task;
+      rpTab('term');
+      tlog('sys', 'SWRM', '═══ AGENT SWARM INITIATED ═══');
+      tlog('sys', 'SWRM', 'Task: ' + task.slice(0, 100));
+      addMsg('b', `**Agent Swarm launched** for: *"${task}"*\n\nWatch the Terminal for live agent progress.`);
+      speak('Agent swarm initiated. Deploying specialist agents now.');
+
+      try {
+        // ── STEP 1: Planner ──
+        tlog('info', 'SWRM', 'Step 1/5 — Planner analyzing task...');
+        const plan = await callAgent('planner', `Task: ${task}`);
+        spawnHUD('🧭 Planner Output', plan, 'INFO', '#a78bfa');
+        let subtasks = [];
+        try { subtasks = JSON.parse(plan.match(/\[[\s\S]+\]/)?.[0] || '[]'); } catch { subtasks = [{ agent: 'scout', task: task }, { agent: 'critic', task: 'Review findings' }, { agent: 'writer', task: 'Write output' }]; }
+        tlog('sys', 'SWRM', `Plan: ${subtasks.length} subtasks created`);
+        await wait(400);
+
+        // ── STEP 2: Scout ──
+        tlog('info', 'SWRM', 'Step 2/5 — Scout gathering intelligence...');
+        const scoutTask = subtasks.find(s => s.agent === 'scout')?.task || task;
+        const scoutOut = await callAgent('scout', scoutTask);
+        spawnHUD('🔭 Scout Report', scoutOut, 'DATA', '#22d3ee');
+        await wait(300);
+
+        // ── STEP 3: Critic ──
+        tlog('info', 'SWRM', 'Step 3/5 — Critic filtering research...');
+        const criticOut = await callAgent('critic', subtasks.find(s => s.agent === 'critic')?.task || 'Review', scoutOut);
+        spawnHUD('⚖️ Critic Review', criticOut, 'INFO', '#fb7185');
+        await wait(300);
+
+        // ── STEP 4: Writer ──
+        tlog('info', 'SWRM', 'Step 4/5 — Writer composing output...');
+        const writerTask = subtasks.find(s => s.agent === 'writer')?.task || task;
+        const writerOut = await callAgent('writer', writerTask, criticOut);
+        spawnHUD('✍️ Writer Draft', writerOut, 'RESULT', '#fbbf24');
+        await wait(300);
+
+        // ── STEP 5: Injector ──
+        tlog('info', 'SWRM', 'Step 5/5 — Injector finalizing...');
+        const finalOut = await callAgent('injector', 'Finalize this for the user', writerOut);
+        tlog('sys', 'SWRM', '═══ SWARM COMPLETE ═══');
+
+        // Final output in chat
+        addMsg('b', '**Swarm complete.** Final output:\n\n' + finalOut);
+        spawnHUD('✅ Swarm Output — FINAL', finalOut, 'RESULT', '#4ade80');
+        speak('Agent swarm complete. Final report ready in chat.');
+
+        // Offer to inject into Canvas
+        const feed = document.getElementById('feed');
+        const lastMsg = feed.lastElementChild;
+        if (lastMsg) {
+          const injectBtn = document.createElement('span');
+          injectBtn.className = 'spawn-hud-btn';
+          injectBtn.style.cssText = 'background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:#4ade80;margin-left:6px';
+          injectBtn.textContent = '📥 Send to Canvas';
+          injectBtn.onclick = () => {
+            const noteTitle = 'Swarm: ' + task.slice(0, 40);
+            const noteData = { id: 'swarm_' + Date.now(), title: noteTitle, content: finalOut, tags: ['swarm', 'agent'], created: new Date().toISOString(), modified: new Date().toISOString() };
+            try {
+              const existing = JSON.parse(localStorage.getItem('canvas_notes') || '{}');
+              existing[noteData.id] = noteData;
+              localStorage.setItem('canvas_notes', JSON.stringify(existing));
+              toast('📥 Sent to Canvas'); injectBtn.textContent = '✓ In Canvas';
+            } catch { toast('Could not inject to Canvas'); }
+          };
+          lastMsg.appendChild(injectBtn);
+        }
+
+        AGENTS.history.push({ task, plan, scoutOut, criticOut, writerOut, finalOut, ts: Date.now() });
+      } catch (e) {
+        tlog('err', 'SWRM', 'Swarm error: ' + e.message);
+        addMsg('b', 'Swarm encountered an error: ' + e.message);
+      } finally {
+        AGENTS.running = false;
+        AGENTS.currentTask = null;
+      }
+    }
+
+    // Detect swarm triggers in chat input
+    function checkSwarmTrigger(text) {
+      const t = text.toLowerCase();
+      // Explicit swarm calls
+      if (t.startsWith('swarm:') || t.startsWith('agents:') || t.includes('deploy agents') || t.includes('agent swarm'))
+        return text.replace(/^(swarm:|agents:)\s*/i, '').trim();
+      // Complex multi-step tasks that benefit from swarm
+      const swarmKeywords = ['research and write', 'find and summarize', 'investigate and report', 'gather and compile', 'search and create'];
+      if (swarmKeywords.some(kw => t.includes(kw))) return text;
+      return null;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // JARVIS COMMAND PARSER — intercepts all chat input
+    // Routes to: Protocol → Swarm → Vision → Runtime → Normal
+    // ─────────────────────────────────────────────────────────
+    function parseJarvisCommand(text) {
+      const t = text.toLowerCase().trim();
+
+      // Vision commands
+      if (t.includes('activate vision') || t.includes('share screen') || t.includes('watch my screen'))
+        return { type: 'vision', args: 'screen' };
+      if (t.includes('camera') || t.includes('webcam') || t.includes('watch camera'))
+        return { type: 'vision', args: 'camera' };
+      if (t.includes('deactivate vision') || t.includes('stop vision') || t.includes('close vision'))
+        return { type: 'vision', args: 'stop' };
+
+      // Runtime commands
+      if (t.startsWith('run:') || t.startsWith('python:') || t.startsWith('exec:'))
+        return { type: 'runtime', args: text.slice(text.indexOf(':') + 1).trim() };
+      if (t === 'load python' || t === 'init runtime' || t === 'start python')
+        return { type: 'loadRuntime' };
+
+      // Protocol commands
+      if (checkProtocolTrigger(text)) return { type: 'protocol_handled' };
+
+      // Swarm commands
+      const swarmTask = checkSwarmTrigger(text);
+      if (swarmTask) return { type: 'swarm', args: swarmTask };
+
+      // Memory search
+      if (t.startsWith('remember ') || t.startsWith('recall ') || t.includes('what did i say about') || t.includes('find in memory'))
+        return { type: 'memory_search', args: text.replace(/^(remember|recall)\s+/i, '') };
+
+      // Nav commands
+      if (t === 'open forge' || t === 'go to forge') return { type: 'nav', args: 'forge' };
+      if (t === 'open canvas' || t === 'go to canvas') return { type: 'nav', args: 'canvas' };
+      if (t === 'open nexus' || t === 'go to nexus') return { type: 'nav', args: 'nexus' };
+      if (t === 'open studio' || t === 'go to studio') return { type: 'nav', args: 'studio' };
+
+      return null;
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // PATCHED sendChat — wraps original with JARVIS routing
+    // ─────────────────────────────────────────────────────────
+    const _sendChatOriginal = sendChat;
+    sendChat = async function () {
+      const inp = document.getElementById('ci');
+      const text = inp.value.trim();
+      if (!text) return;
+
+      const cmd = parseJarvisCommand(text);
+      if (cmd) {
+        inp.value = '';
+        addMsg('u', text);
+        sctmIndex(text, 'u');
+
+        if (cmd.type === 'protocol_handled') {
+          // already handled in checkProtocolTrigger
+        }
+        else if (cmd.type === 'vision') {
+          if (cmd.args === 'stop') deactivateVision();
+          else activateVision(cmd.args);
+        }
+        else if (cmd.type === 'runtime') {
+          tlog('sys', 'RUN ', 'Autonomous execution from chat...');
+          await autonomousRun(cmd.args);
+        }
+        else if (cmd.type === 'loadRuntime') {
+          addMsg('b', 'Loading Python runtime...');
+          await loadPyodide();
+          addMsg('b', '✓ Python runtime ready. Use `run: <code>` or `python: <code>` to execute.');
+        }
+        else if (cmd.type === 'swarm') {
+          await runAgentSwarm(cmd.args);
+        }
+        else if (cmd.type === 'memory_search') {
+          const hits = sctmRetrieve(cmd.args, 6);
+          if (!hits.length) { addMsg('b', 'No relevant memories found for: *' + cmd.args + '*'); }
+          else {
+            const lines = hits.map(h => `**${new Date(h.ts).toLocaleDateString()}** (${h.role === 'u' ? 'You' : 'Blitz'}): ${h.text.slice(0, 200)}`).join('\n\n');
+            addMsg('b', `**Memory recall** for "*${cmd.args}*":\n\n${lines}`);
+            spawnHUD('Memory Recall', hits.map(h => new Date(h.ts).toLocaleDateString() + ': ' + h.text.slice(0, 200)).join('\n\n---\n\n'), 'INFO', '#34d399');
+          }
+        }
+        else if (cmd.type === 'nav') {
+          addMsg('b', 'Navigating to ' + cmd.args + '...');
+          setTimeout(() => enterEnv(cmd.args), 600);
+        }
+        return;
+      }
+
+      // Normal chat — inject vision + memory context
+      const origValue = inp.value; // already has text
+      if (VISION.ambientContext) {
+        inp.value = text;
+        // Append vision context silently to backend call via patch below
+      }
+      inp.value = text;
+
+      // Call original sendChat — but patch it to inject SCTM context
+      const origFetch = window.fetch;
+      window.fetch = async (url, ...args) => {
+        if (url === `${API}/api/command` && args[0]?.body) {
+          try {
+            const body = JSON.parse(args[0].body);
+            const memCtx = sctmContext(body.text || '');
+            const visCtx = getVisionContext();
+            if (memCtx || visCtx) {
+              body.text = (body.text || '') + (visCtx ? '\n\n' + visCtx : '') + (memCtx || '');
+              args[0] = { ...args[0], body: JSON.stringify(body) };
+            }
+          } catch { }
+        }
+        const result = await origFetch(url, ...args);
+        window.fetch = origFetch; // restore after one use
+        return result;
+      };
+
+      _sendChatOriginal();
+
+      // Index in SCTM after sending
+      sctmIndex(text, 'u');
+    };
+
+    // Patch addMsg to auto-index Blitz responses + attach run buttons
+    const _addMsgOriginal = addMsg;
+    addMsg = function (role, text, skipHistory = false) {
+      _addMsgOriginal(role, text, skipHistory);
+      if (!skipHistory) sctmIndex(text, role);
+      // Attach autonomous run button if Blitz returns Python code and coding is connected
+      if (role === 'b' && S.connected['coding']) {
+        const btn = interceptCodeOutput(text);
+        if (btn) {
+          const feed = document.getElementById('feed');
+          feed.lastElementChild?.appendChild(btn);
+        }
+      }
+    };
+
+    // ─────────────────────────────────────────────────────────
+    // JARVIS KEYBOARD SHORTCUTS — global command palette
+    // ─────────────────────────────────────────────────────────
+    function initJarvisKeys() {
+      document.addEventListener('keydown', e => {
+        const typing = document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA');
+        // Ctrl+K — Quick command
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k' && !typing) {
+          e.preventDefault();
+          const cmd = prompt('⚡ B.L.I.T.Z. Command:');
+          if (cmd) { document.getElementById('ci').value = cmd; sendChat(); }
+          return;
+        }
+        // Ctrl+P — Protocol launcher
+        if ((e.ctrlKey || e.metaKey) && e.key === 'p' && !typing) {
+          e.preventDefault();
+          const proto = prompt('Protocol (study/code/research/create/full):');
+          if (proto) runProtocol(proto.trim());
+          return;
+        }
+        // Ctrl+Shift+V — Vision
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V' && !typing) {
+          e.preventDefault();
+          activateVision('screen');
+          return;
+        }
+        // Ctrl+Shift+R — Run Python clipboard
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R' && !typing) {
+          e.preventDefault();
+          navigator.clipboard.readText().then(code => {
+            if (code.trim()) autonomousRun(code);
+            else toast('Clipboard empty');
+          }).catch(() => toast('Clipboard access denied'));
+          return;
+        }
+        // Ctrl+Shift+S — Agent Swarm
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S' && !typing) {
+          e.preventDefault();
+          const task = prompt('🤖 Agent Swarm — Describe the task:');
+          if (task) runAgentSwarm(task);
+          return;
+        }
+      });
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // JARVIS BOOT — extends existing boot sequence
+    // ─────────────────────────────────────────────────────────
+    function jarvisBoot() {
+      sctmLoadPersisted();
+      initJarvisKeys();
+
+      // Pre-warm Pyodide silently in background after 4s
+      setTimeout(loadPyodide, 4000);
+
+      // Boot log additions
+      const extraBoot = [
+        ['sys', 'SYS ', 'RUNTIME ENGINE: Pyodide WASM pre-loading in background...'],
+        ['sys', 'SYS ', 'SCTM MEMORY: ' + SCTM.index.length + ' indexed memories restored'],
+        ['sys', 'SYS ', 'PROTOCOL SYSTEM: ' + Object.keys(PROTOCOLS).length + ' protocols armed'],
+        ['sys', 'SYS ', 'AGENT SWARM: 5-agent pipeline ready (Planner→Scout→Critic→Writer→Injector)'],
+        ['sys', 'SYS ', 'VISION MODULE: Standby (say "activate vision" to engage)'],
+        ['sys', 'SYS ', 'JARVIS SYSTEMS: ONLINE — Type "full sync" to activate everything'],
+      ];
+      extraBoot.forEach(([t, p, m], i) => setTimeout(() => tlog(t, p, m), (i + 9) * 90));
+
+      // Update welcome message after a delay
+      setTimeout(() => {
+        if (chatHistory.length <= 1) {
+          addMsg('b', '**B.L.I.T.Z. v4 — JARVIS Edition online.**\n\n🐍 **Runtime Engine** — `run: <python code>` to execute autonomously with auto-retry\n👁 **Vision** — `activate vision` to share your screen\n🧠 **SCTM Memory** — I remember everything you say, forever\n⚡ **Protocols** — say `study protocol`, `code protocol`, `full sync`\n🤖 **Agent Swarm** — `swarm: research X and write a report`\n\n**Keyboard:** `Ctrl+K` command · `Ctrl+P` protocol · `Ctrl+Shift+V` vision · `Ctrl+Shift+S` swarm\n\nSay **"full sync"** to bring all systems online.', true);
+          speak('Jarvis edition online. Five new systems active. Say full sync to bring everything online.');
+        }
+      }, 1500);
+    }
+
+    // Expose key functions globally for sidebar buttons
+    window.runProtocol = runProtocol;
+    window.runAgentSwarm = runAgentSwarm;
+    window.activateVision = activateVision;
+    window.autonomousRun = autonomousRun;
+    window.enterEnv = enterEnv;
+
+    init();
+    jarvisBoot();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>B.L.I.T.Z. — Spatial Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#04050a;--text:rgba(255,255,255,.92);--muted:rgba(255,255,255,.32);--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);--accent:#a78bfa;--green:#4ade80;--red:#fb7185;--gold:#fbbf24;--blue:#60a5fa;--font:'Syne',sans-serif;--mono:'Space Mono',monospace}
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);user-select:none}
+    body::after{content:'';position:fixed;inset:0;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.013) 2px,rgba(0,0,0,.013) 4px);pointer-events:none}
+    .bg-mesh{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 70% 55% at 8% 90%,rgba(88,28,220,.14),transparent 60%),radial-gradient(ellipse 55% 45% at 92% 8%,rgba(20,50,160,.12),transparent 60%),radial-gradient(ellipse 45% 35% at 50% 50%,rgba(10,12,30,.8),transparent 70%)}
+    .bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse 85% 80% at 50% 50%,black 30%,transparent 100%)}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+    @keyframes spin-cw{to{transform:rotate(360deg)}}
+    @keyframes spin-ccw{to{transform:rotate(-360deg)}}
+    @keyframes fadein{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:none}}
+    @keyframes core-breathe{0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.07),0 6px 60px rgba(110,140,255,.20),0 0 110px rgba(90,115,255,.08),0 22px 55px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(0,0,40,.14)}50%{box-shadow:0 0 0 1px rgba(255,255,255,.11),0 6px 80px rgba(110,140,255,.36),0 0 150px rgba(90,115,255,.20),0 22px 55px rgba(0,0,0,.5),inset 0 2px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(0,0,40,.1)}}
+
+    /* HEADER */
+    .hdr{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(4,5,10,.85);backdrop-filter:blur(24px);gap:10px}
+    .hdr-logo{font-size:16px;font-weight:800;letter-spacing:-.03em}
+    .hdr-logo span{color:var(--accent)}
+    .hdr-ver{font-family:var(--mono);font-size:9px;color:var(--muted)}
+    .api-pill{margin-left:auto;display:flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;color:var(--muted);padding:4px 11px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px}
+    .api-dot{width:6px;height:6px;border-radius:50%;background:var(--muted)}
+    .api-dot.on{background:var(--green);box-shadow:0 0 8px rgba(74,222,128,.7);animation:blink 2.4s ease-in-out infinite}
+
+    /* ENVIRONMENTS */
+    .env-nav{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:9px}
+    .env-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:11px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:13px;text-decoration:none;color:var(--text);transition:all .2s;cursor:pointer;backdrop-filter:blur(16px);min-width:76px}
+    .env-btn:hover{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.35);transform:translateY(-3px)}
+    .env-icon{font-size:20px;line-height:1}
+    .env-name{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.07em}
+
+    /* CANVAS / SCENE */
+    canvas#scene-canvas{position:fixed;inset:0;z-index:1;pointer-events:none}
+    #orb-container{position:fixed;inset:0;z-index:5}
+
+    /* CORE */
+    .core-wrap{position:fixed;z-index:10;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .core-ring1{position:absolute;border-radius:50%;border:1px solid transparent;border-top-color:rgba(255,255,255,.18);border-right-color:rgba(255,255,255,.05);width:114px;height:114px;animation:spin-cw 8s linear infinite}
+    .core-ring2{position:absolute;border-radius:50%;border:1px solid transparent;border-bottom-color:rgba(255,255,255,.09);width:132px;height:132px;animation:spin-ccw 13s linear infinite}
+    .core-sphere{width:78px;height:78px;border-radius:50%;background:radial-gradient(circle at 33% 28%,rgba(255,255,255,.97) 0%,rgba(215,225,255,.76) 26%,rgba(165,185,240,.5) 58%,rgba(95,115,205,.18) 82%,transparent 100%);border:1px solid rgba(255,255,255,.48);box-shadow:0 0 0 1px rgba(255,255,255,.07),0 6px 60px rgba(110,140,255,.22),0 0 110px rgba(90,115,255,.1),0 22px 55px rgba(0,0,0,.55),inset 0 2px 0 rgba(255,255,255,.82),inset 0 -1px 0 rgba(0,0,40,.14);animation:core-breathe 5.5s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+    .core-lbl{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.08em;color:rgba(15,25,80,.9);text-align:center}
+    .core-sub{font-family:var(--mono);font-size:7px;color:rgba(40,60,130,.6);margin-top:1px;letter-spacing:.04em}
+
+    /* ORBS */
+    .orb{position:absolute;width:58px;height:58px;border-radius:50%;transform:translate(-50%,-50%);cursor:grab;z-index:20;transition:box-shadow .2s,width .25s,height .25s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+    .orb:hover{z-index:30}
+    .orb.dragging{cursor:grabbing;z-index:40}
+    .orb.connected{width:64px;height:64px}
+    .orb-icon{font-size:18px;line-height:1;position:relative;z-index:2;pointer-events:none}
+    .orb-name{font-family:var(--mono);font-size:6px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;position:relative;z-index:2;pointer-events:none}
+    .orb-tip{position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(7,8,18,.95);border:1px solid var(--border2);border-radius:9px;padding:7px 11px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:100}
+    .orb:hover .orb-tip{opacity:1}
+    .tip-name{font-size:11px;font-weight:700;margin-bottom:2px}
+    .tip-desc{font-family:var(--mono);font-size:9px;color:var(--muted)}
+    .drop-target{position:fixed;border:1.5px dashed rgba(255,255,255,.12);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);transition:all .3s;z-index:8}
+    .drop-target.armed{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.04)}
+
+    /* STATUS LOG */
+    .slog{position:fixed;top:58px;right:16px;z-index:100;width:250px;display:flex;flex-direction:column;gap:3px;pointer-events:none}
+    .sl-line{display:flex;gap:6px;font-family:var(--mono);font-size:10px;color:var(--muted);animation:fadein .25s ease}
+    .sl-tag{color:var(--accent);min-width:38px}
+
+    /* ACTIVE MODULES */
+    .active-mods{position:fixed;top:58px;left:16px;z-index:100;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:11px 14px;min-width:150px}
+    .am-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:.1em;margin-bottom:7px;text-transform:uppercase}
+    .am-chips{display:flex;flex-wrap:wrap;gap:4px}
+    .am-chip{padding:3px 8px;border-radius:20px;font-family:var(--mono);font-size:9px;border:1px solid rgba(167,139,250,.3);background:rgba(167,139,250,.1);color:var(--accent)}
+    .am-empty{font-family:var(--mono);font-size:9px;color:var(--muted);font-style:italic}
+
+    /* TOAST */
+    .toast{position:fixed;top:58px;left:50%;transform:translateX(-50%) translateY(-10px);z-index:9000;background:rgba(8,9,20,.97);border:1px solid var(--border2);border-radius:9px;padding:6px 14px;font-size:12px;font-family:var(--mono);color:var(--text);box-shadow:0 8px 32px rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.34,1.56,.64,1)}
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  </style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<div class="hdr">
+  <div class="hdr-logo">B.L.I.T.Z. <span>OS</span></div>
+  <span class="hdr-ver">v3.0 · SPATIAL HUB</span>
+  <div class="api-pill">
+    <div class="api-dot" id="api-dot"></div>
+    <span id="api-txt">connecting...</span>
+  </div>
+</div>
+
+<div class="active-mods">
+  <div class="am-lbl">Active Modules</div>
+  <div class="am-chips" id="am-chips"><div class="am-empty">none</div></div>
+</div>
+
+<div class="slog" id="slog"></div>
+
+<canvas id="scene-canvas"></canvas>
+<div id="orb-container"></div>
+
+<!-- Core -->
+<div class="core-wrap" id="core-wrap">
+  <div class="core-ring2"></div>
+  <div class="core-ring1"></div>
+  <div class="core-sphere">
+    <div class="core-lbl">BLITZ</div>
+    <div class="core-sub" id="core-sub">IDLE</div>
+  </div>
+</div>
+
+<!-- Drop target -->
+<div class="drop-target" id="drop-target" style="width:110px;height:110px"></div>
+
+<div class="env-nav">
+  <a class="env-btn" href="index.html"><div class="env-icon">⬡</div><div class="env-name">NEXUS</div></a>
+  <a class="env-btn" href="forge.html"><div class="env-icon">🔥</div><div class="env-name">FORGE</div></a>
+  <a class="env-btn" href="canvas.html"><div class="env-icon">✦</div><div class="env-name">CANVAS</div></a>
+  <a class="env-btn" href="studio.html"><div class="env-icon">◈</div><div class="env-name">STUDIO</div></a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.location.hostname==='localhost'||window.location.hostname==='127.0.0.1'?'http://localhost:8000':window.location.origin;
+
+const MODULES = [
+  {id:'vision',  name:'Vision',   icon:'👁', color:'#a78bfa',hue:[167,139,250], desc:'Image analysis & visual understanding'},
+  {id:'voice',   name:'Voice',    icon:'🎙', color:'#60a5fa',hue:[96,165,250],  desc:'Real-time voice & TTS interaction'},
+  {id:'memory',  name:'Memory',   icon:'🧠', color:'#34d399',hue:[52,211,153],  desc:'Persistent memory & personal context'},
+  {id:'research',name:'Research', icon:'🔬', color:'#22d3ee',hue:[34,211,238],  desc:'Live web search — Tavily + agent swarm'},
+  {id:'coding',  name:'Coding',   icon:'💻', color:'#fdba74',hue:[253,186,116], desc:'Senior dev mode — code, debug, optimize'},
+  {id:'studying',name:'Studying', icon:'📚', color:'#f472b6',hue:[244,114,182], desc:'Tutor mode — flashcards, quizzes, Feynman'},
+  {id:'create',  name:'Create',   icon:'✍',  color:'#fbbf24',hue:[251,191,36],  desc:'Write essays, emails, posts & content'},
+];
+
+const connected = new Set(JSON.parse(localStorage.getItem('blitz_modules')||'[]'));
+let W=0,H=0,cx=0,cy=0;
+const orbEls={}, orbStates={};
+
+function resize(){
+  W=window.innerWidth; H=window.innerHeight; cx=W/2; cy=H/2;
+  const cw=document.getElementById('core-wrap');
+  cw.style.left=cx+'px'; cw.style.top=cy+'px';
+  const dt=document.getElementById('drop-target');
+  dt.style.left=cx+'px'; dt.style.top=cy+'px';
+  const canvas=document.getElementById('scene-canvas');
+  canvas.width=W; canvas.height=H;
+}
+resize(); window.addEventListener('resize',resize);
+
+// Create orbs
+const R = Math.min(W,H)*0.28;
+MODULES.forEach((mod,i)=>{
+  const angle = (i/MODULES.length)*Math.PI*2 - Math.PI/2;
+  const bx = cx + R*Math.cos(angle);
+  const by = cy + R*Math.sin(angle);
+
+  orbStates[mod.id] = {x:bx,y:by,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,baseX:bx,baseY:by,angle,dragging:false,dragOX:0,dragOY:0};
+
+  const el = document.createElement('div');
+  el.className = 'orb'+(connected.has(mod.id)?' connected':'');
+  el.id = 'orb-'+mod.id;
+  el.style.left = bx+'px'; el.style.top = by+'px';
+  const [r,g,b] = mod.hue;
+  const conn = connected.has(mod.id);
+  el.style.background = `radial-gradient(circle at 32% 26%,rgba(${r+80},${g+80},${b+80},.95) 0%,rgba(${r},${g},${b},.7) 40%,rgba(${Math.round(r*.5)},${Math.round(g*.5)},${Math.round(b*.5)},.2) 100%)`;
+  el.style.border = `1px solid rgba(${r},${g},${b},${conn?.55:.3})`;
+  el.style.boxShadow = conn?`0 0 22px rgba(${r},${g},${b},.55),0 4px 20px rgba(${r},${g},${b},.3),inset 0 1px 0 rgba(255,255,255,.85)`:`0 4px 18px rgba(${r},${g},${b},.3),inset 0 1px 0 rgba(255,255,255,.82)`;
+  el.innerHTML = `<div class="orb-icon">${mod.icon}</div><div class="orb-name" style="color:rgba(${Math.round(r*.15+255*.85)},${Math.round(g*.15+255*.85)},${Math.round(b*.15+255*.85)},.7)">${mod.name}</div><div class="orb-tip"><div class="tip-name" style="color:${mod.color}">${mod.icon} ${mod.name}</div><div class="tip-desc">${mod.desc}</div><div class="tip-desc" style="margin-top:3px;color:rgba(255,255,255,.2)">Drag to core to ${conn?'disconnect':'connect'}</div></div>`;
+
+  orbEls[mod.id] = el;
+  document.getElementById('orb-container').appendChild(el);
+
+  // Drag
+  function onDown(ev){
+    const s=orbStates[mod.id];
+    const px=ev.touches?ev.touches[0].clientX:ev.clientX;
+    const py=ev.touches?ev.touches[0].clientY:ev.clientY;
+    s.dragging=true; s.dragOX=px-s.x; s.dragOY=py-s.y;
+    el.classList.add('dragging'); ev.preventDefault&&ev.preventDefault();
+  }
+  function onMove(ev){
+    const s=orbStates[mod.id]; if(!s.dragging)return;
+    const px=ev.touches?ev.touches[0].clientX:ev.clientX;
+    const py=ev.touches?ev.touches[0].clientY:ev.clientY;
+    s.x=px-s.dragOX; s.y=py-s.dragOY;
+    const dist=Math.hypot(s.x-cx,s.y-cy);
+    document.getElementById('drop-target').classList.toggle('armed',dist<70);
+  }
+  function onUp(){
+    const s=orbStates[mod.id]; if(!s.dragging)return;
+    s.dragging=false; el.classList.remove('dragging');
+    document.getElementById('drop-target').classList.remove('armed');
+    const dist=Math.hypot(s.x-cx,s.y-cy);
+    if(dist<70) toggleModule(mod);
+  }
+  el.addEventListener('mousedown',onDown);
+  el.addEventListener('touchstart',onDown,{passive:false});
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('mouseup',onUp);
+  document.addEventListener('touchmove',onMove,{passive:true});
+  document.addEventListener('touchend',onUp);
+});
+
+// Animation loop
+const canvas=document.getElementById('scene-canvas');
+const ctx2=canvas.getContext('2d');
+function drawFrame(){
+  ctx2.clearRect(0,0,W,H);
+  // Draw bond lines
+  MODULES.forEach(mod=>{
+    if(!connected.has(mod.id))return;
+    const s=orbStates[mod.id];
+    const grad=ctx2.createLinearGradient(s.x,s.y,cx,cy);
+    const [r,g,b]=mod.hue;
+    grad.addColorStop(0,`rgba(${r},${g},${b},0)`);
+    grad.addColorStop(.4,`rgba(${r},${g},${b},.4)`);
+    grad.addColorStop(1,`rgba(${r},${g},${b},0)`);
+    ctx2.beginPath(); ctx2.moveTo(s.x,s.y); ctx2.lineTo(cx,cy);
+    ctx2.strokeStyle=grad; ctx2.lineWidth=1; ctx2.setLineDash([4,8]);
+    ctx2.stroke(); ctx2.setLineDash([]);
+  });
+
+  // Update orb positions (gentle float)
+  MODULES.forEach(mod=>{
+    const s=orbStates[mod.id];
+    if(s.dragging)return;
+    s.vx+=(s.baseX-s.x)*.0025; s.vy+=(s.baseY-s.y)*.0025;
+    s.vx+=(Math.random()-.5)*.035; s.vy+=(Math.random()-.5)*.035;
+    s.vx*=.965; s.vy*=.965;
+    s.x+=s.vx; s.y+=s.vy;
+    const el=orbEls[mod.id];
+    el.style.left=s.x+'px'; el.style.top=s.y+'px';
+    // proximity glow
+    const dist=Math.hypot(s.x-cx,s.y-cy);
+    if(dist<80&&!connected.has(mod.id)){
+      const [r,g,b]=mod.hue;
+      el.style.boxShadow=`0 0 ${Math.round((80-dist)/1.5)}px rgba(${r},${g},${b},.65),inset 0 1px 0 rgba(255,255,255,.85)`;
+    }
+  });
+
+  requestAnimationFrame(drawFrame);
+}
+drawFrame();
+
+// Toggle module
+function toggleModule(mod){
+  const conn=connected.has(mod.id);
+  if(conn){
+    connected.delete(mod.id);
+    slog('DISC',mod.name+' disconnected');
+    toast('○ '+mod.name+' off');
+    fetch(`${API}/api/disconnect/${mod.id}`,{method:'POST'}).catch(()=>{});
+  } else {
+    connected.add(mod.id);
+    slog('CONN',mod.name+' connected');
+    toast(mod.icon+' '+mod.name+' connected');
+    fetch(`${API}/api/connect/${mod.id}`,{method:'POST'}).catch(()=>{});
+  }
+  localStorage.setItem('blitz_modules',JSON.stringify([...connected]));
+  updateOrbStyle(mod);
+  updateChips();
+  updateCore();
+}
+
+function updateOrbStyle(mod){
+  const el=orbEls[mod.id]; const conn=connected.has(mod.id);
+  const [r,g,b]=mod.hue;
+  el.className='orb'+(conn?' connected':'');
+  el.style.border=`1px solid rgba(${r},${g},${b},${conn?.6:.3})`;
+  el.style.boxShadow=conn?`0 0 24px rgba(${r},${g},${b},.6),0 4px 20px rgba(${r},${g},${b},.35),inset 0 1px 0 rgba(255,255,255,.88)`:`0 4px 18px rgba(${r},${g},${b},.3),inset 0 1px 0 rgba(255,255,255,.82)`;
+  el.querySelector('.tip-desc:last-child').textContent=`Drag to core to ${conn?'disconnect':'connect'}`;
+}
+
+function updateChips(){
+  const chips=document.getElementById('am-chips');
+  chips.innerHTML=connected.size?[...connected].map(id=>{const m=MODULES.find(x=>x.id===id);return`<div class="am-chip">${m?.icon||''} ${id.toUpperCase()}</div>`;}).join(''):'<div class="am-empty">none</div>';
+}
+updateChips();
+
+function updateCore(){
+  const n=connected.size;
+  document.getElementById('core-sub').textContent=n===0?'IDLE':n===MODULES.length?'FULL SYNC':'ACTIVE';
+}
+
+// Status log
+const slogEl=document.getElementById('slog');
+function slog(tag,msg){
+  const line=document.createElement('div'); line.className='sl-line';
+  line.innerHTML=`<span class="sl-tag">${tag}</span><span>${msg}</span>`;
+  slogEl.appendChild(line);
+  while(slogEl.children.length>7)slogEl.removeChild(slogEl.firstChild);
+}
+
+// Toast
+let toastTmr=null;
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastTmr); toastTmr=setTimeout(()=>t.classList.remove('on'),2500);
+}
+
+// API health check
+async function checkAPI(){
+  try{
+    const t0=Date.now();
+    const r=await fetch(`${API}/`,{signal:AbortSignal.timeout(3000)});
+    const lat=Date.now()-t0;
+    if(r.ok){
+      document.getElementById('api-dot').className='api-dot on';
+      document.getElementById('api-txt').textContent=`online · ${lat}ms`;
+      slog('API ','Backend online');
+    }
+  }catch{
+    document.getElementById('api-dot').className='api-dot';
+    document.getElementById('api-txt').textContent='offline';
+  }
+}
+checkAPI(); setInterval(checkAPI,10000);
+
+slog('BOOT','B.L.I.T.Z. HUB v3.0 ready');
+slog('INFO','Drag module orbs to core to connect');
+slog('INFO',connected.size+' modules restored from last session');
+</script>
+</body>
+</html>
