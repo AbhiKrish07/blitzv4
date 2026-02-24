@@ -2516,6 +2516,16 @@
     }
     updateGizmo();
 
+    // ── WASD / Arrow key state (must be declared before animate()) ──
+    const keysDown = {};
+    document.addEventListener('keydown', e => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      keysDown[e.key.toLowerCase()] = true;
+    });
+    document.addEventListener('keyup', e => {
+      keysDown[e.key.toLowerCase()] = false;
+    });
+
     // ── ANIMATION LOOP ─────────────────────────────────────────
     const clock = new THREE.Clock();
     let animTime = 0;
@@ -3639,16 +3649,6 @@
 
       // Other shortcuts
       if (key === 'delete' && selectedObj && !movingObj) deleteSelected();
-    });
-
-    // ── WASD / Arrow key free camera movement ──────────────────
-    const keysDown = {};
-    document.addEventListener('keydown', e => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      keysDown[e.key.toLowerCase()] = true;
-    });
-    document.addEventListener('keyup', e => {
-      keysDown[e.key.toLowerCase()] = false;
     });
 
     // Continuous movement in animation loop
