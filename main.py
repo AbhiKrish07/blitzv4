@@ -249,9 +249,14 @@ async def ws_chat(ws: WebSocket):
 # ─────────────────────────────────────────────────────────────────────────────
 # REST ENDPOINTS
 # ─────────────────────────────────────────────────────────────────────────────
+@app.get("/api/status")
+async def status():
+    return {"status": "ok", "version": "3.0.0", "name": "B.L.I.T.Z. API"}
+
 @app.get("/")
 async def root():
-    return {"status": "ok", "version": "3.0.0", "name": "B.L.I.T.Z. API"}
+    index_path = _pl.Path(__file__).parent / "index.html"
+    return FileResponse(index_path, media_type="text/html")
 
 @app.get("/api/metrics")
 async def metrics():
