@@ -3377,6 +3377,55 @@
     let editingCardId = null, editingKanbanEl = null;
     let cardModalCb = null;
 
+    // ── KANBAN EVENT DELEGATION ──────────────────────────────
+    // All kanban clicks go through delegation to avoid contenteditable issues
+    document.addEventListener('click', function (e) {
+      // Add card button
+      var addCardBtn = e.target.closest('.kanban-add-card');
+      if (addCardBtn) {
+        e.preventDefault(); e.stopPropagation();
+        var col = addCardBtn.closest('.kanban-col');
+        var wrap = addCardBtn.closest('.kanban-wrap');
+        if (col && wrap) addKanbanCard(wrap.dataset.kbid, col.dataset.colid);
+        return;
+      }
+      // Add column button
+      var addColBtn = e.target.closest('.kanban-add-col-btn');
+      if (addColBtn) {
+        e.preventDefault(); e.stopPropagation();
+        var wrap2 = addColBtn.closest('.kanban-wrap');
+        if (wrap2) addKanbanCol(wrap2.dataset.kbid);
+        return;
+      }
+      // Delete column
+      var delColBtn = e.target.closest('.kanban-col-del');
+      if (delColBtn) {
+        e.preventDefault(); e.stopPropagation();
+        var col2 = delColBtn.closest('.kanban-col');
+        var wrap3 = delColBtn.closest('.kanban-wrap');
+        if (col2 && wrap3) deleteKanbanCol(wrap3.dataset.kbid, col2.dataset.colid);
+        return;
+      }
+      // Delete card
+      var delCardBtn = e.target.closest('.kca-btn.del');
+      if (delCardBtn) {
+        e.preventDefault(); e.stopPropagation();
+        var card = delCardBtn.closest('.kanban-card');
+        var wrap4 = delCardBtn.closest('.kanban-wrap');
+        if (card && wrap4) deleteKanbanCard(wrap4.dataset.kbid, card.dataset.colid, card.dataset.cardid);
+        return;
+      }
+      // Edit card button
+      var editCardBtn = e.target.closest('.kca-btn:not(.del)');
+      if (editCardBtn) {
+        e.preventDefault(); e.stopPropagation();
+        var card2 = editCardBtn.closest('.kanban-card');
+        var wrap5 = editCardBtn.closest('.kanban-wrap');
+        if (card2 && wrap5) editKanbanCard(wrap5.dataset.kbid, card2.dataset.colid, card2.dataset.cardid);
+        return;
+      }
+    }, true); // use capture phase
+
     // ─── SLASH BLOCKS ────────────────────────────────────────────
     const SLASH_BLOCKS = [
       { id: 'h1', icon: 'H₁', label: 'Heading 1', desc: 'Large heading', fn: () => fmtBlock('h1') },
@@ -3523,6 +3572,7 @@
       // Re-init code blocks + kanban in loaded content
       setTimeout(() => {
         initAllCodeBlocks();
+        reattachAllKanbanEvents();
         renderPagesStrip();
         resizeAllCanvases();
         redrawMain();
@@ -3718,214 +3768,280 @@
       const html = renderKanbanHTML(kbId, 'My Board', defaultCols);
       edFocus();
       document.execCommand('insertHTML', false, html + '<p><br></p>');
-      setTimeout(() => attachKanbanEvents(kbId), 80);
+      setTimeout(function () { attachKanbanDragEvents(kbId); }, 80);
     }
 
     function renderKanbanHTML(kbId, boardTitle, cols) {
-      const colsHtml = cols.map((col, ci) => `
-    <div class="kanban-col" id="kcol_${col.id}" data-colid="${col.id}" data-kbid="${kbId}">
-      <div class="kanban-col-header">
-        <div class="kanban-col-dot" style="background:${col.color}"></div>
-        <input class="kanban-col-name" value="${esc(col.name)}" style="color:${col.color}"
-          onchange="onColNameChange('${kbId}','${col.id}',this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()">
-        <span class="kanban-col-count">${col.cards.length}</span>
-        <button class="kanban-col-del" onclick="deleteKanbanCol('${kbId}','${col.id}')" title="Delete column">✕</button>
-      </div>
-      <div class="kanban-cards" id="kcards_${col.id}"
-        ondragover="kanbanDragOver(event,'${kbId}','${col.id}')"
-        ondragenter="kanbanDragEnter(event,'${kbId}','${col.id}')"
-        ondragleave="kanbanDragLeave(event,'${col.id}')"
-        ondrop="kanbanDrop(event,'${kbId}','${col.id}')">
-        ${col.cards.map(card => renderCardHTML(kbId, col.id, card)).join('')}
-      </div>
-      <button class="kanban-add-card" onclick="addKanbanCard('${kbId}','${col.id}')">＋ Add card</button>
-    </div>
-  `).join('');
+      var colsHtml = cols.map(function (col) {
+        return '<div class="kanban-col" id="kcol_' + col.id + '" data-colid="' + col.id + '" data-kbid="' + kbId + '">' +
+          '<div class="kanban-col-header">' +
+          '<div class="kanban-col-dot" style="background:' + col.color + '"></div>' +
+          '<input class="kanban-col-name" value="' + esc(col.name) + '" style="color:' + col.color + '">' +
+          '<span class="kanban-col-count">' + col.cards.length + '</span>' +
+          '<button class="kanban-col-del" title="Delete column">\u2715</button>' +
+          '</div>' +
+          '<div class="kanban-cards" id="kcards_' + col.id + '" data-colid="' + col.id + '" data-kbid="' + kbId + '"></div>' +
+          '<button class="kanban-add-card">\uff0b Add card</button>' +
+          '</div>';
+      }).join('');
 
-      return `<div class="kanban-wrap" data-kbid="${kbId}" contenteditable="false">
-  <div class="kanban-header">
-    <input class="kanban-board-title" value="${esc(boardTitle)}"
-      onchange="onBoardTitleChange('${kbId}',this.value)"
-      onkeydown="if(event.key==='Enter')this.blur()">
-    <button class="kanban-add-col-btn" onclick="addKanbanCol('${kbId}')">＋ Column</button>
-  </div>
-  <div class="kanban-cols" id="kboard_${kbId}">${colsHtml}</div>
-</div>`;
+      // Render cards separately after inserting cols
+      var result = '<div class="kanban-wrap" data-kbid="' + kbId + '" contenteditable="false">' +
+        '<div class="kanban-header">' +
+        '<input class="kanban-board-title" value="' + esc(boardTitle) + '">' +
+        '<button class="kanban-add-col-btn">\uff0b Column</button>' +
+        '</div>' +
+        '<div class="kanban-cols" id="kboard_' + kbId + '">' + colsHtml + '</div>' +
+        '</div>';
+
+      // We'll populate cards after DOM insertion
+      setTimeout(function () {
+        cols.forEach(function (col) {
+          var dest = document.getElementById('kcards_' + col.id);
+          if (dest) {
+            col.cards.forEach(function (card) {
+              dest.insertAdjacentHTML('beforeend', renderCardHTML(kbId, col.id, card));
+            });
+          }
+        });
+        attachKanbanDragEvents(kbId);
+      }, 100);
+
+      return result;
     }
 
     function renderCardHTML(kbId, colId, card) {
-      return `<div class="kanban-card" id="kcard_${card.id}" 
-    draggable="true"
-    data-cardid="${card.id}" data-colid="${colId}" data-kbid="${kbId}"
-    ondragstart="kanbanDragStart(event,'${kbId}','${colId}','${card.id}')"
-    ondragend="kanbanDragEnd(event)">
-    <div class="kanban-card-title">${esc(card.title)}</div>
-    ${card.desc ? `<div class="kanban-card-desc">${esc(card.desc)}</div>` : ''}
-    <div class="kanban-card-meta">
-      <div class="kanban-card-tag" style="background:${card.color}22;color:${card.color};border:1px solid ${card.color}44;">
-        ${getColName(kbId, colId) || '—'}
-      </div>
-      <div class="kanban-card-actions">
-        <button class="kca-btn" onclick="editKanbanCard('${kbId}','${colId}','${card.id}')">Edit</button>
-        <button class="kca-btn del" onclick="deleteKanbanCard('${kbId}','${colId}','${card.id}')">✕</button>
-      </div>
-    </div>
-  </div>`;
+      var descHtml = card.desc ? '<div class="kanban-card-desc">' + esc(card.desc) + '</div>' : '';
+      var colName = getColName(kbId, colId) || '\u2014';
+      return '<div class="kanban-card" id="kcard_' + card.id + '" draggable="true" ' +
+        'data-cardid="' + card.id + '" data-colid="' + colId + '" data-kbid="' + kbId + '">' +
+        '<div class="kanban-card-title">' + esc(card.title) + '</div>' +
+        descHtml +
+        '<div class="kanban-card-meta">' +
+        '<div class="kanban-card-tag" style="background:' + card.color + '22;color:' + card.color + ';border:1px solid ' + card.color + '44;">' + colName + '</div>' +
+        '<div class="kanban-card-actions">' +
+        '<button class="kca-btn edit-btn">Edit</button>' +
+        '<button class="kca-btn del">\u2715</button>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
     }
 
     function getKanbanData(kbId) {
-      // Extract kanban state from DOM
-      const board = document.getElementById('kboard_' + kbId);
+      var board = document.getElementById('kboard_' + kbId);
       if (!board) return null;
-      const cols = [];
-      board.querySelectorAll('.kanban-col').forEach(colEl => {
-        const colId = colEl.dataset.colid;
-        const nameInput = colEl.querySelector('.kanban-col-name');
-        const dotEl = colEl.querySelector('.kanban-col-dot');
-        const cards = [];
-        colEl.querySelectorAll('.kanban-card').forEach(cardEl => {
-          const cardId = cardEl.dataset.cardid;
-          const title = cardEl.querySelector('.kanban-card-title')?.textContent || '';
-          const desc = cardEl.querySelector('.kanban-card-desc')?.textContent || '';
-          const tagEl = cardEl.querySelector('.kanban-card-tag');
-          const color = tagEl ? tagEl.style.color : '#6b7280';
-          cards.push({ id: cardId, title, desc, color });
+      var cols = [];
+      board.querySelectorAll('.kanban-col').forEach(function (colEl) {
+        var colId = colEl.dataset.colid;
+        var nameInput = colEl.querySelector('.kanban-col-name');
+        var dotEl = colEl.querySelector('.kanban-col-dot');
+        var cards = [];
+        colEl.querySelectorAll('.kanban-card').forEach(function (cardEl) {
+          cards.push({
+            id: cardEl.dataset.cardid,
+            title: cardEl.querySelector('.kanban-card-title')?.textContent || '',
+            desc: cardEl.querySelector('.kanban-card-desc')?.textContent || '',
+            color: cardEl.querySelector('.kanban-card-tag')?.style.color || '#6b7280'
+          });
         });
-        cols.push({
-          id: colId,
-          name: nameInput?.value || '',
-          color: dotEl?.style.background || '#6b7280',
-          cards
-        });
+        cols.push({ id: colId, name: nameInput?.value || '', color: dotEl?.style.background || '#6b7280', cards: cards });
       });
       return cols;
     }
 
     function getColName(kbId, colId) {
-      const colEl = document.getElementById('kcol_' + colId);
+      var colEl = document.getElementById('kcol_' + colId);
       return colEl?.querySelector('.kanban-col-name')?.value || '';
     }
 
-    // Drag and Drop
-    function kanbanDragStart(e, kbId, colId, cardId) {
-      dragCard = { kbId, colId, cardId };
-      const cardEl = document.getElementById('kcard_' + cardId);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', cardId);
-      setTimeout(() => { if (cardEl) cardEl.classList.add('dragging'); }, 0);
+    // ── Drag and Drop (with same-column reorder) ──────────────
+    function attachKanbanDragEvents(kbId) {
+      var board = document.getElementById('kboard_' + kbId);
+      if (!board) return;
+      // Attach drag events via event delegation on the board
+      board.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        // Show drop position within column
+        var cardsContainer = e.target.closest('.kanban-cards');
+        if (cardsContainer && dragCard) {
+          var afterEl = getDragAfterElement(cardsContainer, e.clientY);
+          var ghost = document.querySelector('.kanban-card-ghost');
+          if (!ghost) {
+            ghost = document.createElement('div');
+            ghost.className = 'kanban-card-ghost';
+            ghost.style.height = '4px';
+            ghost.style.borderRadius = '2px';
+            ghost.style.background = 'var(--accent, #2563eb)';
+            ghost.style.margin = '4px 0';
+            ghost.style.transition = 'all .1s';
+          }
+          if (afterEl) cardsContainer.insertBefore(ghost, afterEl);
+          else cardsContainer.appendChild(ghost);
+        }
+      });
+      board.addEventListener('dragenter', function (e) {
+        e.preventDefault();
+        var col = e.target.closest('.kanban-col');
+        if (col) {
+          document.querySelectorAll('.kanban-col.drag-over').forEach(function (el) { el.classList.remove('drag-over'); });
+          col.classList.add('drag-over');
+        }
+      });
+      board.addEventListener('dragleave', function (e) {
+        var col = e.target.closest('.kanban-col');
+        if (col && !col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+      });
+      board.addEventListener('drop', function (e) {
+        e.preventDefault();
+        document.querySelectorAll('.kanban-card-ghost').forEach(function (g) { g.remove(); });
+        if (!dragCard) return;
+        var cardsContainer = e.target.closest('.kanban-cards');
+        if (!cardsContainer) { cleanupDrag(); return; }
+        var toColId = cardsContainer.dataset.colid;
+        var fromColId = dragCard.colId;
+        var cardId = dragCard.cardId;
+        var cardEl = document.getElementById('kcard_' + cardId);
+        if (!cardEl) { cleanupDrag(); return; }
+
+        // Determine insertion point
+        var afterEl = getDragAfterElement(cardsContainer, e.clientY);
+
+        // Move the actual card element (preserves all state)
+        if (afterEl) cardsContainer.insertBefore(cardEl, afterEl);
+        else cardsContainer.appendChild(cardEl);
+
+        // Update card data attributes
+        cardEl.dataset.colid = toColId;
+        cardEl.dataset.kbid = kbId;
+
+        // Update tag text to show new column name
+        var tagEl = cardEl.querySelector('.kanban-card-tag');
+        if (tagEl) tagEl.textContent = getColName(kbId, toColId) || '\u2014';
+
+        // Update counts
+        updateColCount(kbId, fromColId);
+        updateColCount(kbId, toColId);
+
+        cleanupDrag();
+        kanbanPersist();
+        if (fromColId !== toColId) toast('Card moved \u2192');
+      });
     }
 
-    function kanbanDragEnd(e) {
+    function getDragAfterElement(container, y) {
+      var elements = Array.from(container.querySelectorAll('.kanban-card:not(.dragging)'));
+      var closest = null, closestOffset = Number.NEGATIVE_INFINITY;
+      elements.forEach(function (child) {
+        var box = child.getBoundingClientRect();
+        var offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closestOffset) {
+          closestOffset = offset;
+          closest = child;
+        }
+      });
+      return closest;
+    }
+
+    function cleanupDrag() {
+      document.querySelectorAll('.kanban-col.drag-over').forEach(function (el) { el.classList.remove('drag-over'); });
+      document.querySelectorAll('.kanban-card-ghost').forEach(function (el) { el.remove(); });
       if (dragCard) {
-        const cardEl = document.getElementById('kcard_' + dragCard.cardId);
+        var cardEl = document.getElementById('kcard_' + dragCard.cardId);
         if (cardEl) cardEl.classList.remove('dragging');
       }
-      // Remove all drag-over states
-      document.querySelectorAll('.kanban-col.drag-over').forEach(el => el.classList.remove('drag-over'));
-      document.querySelectorAll('.kanban-card-ghost').forEach(el => el.remove());
       dragCard = null;
     }
 
-    function kanbanDragOver(e, kbId, colId) {
-      e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+    // Global drag start/end (these are still needed for inline ondragstart)
+    function kanbanDragStart(e, kbId, colId, cardId) {
+      dragCard = { kbId: kbId, colId: colId, cardId: cardId };
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', cardId);
+      setTimeout(function () {
+        var cardEl = document.getElementById('kcard_' + cardId);
+        if (cardEl) cardEl.classList.add('dragging');
+      }, 0);
     }
+    function kanbanDragEnd(e) { cleanupDrag(); }
+    // Legacy compat (inline handlers from saved HTML)
+    function kanbanDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
     function kanbanDragEnter(e, kbId, colId) {
       e.preventDefault();
-      document.querySelectorAll('.kanban-col.drag-over').forEach(el => el.classList.remove('drag-over'));
+      document.querySelectorAll('.kanban-col.drag-over').forEach(function (el) { el.classList.remove('drag-over'); });
       document.getElementById('kcol_' + colId)?.classList.add('drag-over');
     }
     function kanbanDragLeave(e, colId) {
-      const col = document.getElementById('kcol_' + colId);
+      var col = document.getElementById('kcol_' + colId);
       if (col && !col.contains(e.relatedTarget)) col.classList.remove('drag-over');
     }
-
     function kanbanDrop(e, kbId, toColId) {
       e.preventDefault();
       if (!dragCard) return;
-      const { cardId, colId: fromColId } = dragCard;
-      if (fromColId === toColId) {
-        document.getElementById('kcol_' + toColId)?.classList.remove('drag-over');
-        return;
-      }
-
-      // Get card data before removing
-      const cardEl = document.getElementById('kcard_' + cardId);
-      if (!cardEl) { document.getElementById('kcol_' + toColId)?.classList.remove('drag-over'); return; }
-
-      const title = cardEl.querySelector('.kanban-card-title')?.textContent || '';
-      const desc = cardEl.querySelector('.kanban-card-desc')?.textContent || '';
-      const tagEl = cardEl.querySelector('.kanban-card-tag');
-      const color = tagEl ? tagEl.style.color : '#6b7280';
-
-      // Remove from source
-      cardEl.remove();
-
-      // Update count
+      var cardId = dragCard.cardId;
+      var fromColId = dragCard.colId;
+      var cardEl = document.getElementById('kcard_' + cardId);
+      if (!cardEl) { cleanupDrag(); return; }
+      var dest = document.getElementById('kcards_' + toColId);
+      if (!dest) { cleanupDrag(); return; }
+      var afterEl = getDragAfterElement(dest, e.clientY);
+      if (afterEl) dest.insertBefore(cardEl, afterEl);
+      else dest.appendChild(cardEl);
+      cardEl.dataset.colid = toColId;
+      var tagEl = cardEl.querySelector('.kanban-card-tag');
+      if (tagEl) tagEl.textContent = getColName(kbId, toColId) || '\u2014';
       updateColCount(kbId, fromColId);
-
-      // Add to destination
-      const newCard = { id: cardId, title, desc, color };
-      const newCardHtml = renderCardHTML(kbId, toColId, newCard);
-      const destCards = document.getElementById('kcards_' + toColId);
-      if (destCards) destCards.insertAdjacentHTML('beforeend', newCardHtml);
-
-      // Update col name on card tag
-      const movedCardEl = document.getElementById('kcard_' + cardId);
-      if (movedCardEl) {
-        const tagEl2 = movedCardEl.querySelector('.kanban-card-tag');
-        if (tagEl2) tagEl2.textContent = getColName(kbId, toColId) || '—';
-        movedCardEl.dataset.colid = toColId;
-        movedCardEl.setAttribute('ondragstart', `kanbanDragStart(event,'${kbId}','${toColId}','${cardId}')`);
-        movedCardEl.setAttribute('onclick', `editKanbanCard('${kbId}','${toColId}','${cardId}')`);
-        const editBtn = movedCardEl.querySelector('.kca-btn:not(.del)');
-        if (editBtn) editBtn.setAttribute('onclick', `editKanbanCard('${kbId}','${toColId}','${cardId}')`);
-        const delBtn = movedCardEl.querySelector('.kca-btn.del');
-        if (delBtn) delBtn.setAttribute('onclick', `deleteKanbanCard('${kbId}','${toColId}','${cardId}')`);
-      }
-
       updateColCount(kbId, toColId);
-      document.getElementById('kcol_' + toColId)?.classList.remove('drag-over');
-
-      // Persist
-      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
-      toast('Card moved →');
+      cleanupDrag();
+      kanbanPersist();
+      if (fromColId !== toColId) toast('Card moved \u2192');
     }
 
     function updateColCount(kbId, colId) {
-      const colEl = document.getElementById('kcol_' + colId);
+      var colEl = document.getElementById('kcol_' + colId);
       if (!colEl) return;
-      const count = colEl.querySelectorAll('.kanban-card').length;
-      const countEl = colEl.querySelector('.kanban-col-count');
+      var count = colEl.querySelectorAll('.kanban-card').length;
+      var countEl = colEl.querySelector('.kanban-col-count');
       if (countEl) countEl.textContent = count;
     }
 
+    function kanbanPersist() {
+      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+    }
+
     function addKanbanCard(kbId, colId) {
-      const cardId = 'card_' + Date.now();
-      // Open card modal
-      openCardModal('New Card', kbId, colId, cardId, null, (cardData) => {
-        const card = { id: cardId, ...cardData };
-        const html = renderCardHTML(kbId, colId, card);
-        const dest = document.getElementById('kcards_' + colId);
-        if (dest) dest.insertAdjacentHTML('beforeend', html);
+      var cardId = 'card_' + Date.now();
+      openCardModal('New Card', kbId, colId, cardId, null, function (cardData) {
+        var card = { id: cardId, title: cardData.title, desc: cardData.desc, color: cardData.color };
+        var html = renderCardHTML(kbId, colId, card);
+        var dest = document.getElementById('kcards_' + colId);
+        if (dest) {
+          dest.insertAdjacentHTML('beforeend', html);
+          // Re-attach drag events for new card
+          var newCard = document.getElementById('kcard_' + cardId);
+          if (newCard) {
+            newCard.setAttribute('ondragstart', "kanbanDragStart(event,'" + kbId + "','" + colId + "','" + cardId + "')");
+            newCard.setAttribute('ondragend', 'kanbanDragEnd(event)');
+          }
+        }
         updateColCount(kbId, colId);
-        if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+        kanbanPersist();
+        toast('Card added');
       });
     }
 
     function editKanbanCard(kbId, colId, cardId) {
-      const cardEl = document.getElementById('kcard_' + cardId);
+      var cardEl = document.getElementById('kcard_' + cardId);
       if (!cardEl) return;
-      const title = cardEl.querySelector('.kanban-card-title')?.textContent || '';
-      const desc = cardEl.querySelector('.kanban-card-desc')?.textContent || '';
-      const tagEl = cardEl.querySelector('.kanban-card-tag');
-      const color = tagEl ? tagEl.style.color : '#6b7280';
+      var title = cardEl.querySelector('.kanban-card-title')?.textContent || '';
+      var desc = cardEl.querySelector('.kanban-card-desc')?.textContent || '';
+      var tagEl = cardEl.querySelector('.kanban-card-tag');
+      var color = tagEl ? tagEl.style.color : '#6b7280';
 
-      openCardModal('Edit Card', kbId, colId, cardId, { title, desc, color }, (cardData) => {
-        // Update the card element
-        const titleEl = cardEl.querySelector('.kanban-card-title');
+      openCardModal('Edit Card', kbId, colId, cardId, { title: title, desc: desc, color: color }, function (cardData) {
+        var titleEl = cardEl.querySelector('.kanban-card-title');
         if (titleEl) titleEl.textContent = cardData.title;
-        let descEl = cardEl.querySelector('.kanban-card-desc');
+        var descEl = cardEl.querySelector('.kanban-card-desc');
         if (cardData.desc) {
           if (!descEl) {
             descEl = document.createElement('div');
@@ -3939,64 +4055,78 @@
           tagEl.style.color = cardData.color;
           tagEl.style.borderColor = cardData.color + '44';
         }
-        if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+        kanbanPersist();
+        toast('Card updated');
       });
     }
 
     function deleteKanbanCard(kbId, colId, cardId) {
-      const cardEl = document.getElementById('kcard_' + cardId);
+      var cardEl = document.getElementById('kcard_' + cardId);
       if (!cardEl) return;
       cardEl.remove();
       updateColCount(kbId, colId);
-      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+      kanbanPersist();
       toast('Card deleted');
     }
 
     function addKanbanCol(kbId) {
-      const colId = 'col_' + Date.now();
-      const color = COL_COLORS[document.querySelectorAll(`[data-kbid="${kbId}"] .kanban-col`).length % COL_COLORS.length];
-      const col = { id: colId, name: 'New Column', color, cards: [] };
-      const html = `<div class="kanban-col" id="kcol_${col.id}" data-colid="${col.id}" data-kbid="${kbId}">
-    <div class="kanban-col-header">
-      <div class="kanban-col-dot" style="background:${col.color}"></div>
-      <input class="kanban-col-name" value="${esc(col.name)}" style="color:${col.color}"
-        onchange="onColNameChange('${kbId}','${col.id}',this.value)"
-        onkeydown="if(event.key==='Enter')this.blur()">
-      <span class="kanban-col-count">0</span>
-      <button class="kanban-col-del" onclick="deleteKanbanCol('${kbId}','${col.id}')">✕</button>
-    </div>
-    <div class="kanban-cards" id="kcards_${col.id}"
-      ondragover="kanbanDragOver(event,'${kbId}','${col.id}')"
-      ondragenter="kanbanDragEnter(event,'${kbId}','${col.id}')"
-      ondragleave="kanbanDragLeave(event,'${col.id}')"
-      ondrop="kanbanDrop(event,'${kbId}','${col.id}')"></div>
-    <button class="kanban-add-card" onclick="addKanbanCard('${kbId}','${col.id}')">＋ Add card</button>
-  </div>`;
-      document.getElementById('kboard_' + kbId)?.insertAdjacentHTML('beforeend', html);
-      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+      var colId = 'col_' + Date.now();
+      var existingCols = document.querySelectorAll('[data-kbid="' + kbId + '"] .kanban-col').length;
+      var color = COL_COLORS[existingCols % COL_COLORS.length];
+      var html = '<div class="kanban-col" id="kcol_' + colId + '" data-colid="' + colId + '" data-kbid="' + kbId + '">' +
+        '<div class="kanban-col-header">' +
+        '<div class="kanban-col-dot" style="background:' + color + '"></div>' +
+        '<input class="kanban-col-name" value="New Column" style="color:' + color + '">' +
+        '<span class="kanban-col-count">0</span>' +
+        '<button class="kanban-col-del" title="Delete column">\u2715</button>' +
+        '</div>' +
+        '<div class="kanban-cards" id="kcards_' + colId + '" data-colid="' + colId + '" data-kbid="' + kbId + '"></div>' +
+        '<button class="kanban-add-card">\uff0b Add card</button>' +
+        '</div>';
+      var board = document.getElementById('kboard_' + kbId);
+      if (board) {
+        board.insertAdjacentHTML('beforeend', html);
+        // Focus the new column name input
+        var newCol = document.getElementById('kcol_' + colId);
+        if (newCol) {
+          var nameInput = newCol.querySelector('.kanban-col-name');
+          if (nameInput) { nameInput.focus(); nameInput.select(); }
+        }
+      }
+      kanbanPersist();
+      toast('Column added');
     }
 
     function deleteKanbanCol(kbId, colId) {
-      const cards = document.querySelectorAll(`#kcards_${colId} .kanban-card`).length;
-      if (cards > 0 && !confirm(`Delete column with ${cards} card(s)?`)) return;
+      var cards = document.querySelectorAll('#kcards_' + colId + ' .kanban-card').length;
+      if (cards > 0 && !confirm('Delete column with ' + cards + ' card(s)?')) return;
       document.getElementById('kcol_' + colId)?.remove();
-      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+      kanbanPersist();
+      toast('Column deleted');
     }
 
     function onColNameChange(kbId, colId, newName) {
-      // Update all cards in this col that show the col name
-      document.querySelectorAll(`#kcards_${colId} .kanban-card-tag`).forEach(el => {
+      document.querySelectorAll('#kcards_' + colId + ' .kanban-card-tag').forEach(function (el) {
         el.textContent = newName;
       });
-      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+      kanbanPersist();
     }
 
     function onBoardTitleChange(kbId, newTitle) {
-      if (activeNote) { notes[activeNote].content = document.getElementById('editor').innerHTML; debounceSave(); }
+      kanbanPersist();
     }
 
+    // Re-attach events when loading saved kanban boards
     function attachKanbanEvents(kbId) {
-      // Events are inline, but re-apply drag events after render
+      attachKanbanDragEvents(kbId);
+    }
+
+    // Re-attach for all boards on page load
+    function reattachAllKanbanEvents() {
+      document.querySelectorAll('.kanban-wrap').forEach(function (wrap) {
+        var kbId = wrap.dataset.kbid;
+        if (kbId) attachKanbanDragEvents(kbId);
+      });
     }
 
     // Card Modal
@@ -4021,14 +4151,20 @@
       btn.classList.add('sel');
     }
     function saveCard() {
-      const title = document.getElementById('cm-card-title').value.trim();
+      var title = document.getElementById('cm-card-title').value.trim();
       if (!title) { document.getElementById('cm-card-title').focus(); return; }
-      const desc = document.getElementById('cm-card-desc').value.trim();
-      const colorBtn = document.querySelector('.cm-color-btn.sel');
-      const color = colorBtn?.dataset.color || '#6b7280';
+      var desc = document.getElementById('cm-card-desc').value.trim();
+      var colorBtn = document.querySelector('.cm-color-btn.sel');
+      var color = colorBtn?.dataset.color || '#6b7280';
+      // IMPORTANT: grab callback BEFORE closeCardModal nullifies it
+      var cb = cardModalCb;
       closeCardModal();
-      if (cardModalCb) cardModalCb({ title, desc, color });
+      if (cb) cb({ title: title, desc: desc, color: color });
     }
+    // Enter key submits the card modal
+    document.getElementById('cm-card-title').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); saveCard(); }
+    });
 
     // ═══════════════════════════════════════════════════════════
     //  FORMAT / SLASH
