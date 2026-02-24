@@ -4359,6 +4359,11 @@
           <div class="wp-card-name">Projects</div>
           <div class="wp-card-desc">Ongoing tasks & to-dos</div>
         </div>
+        <div class="wp-card" onclick="addWidget('podcast')">
+          <div class="wp-card-icon">🎙</div>
+          <div class="wp-card-name">Podcast</div>
+          <div class="wp-card-desc">Spotify episode embed</div>
+        </div>
       </div>
       <div style="margin-bottom:14px">
         <div class="wp-sub" style="margin-bottom:8px;margin-top:0">📌 Sticky Note — choose colour:</div>
@@ -6100,8 +6105,154 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
       closeWidgetPicker(); var id = type + '_' + Date.now(); var cx = Math.max(40, Math.floor(window.innerWidth / 2) - 150); var cy = Math.max(60, Math.floor(window.innerHeight / 2) - 120);
       if (type === 'clock') { var body = '<div class="flip-clock"><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-h1">0</div><div class="flip-digit" id="' + id + '-h2">0</div></div><div class="flip-sep">:</div><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-m1">0</div><div class="flip-digit" id="' + id + '-m2">0</div></div><div class="flip-sep">:</div><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-s1">0</div><div class="flip-digit" id="' + id + '-s2">0</div></div></div><div class="flip-date-row" id="' + id + '-date"></div>'; makeWidgetEl(id, '&#x1F550; Clock', body, cx, cy, 320); (function startClock() { function tick() { var n = new Date(); var h = String(n.getHours()).padStart(2, '0'); var m = String(n.getMinutes()).padStart(2, '0'); var s = String(n.getSeconds()).padStart(2, '0'); var h1 = document.getElementById(id + '-h1'); if (!h1) { clearInterval(widgetState.clockInterval); widgetState.clockInterval = null; return; } document.getElementById(id + '-h1').textContent = h[0]; document.getElementById(id + '-h2').textContent = h[1]; document.getElementById(id + '-m1').textContent = m[0]; document.getElementById(id + '-m2').textContent = m[1]; document.getElementById(id + '-s1').textContent = s[0]; document.getElementById(id + '-s2').textContent = s[1]; var dt = document.getElementById(id + '-date'); if (dt) dt.textContent = n.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); } tick(); if (widgetState.clockInterval) clearInterval(widgetState.clockInterval); widgetState.clockInterval = setInterval(tick, 1000); })(); toast('&#x1F550; Clock added'); }
       else if (type === 'spotify') { addSpotifyWidget(id, cx, cy); }
+      else if (type === 'podcast') { addPodcastWidget(id, cx, cy); }
       else if (type === 'projects') { var body = '<div class="widget-body"><div class="proj-add-row"><input class="proj-inp" id="' + id + '-inp" placeholder="Add task... (Enter)" onkeydown="if(event.key===\'Enter\')projAdd(\'' + id + '\')"><button class="proj-add-btn" onclick="projAdd(\'' + id + '\')">+</button></div><div class="proj-list" id="' + id + '-list"></div></div><div class="proj-footer"><span id="' + id + '-count">0 tasks</span></div>'; makeWidgetEl(id, '&#x1F4CB; Projects', body, cx, cy, 310); renderProjList(id); toast('&#x1F4CB; Projects board added'); }
     }
+
+    // ── PODCAST EMBED WIDGET (Spotify iFrame API) ──────────────────────────────
+    // Uses Spotify's official iFrame API — no OAuth needed, works on any HTTP origin.
+    // Docs: https://developer.spotify.com/documentation/embeds/references/iframe-api
+    var PODCAST_EPISODE_ID = '7makk4oTQel546B0PZlDM5';
+    var _spotifyIFrameAPI   = null;   // set once onSpotifyIframeApiReady fires
+    var _podcastControllers = {};     // widgetId → EmbedController
+
+    // Inject the Spotify iFrame API script once, lazily
+    function _ensureSpotifyApiScript() {
+      if (document.getElementById('spotify-iframe-api')) return;
+      var s = document.createElement('script');
+      s.id  = 'spotify-iframe-api';
+      s.src = 'https://open.spotify.com/embed/iframe-api/v1';
+      s.async = true;
+      document.head.appendChild(s);
+    }
+
+    // Spotify calls this globally when the API is ready
+    window.onSpotifyIframeApiReady = function(IFrameAPI) {
+      _spotifyIFrameAPI = IFrameAPI;
+      // Resolve any widgets that were waiting for the API
+      document.querySelectorAll('[data-spotify-pending]').forEach(function(el) {
+        var wid       = el.dataset.spotifyPending;
+        var episodeId = el.dataset.episodeId || PODCAST_EPISODE_ID;
+        _createSpotifyController(wid, el, episodeId);
+      });
+    };
+
+    function _createSpotifyController(wid, placeholderEl, episodeId) {
+      if (!_spotifyIFrameAPI) return;
+      var opts = {
+        width:  '100%',
+        height: 152,
+        uri:    'spotify:episode:' + episodeId,
+      };
+      _spotifyIFrameAPI.createController(placeholderEl, opts, function(ctrl) {
+        _podcastControllers[wid] = ctrl;
+
+        ctrl.addListener('ready', function() {
+          var bar = document.getElementById(wid + '-pod-bar');
+          if (bar) bar.style.display = 'flex';
+        });
+
+        ctrl.addListener('playback_update', function(e) {
+          var d   = e.data;
+          var pct = d.duration > 0 ? (d.position / d.duration * 100).toFixed(1) : 0;
+          var cur = document.getElementById(wid + '-pod-cur');
+          var dur = document.getElementById(wid + '-pod-dur');
+          var fill= document.getElementById(wid + '-pod-fill');
+          var btn = document.getElementById(wid + '-pod-play');
+          if (cur)  cur.textContent  = _fmtMs(d.position);
+          if (dur)  dur.textContent  = _fmtMs(d.duration);
+          if (fill) fill.style.width = pct + '%';
+          if (btn)  btn.textContent  = d.isPaused ? '▶' : '⏸';
+        });
+      });
+    }
+
+    function _fmtMs(ms) {
+      var s = Math.floor((ms || 0) / 1000);
+      return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    }
+
+    function podPlay(wid)   { var c = _podcastControllers[wid]; if (c) c.resume(); }
+    function podPause(wid)  { var c = _podcastControllers[wid]; if (c) c.pause(); }
+    function podToggle(wid) { var c = _podcastControllers[wid]; if (c) c.togglePlay(); }
+    function podRestart(wid){ var c = _podcastControllers[wid]; if (c) c.restart(); }
+    function podSeekClick(e, wid) {
+      var c = _podcastControllers[wid]; if (!c) return;
+      var pct = e.offsetX / e.currentTarget.offsetWidth;
+      var durEl = document.getElementById(wid + '-pod-dur');
+      if (!durEl) return;
+      var parts = durEl.textContent.split(':');
+      var totalS = parseInt(parts[0]) * 60 + parseInt(parts[1]);
+      c.seek(Math.floor(pct * totalS));
+    }
+
+    function addPodcastWidget(id, cx, cy) {
+      cx = cx || Math.max(40, Math.floor(window.innerWidth  / 2) - 170);
+      cy = cy || Math.max(60, Math.floor(window.innerHeight / 2) - 100);
+
+      var urlInput  = prompt('Spotify episode URL:\n(Press OK for default episode)', 'https://open.spotify.com/episode/' + PODCAST_EPISODE_ID);
+      var episodeId = PODCAST_EPISODE_ID;
+      if (urlInput && urlInput.trim()) {
+        var m = urlInput.trim().match(/episode\/([A-Za-z0-9]+)/);
+        if (m) episodeId = m[1];
+      }
+
+      // The div#id-embed is the placeholder the API replaces with the real iframe
+      var body = [
+        '<div style="display:flex;flex-direction:column;gap:6px;padding:6px 4px 8px;">',
+
+        // Spotify embed placeholder — API mounts here
+        '<div id="' + id + '-embed" ',
+        '  data-spotify-pending="' + id + '" ',
+        '  data-episode-id="'      + episodeId + '" ',
+        '  style="width:100%;min-height:152px;border-radius:10px;background:rgba(0,0,0,.3);',
+        '         display:flex;align-items:center;justify-content:center;',
+        '         font-family:var(--mono);font-size:10px;color:var(--muted);">',
+        '  Loading…',
+        '</div>',
+
+        // Custom controls bar (hidden until ready event)
+        '<div id="' + id + '-pod-bar" style="display:none;align-items:center;gap:6px;padding:0 2px;">',
+        '  <button onclick="podToggle(\'' + id + '\')" id="' + id + '-pod-play" ',
+        '    style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(253,186,116,.3);',
+        '           background:rgba(253,186,116,.08);color:var(--forge-orange,#fdba74);',
+        '           font-size:11px;cursor:pointer;flex-shrink:0;">▶</button>',
+        '  <button onclick="podRestart(\'' + id + '\')" ',
+        '    style="width:22px;height:22px;border-radius:50%;border:1px solid var(--border,rgba(255,255,255,.07));',
+        '           background:transparent;color:var(--muted,rgba(255,255,255,.32));',
+        '           font-size:9px;cursor:pointer;flex-shrink:0;" title="Restart">↺</button>',
+        '  <span id="' + id + '-pod-cur" style="font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0;">0:00</span>',
+        '  <div onclick="podSeekClick(event,\'' + id + '\')" ',
+        '    style="flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;cursor:pointer;position:relative;">',
+        '    <div id="' + id + '-pod-fill" ',
+        '      style="height:100%;width:0%;background:var(--forge-orange,#fdba74);border-radius:2px;',
+        '             pointer-events:none;transition:width .5s linear;"></div>',
+        '  </div>',
+        '  <span id="' + id + '-pod-dur" style="font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0;">0:00</span>',
+        '</div>',
+
+        '</div>'
+      ].join('');
+
+      makeWidgetEl(id, '🎙 Podcast', body, cx, cy, 340);
+
+      // Load the API script (noop if already loaded)
+      _ensureSpotifyApiScript();
+
+      // If API is already ready, create the controller immediately
+      if (_spotifyIFrameAPI) {
+        var placeholder = document.getElementById(id + '-embed');
+        if (placeholder) _createSpotifyController(id, placeholder, episodeId);
+      }
+      // Otherwise onSpotifyIframeApiReady will pick up [data-spotify-pending] elements
+
+      window.podToggle  = podToggle;
+      window.podRestart = podRestart;
+      window.podSeekClick = podSeekClick;
+
+      toast('🎙 Podcast widget added');
+    }
+
     // ── REAL SPOTIFY INTEGRATION ──────────────────────────────────────────────
     var _spotifyWidgetId = null;
     var _spotifyPollTimer = null;
@@ -6155,13 +6306,13 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
           '</div>' +
         '</div>' +
         '<div class="spot-controls">' +
-          '<button class="spot-btn" onclick="spotifyCtrl(\'' + id + '\',\'previous\')">&#x23EE;</button>' +
-          '<button class="spot-btn play" id="' + id + '-play" onclick="spotifyCtrl(\'' + id + '\',\'toggle\')">&#x25B6;</button>' +
-          '<button class="spot-btn" onclick="spotifyCtrl(\'' + id + '\',\'next\')">&#x23ED;</button>' +
+          '<button class="spot-btn" onclick="spotifyCtrl(\''+id+'\',\'previous\')">&#x23EE;</button>' +
+          '<button class="spot-btn play" id="' + id + '-play" onclick="spotifyCtrl(\''+id+'\',\'toggle\')">&#x25B6;</button>' +
+          '<button class="spot-btn" onclick="spotifyCtrl(\''+id+'\',\'next\')">&#x23ED;</button>' +
         '</div>' +
         '<div class="spot-progress-wrap">' +
           '<span id="' + id + '-cur">0:00</span>' +
-          '<div class="spot-progress" onclick="spotifySeekClick(event,\'' + id + '\')">' +
+          '<div class="spot-progress" onclick="spotifySeekClick(event,\''+id+'\')">' +
             '<div class="spot-progress-fill" id="' + id + '-fill"></div>' +
           '</div>' +
           '<span id="' + id + '-dur">0:00</span>' +
@@ -6253,7 +6404,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
     function removeSticky(id) { var el = document.getElementById(id); if (el) el.remove(); widgetState.stickyNotes = widgetState.stickyNotes.filter(function (s) { return s.id !== id; }); saveStickies(); }
     function saveStickies() { localStorage.setItem('blitz_stickies', JSON.stringify(widgetState.stickyNotes)); }
     widgetState.stickyNotes.forEach(function (note) { spawnSticky(note); });
-    window.openWidgetPicker = openWidgetPicker; window.closeWidgetPicker = closeWidgetPicker; window.addWidget = addWidget; window.addSticky = addSticky; window.removeWidget = removeWidget; window.removeSticky = removeSticky; window.spotToggle = spotToggle; window.spotNext = spotNext; window.spotPrev = spotPrev; window.spotSeek = spotSeek; window.projAdd = projAdd; window.projToggle = projToggle; window.projDel = projDel; window.stickyChange = stickyChange;
+    window.openWidgetPicker = openWidgetPicker; window.closeWidgetPicker = closeWidgetPicker; window.addWidget = addWidget; window.addPodcastWidget = addPodcastWidget; window.addSticky = addSticky; window.removeWidget = removeWidget; window.removeSticky = removeSticky; window.spotToggle = spotToggle; window.spotNext = spotNext; window.spotPrev = spotPrev; window.spotSeek = spotSeek; window.projAdd = projAdd; window.projToggle = projToggle; window.projDel = projDel; window.stickyChange = stickyChange;
 
     // ═══════════════════════════════════════════════════════════
     //  AI CURSOR + VOICE DOM CONTROLLER v2 — Full PC/DOM Control
