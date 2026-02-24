@@ -25,7 +25,7 @@
       --text: rgba(255, 255, 255, 0.92);
       --muted: rgba(255, 255, 255, 0.32);
       --faint: rgba(255, 255, 255, 0.055);
-      --accent: #f97316;
+      --accent: #a78bfa;
       --green: #4ade80;
       --red: #fb7185;
       --gold: #fbbf24;
@@ -241,11 +241,11 @@
     .nav-item:hover {
       background: var(--faint);
       color: var(--text);
-      border-left-color: rgba(249, 115, 22, .4)
+      border-left-color: rgba(167, 139, 250, .4)
     }
 
     .nav-item.active {
-      background: rgba(249, 115, 22, .08);
+      background: rgba(167, 139, 250, .08);
       color: var(--text);
       border-left-color: var(--accent)
     }
@@ -647,11 +647,11 @@
 
       0%,
       100% {
-        box-shadow: 0 0 0 8px rgba(249, 115, 22, .18), 0 0 0 22px rgba(249, 115, 22, .08), 0 0 0 42px rgba(249, 115, 22, .04)
+        box-shadow: 0 0 0 8px rgba(167, 139, 250, .18), 0 0 0 22px rgba(167, 139, 250, .08), 0 0 0 42px rgba(167, 139, 250, .04)
       }
 
       50% {
-        box-shadow: 0 0 0 16px rgba(249, 115, 22, .32), 0 0 0 36px rgba(249, 115, 22, .15), 0 0 0 58px rgba(249, 115, 22, .07)
+        box-shadow: 0 0 0 16px rgba(167, 139, 250, .32), 0 0 0 36px rgba(167, 139, 250, .15), 0 0 0 58px rgba(167, 139, 250, .07)
       }
     }
 
@@ -962,7 +962,7 @@
     .vw-bar {
       width: 3px;
       border-radius: 2px;
-      background: linear-gradient(to top, #f97316, #60a5fa66);
+      background: linear-gradient(to top, #a78bfa, #60a5fa66);
       min-height: 4px;
       transition: height .05s
     }
@@ -1231,7 +1231,7 @@
     }
 
     .rp-drag:hover {
-      background: rgba(249, 115, 22, .3)
+      background: rgba(167, 139, 250, .3)
     }
 
     .rp-tabs {
@@ -1337,7 +1337,7 @@
     }
 
     .cs-inp:focus {
-      border-color: rgba(249, 115, 22, .4)
+      border-color: rgba(167, 139, 250, .4)
     }
 
     .cs-cnt {
@@ -1417,8 +1417,8 @@
     }
 
     .msg.b .bubble {
-      background: rgba(249, 115, 22, .08);
-      border: 1px solid rgba(249, 115, 22, .18);
+      background: rgba(167, 139, 250, .08);
+      border: 1px solid rgba(167, 139, 250, .18);
       color: rgba(255, 255, 255, .82)
     }
 
@@ -1483,8 +1483,8 @@
       font-family: var(--mono);
       font-size: 9px;
       font-weight: 700;
-      background: rgba(249, 115, 22, .1);
-      border: 1px solid rgba(249, 115, 22, .25);
+      background: rgba(167, 139, 250, .1);
+      border: 1px solid rgba(167, 139, 250, .25);
       color: var(--accent);
       cursor: pointer;
       transition: all .15s;
@@ -1492,7 +1492,7 @@
     }
 
     .spawn-hud-btn:hover {
-      background: rgba(249, 115, 22, .2)
+      background: rgba(167, 139, 250, .2)
     }
 
     .msg.hl .bubble {
@@ -1503,8 +1503,8 @@
     .typing {
       align-self: flex-start;
       padding: 10px 14px;
-      background: rgba(249, 115, 22, .08);
-      border: 1px solid rgba(249, 115, 22, .15);
+      background: rgba(167, 139, 250, .08);
+      border: 1px solid rgba(167, 139, 250, .15);
       border-radius: 12px;
       display: flex;
       gap: 5px;
@@ -1515,7 +1515,7 @@
       width: 5px;
       height: 5px;
       border-radius: 50%;
-      background: rgba(249, 115, 22, .6);
+      background: rgba(167, 139, 250, .6);
       animation: tdot 1.2s ease-in-out infinite
     }
 
@@ -1564,7 +1564,7 @@
     }
 
     .ci:focus {
-      border-color: rgba(249, 115, 22, .4)
+      border-color: rgba(167, 139, 250, .4)
     }
 
     .mic-btn {
@@ -1584,27 +1584,27 @@
     }
 
     .mic-btn:hover {
-      background: rgba(249, 115, 22, .1);
-      border-color: rgba(249, 115, 22, .35)
+      background: rgba(167, 139, 250, .1);
+      border-color: rgba(167, 139, 250, .35)
     }
 
     .mic-btn.on {
-      background: rgba(249, 115, 22, .18);
-      border-color: rgba(249, 115, 22, .6);
+      background: rgba(167, 139, 250, .18);
+      border-color: rgba(167, 139, 250, .6);
       animation: mic-pulse 1.2s ease-in-out infinite
     }
 
     @keyframes mic-pulse {
       0% {
-        box-shadow: 0 0 0 0 rgba(249, 115, 22, .5)
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, .5)
       }
 
       70% {
-        box-shadow: 0 0 0 10px rgba(249, 115, 22, 0)
+        box-shadow: 0 0 0 10px rgba(167, 139, 250, 0)
       }
 
       100% {
-        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0)
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, 0)
       }
     }
 
@@ -1767,7 +1767,7 @@
     }
 
     .t-pre.resp {
-      color: #f9731688
+      color: #a78bfa88
     }
 
     .t-pre.info {
@@ -2058,8 +2058,8 @@
     }
 
     .p-btn.on {
-      border-color: rgba(249, 115, 22, .5);
-      background: rgba(249, 115, 22, .12);
+      border-color: rgba(167, 139, 250, .5);
+      background: rgba(167, 139, 250, .12);
       color: var(--accent)
     }
 
@@ -2073,7 +2073,7 @@
 
     .pomo-bar {
       height: 100%;
-      background: linear-gradient(90deg, #f97316, #60a5fa);
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
       border-radius: 2px;
       transition: width 1s linear
     }
@@ -2098,7 +2098,7 @@
     }
 
     .mem-inp:focus {
-      border-color: rgba(249, 115, 22, .4)
+      border-color: rgba(167, 139, 250, .4)
     }
 
     .mem-save {
@@ -2392,11 +2392,11 @@
       gap: 7px;
       padding: 5px 13px;
       background: rgba(8, 9, 20, .93);
-      border: 1px solid rgba(249, 115, 22, .3);
+      border: 1px solid rgba(167, 139, 250, .3);
       border-radius: 20px;
       font-family: var(--mono);
       font-size: 10px;
-      color: rgba(249, 115, 22, .8);
+      color: rgba(167, 139, 250, .8);
       opacity: 0;
       pointer-events: none;
       transition: opacity .3s
@@ -2410,7 +2410,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #f97316;
+      background: #a78bfa;
       animation: blink 1s ease-in-out infinite
     }
 
@@ -2816,140 +2816,86 @@
       letter-spacing: .08em;
     }
 
-    /* ── SPOTIFY widget ── */
-    .spotify-widget {
-      width: 280px;
-    }
+    /* ── SPOTIFY FIXED PLAYER ── */
+    @keyframes sp-eq-bar{0%,100%{transform:scaleY(.2)}50%{transform:scaleY(1)}}
+    @keyframes sp-disc-spin{to{transform:rotate(360deg)}}
+    @keyframes sp-fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-    .spot-art {
-      width: 56px;
-      height: 56px;
-      border-radius: 8px;
-      flex-shrink: 0;
-      background: linear-gradient(135deg, #1db954, #14532d);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      overflow: hidden;
+    #sp-player{
+      position:fixed;z-index:5000;
+      width:264px;
+      background:rgba(5,7,16,.96);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      backdrop-filter:blur(32px);
+      overflow:hidden;
+      box-shadow:0 8px 48px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04),0 0 40px rgba(30,215,96,.04);
+      animation:sp-fadein .35s cubic-bezier(.34,1.56,.64,1);
     }
+    #sp-player::before{
+      content:'';position:absolute;inset:0;border-radius:14px;
+      background:radial-gradient(ellipse 120% 60% at 50% 0%,rgba(30,215,96,.05),transparent 65%);
+      pointer-events:none;
+    }
+    /* drag handle bar */
+    .sp-hdr{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:8px 12px 7px;
+      cursor:grab;background:rgba(255,255,255,.025);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .sp-hdr:active{cursor:grabbing}
+    /* inner padding wrapper */
+    .sp-body{padding:12px 14px 11px}
+    .sp-brand{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:rgba(30,215,96,.8);text-transform:uppercase}
+    .sp-logo{width:13px;height:13px;flex-shrink:0}
+    .sp-hdr-btns{display:flex;gap:5px;align-items:center}
+    .sp-min-btn,.sp-close-btn{background:none;border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:9px;padding:2px 7px;cursor:pointer;transition:all .2s;letter-spacing:.05em;line-height:1.4}
+    .sp-min-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+    .sp-close-btn:hover{background:rgba(251,113,133,.15);border-color:rgba(251,113,133,.4);color:var(--red)}
 
-    .spot-art img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-    }
+    .sp-now{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+    .sp-disc{width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 33% 28%,rgba(50,60,80,.9),rgba(12,16,30,.95));border:1px solid rgba(255,255,255,.12);box-shadow:0 0 16px rgba(30,215,96,.18),0 4px 12px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;overflow:hidden;transition:box-shadow .3s}
+    .sp-disc.playing{animation:sp-disc-spin 4s linear infinite;box-shadow:0 0 22px rgba(30,215,96,.35),0 4px 12px rgba(0,0,0,.5)}
+    .sp-disc-hole{position:absolute;width:9px;height:9px;border-radius:50%;background:rgba(5,7,16,.9);border:1px solid rgba(255,255,255,.1);pointer-events:none}
+    .sp-info{flex:1;min-width:0}
+    .sp-track{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);margin-bottom:2px}
+    .sp-artist{font-family:var(--mono);font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sp-eq{display:flex;align-items:flex-end;gap:2px;height:13px;flex-shrink:0}
+    .sp-eq-bar{width:3px;background:rgba(30,215,96,.7);border-radius:1px;animation:sp-eq-bar .8s ease-in-out infinite;transform-origin:bottom}
+    .sp-eq-bar:nth-child(2){animation-delay:.15s;height:60%}
+    .sp-eq-bar:nth-child(3){animation-delay:.3s;height:90%}
+    .sp-eq-bar:nth-child(4){animation-delay:.45s;height:50%}
+    .sp-eq.paused .sp-eq-bar{animation:none;transform:scaleY(.2)}
 
-    .spot-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .sp-prog-wrap{margin-bottom:11px}
+    .sp-times{display:flex;justify-content:space-between;font-family:var(--mono);font-size:8px;color:var(--muted);margin-bottom:4px}
+    .sp-bar{height:3px;background:rgba(255,255,255,.08);border-radius:2px;cursor:pointer;position:relative}
+    .sp-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,rgba(30,215,96,.6),rgba(30,215,96,.95));transition:width .5s linear;position:relative}
+    .sp-bar-fill::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:#1ed760;box-shadow:0 0 6px rgba(30,215,96,.8);opacity:0;transition:opacity .2s}
+    .sp-bar:hover .sp-bar-fill::after{opacity:1}
 
-    .spot-track {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .sp-ctrls{display:flex;align-items:center;justify-content:center;gap:12px}
+    .sp-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:4px;transition:all .15s;display:flex;align-items:center;justify-content:center;border-radius:50%;width:28px;height:28px}
+    .sp-btn:hover{color:var(--text);background:rgba(255,255,255,.06)}
+    .sp-btn.sp-play-btn{width:34px;height:34px;font-size:16px;background:rgba(30,215,96,.9);color:#000;border-radius:50%;box-shadow:0 0 14px rgba(30,215,96,.38)}
+    .sp-btn.sp-play-btn:hover{background:#1ed760;box-shadow:0 0 20px rgba(30,215,96,.6);transform:scale(1.06)}
 
-    .spot-artist {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      margin-top: 2px;
-    }
+    .sp-vol{display:flex;align-items:center;gap:7px;margin-top:10px}
+    .sp-vol-ico{font-size:11px;color:var(--muted);flex-shrink:0;width:14px;text-align:center}
+    .sp-vol-bar{flex:1;height:3px;background:rgba(255,255,255,.08);border-radius:2px;cursor:pointer;position:relative}
+    .sp-vol-fill{height:100%;border-radius:2px;background:rgba(255,255,255,.28);transition:width .15s}
 
-    .spot-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
+    .sp-playlist-link{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06);font-family:var(--mono);font-size:9px;color:rgba(30,215,96,.45);text-decoration:none;letter-spacing:.07em;transition:color .2s}
+    .sp-playlist-link:hover{color:rgba(30,215,96,.85)}
 
-    .spot-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      margin-bottom: 8px;
-    }
-
-    .spot-btn {
-      background: none;
-      border: none;
-      color: rgba(255, 255, 255, .5);
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      transition: all .15s;
-      padding: 0;
-    }
-
-    .spot-btn:hover {
-      color: #fff;
-      transform: scale(1.1);
-    }
-
-    .spot-btn.play {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #1db954;
-      color: #000;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .spot-btn.play:hover {
-      background: #1ed760;
-      transform: scale(1.05);
-    }
-
-    .spot-progress-wrap {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--muted);
-    }
-
-    .spot-progress {
-      flex: 1;
-      height: 3px;
-      background: rgba(255, 255, 255, .12);
-      border-radius: 2px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .spot-progress-fill {
-      height: 100%;
-      background: #1db954;
-      border-radius: 2px;
-      width: 35%;
-      transition: width .5s linear;
-    }
-
-    .spot-progress:hover .spot-progress-fill {
-      background: #1ed760;
-    }
-
-    .spot-src-note {
-      font-family: var(--mono);
-      font-size: 9px;
-      color: rgba(255, 255, 255, .18);
-      text-align: center;
-      padding: 6px 14px 10px;
-    }
+    #sp-pill{position:fixed;bottom:22px;right:20px;z-index:5000;display:none;background:rgba(5,7,16,.94);border:1px solid rgba(255,255,255,.09);border-radius:12px;backdrop-filter:blur(28px);padding:8px 13px;gap:9px;align-items:center;box-shadow:0 6px 28px rgba(0,0,0,.5);cursor:pointer;transition:all .2s}
+    #sp-pill:hover{border-color:rgba(30,215,96,.3)}
+    .sp-pill-track{font-family:var(--mono);font-size:9px;color:var(--muted);max-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .sp-pill-eq{display:flex;align-items:flex-end;gap:2px;height:11px}
+    .sp-pill-bar{width:2px;background:rgba(30,215,96,.7);border-radius:1px;animation:sp-eq-bar .8s ease-in-out infinite;transform-origin:bottom}
+    .sp-pill-bar:nth-child(2){animation-delay:.15s;height:60%}
+    .sp-pill-bar:nth-child(3){animation-delay:.3s;height:90%}
 
     /* ── PROJECTS / TODO widget ── */
     .projects-widget {
@@ -3205,12 +3151,12 @@
     }
 
     .sticky-purple .sticky-header {
-      background: #f97316;
+      background: #a78bfa;
       color: #160035;
     }
 
     .sticky-purple .sticky-body {
-      background: rgba(249, 115, 22, .1);
+      background: rgba(167, 139, 250, .1);
       color: #cdb8ff;
     }
 
@@ -3272,8 +3218,8 @@
     }
 
     .wp-card:hover {
-      background: rgba(249, 115, 22, .08);
-      border-color: rgba(249, 115, 22, .3);
+      background: rgba(167, 139, 250, .08);
+      border-color: rgba(167, 139, 250, .3);
       transform: translateY(-2px);
     }
 
@@ -3353,13 +3299,13 @@
     .vdom-pill {
       background: rgba(6, 7, 22, .95);
       backdrop-filter: blur(32px);
-      border: 1px solid rgba(249, 115, 22, .35);
+      border: 1px solid rgba(167, 139, 250, .35);
       border-radius: 40px;
       padding: 10px 20px 10px 14px;
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 8px 36px rgba(0, 0, 0, .55), 0 0 0 1px rgba(249, 115, 22, .1);
+      box-shadow: 0 8px 36px rgba(0, 0, 0, .55), 0 0 0 1px rgba(167, 139, 250, .1);
       min-width: 280px;
     }
 
@@ -3380,11 +3326,11 @@
 
       0%,
       100% {
-        box-shadow: 0 0 0 0 rgba(249, 115, 22, .4);
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, .4);
       }
 
       50% {
-        box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+        box-shadow: 0 0 0 10px rgba(167, 139, 250, 0);
       }
     }
 
@@ -3447,13 +3393,13 @@
 
     /* Widget add button in topbar */
     .tb-btn.widgets-btn {
-      border-color: rgba(249, 115, 22, .35);
+      border-color: rgba(167, 139, 250, .35);
       color: var(--accent);
-      background: rgba(249, 115, 22, .07);
+      background: rgba(167, 139, 250, .07);
     }
 
     .tb-btn.widgets-btn:hover {
-      background: rgba(249, 115, 22, .14);
+      background: rgba(167, 139, 250, .14);
     }
 
     .tb-btn.vdom-btn {
@@ -3463,8 +3409,8 @@
     }
 
     .tb-btn.vdom-btn.on {
-      background: rgba(249, 115, 22, .2);
-      border-color: rgba(249, 115, 22, .5);
+      background: rgba(167, 139, 250, .2);
+      border-color: rgba(167, 139, 250, .5);
       color: var(--accent);
     }
 
@@ -3669,7 +3615,7 @@
       position: absolute;
       inset: 0;
       border-radius: 50%;
-      border: 2px solid rgba(249, 115, 22, .9);
+      border: 2px solid rgba(167, 139, 250, .9);
       animation: cursor-spin 1.2s linear infinite;
     }
 
@@ -3678,11 +3624,11 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #f97316;
+      background: #a78bfa;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 0 12px rgba(249, 115, 22, .8);
+      box-shadow: 0 0 12px rgba(167, 139, 250, .8);
     }
 
     @keyframes cursor-spin {
@@ -3734,8 +3680,8 @@
       pointer-events: none;
       z-index: 99998;
       border-radius: 8px;
-      box-shadow: 0 0 0 4px rgba(249, 115, 22, .5), 0 0 30px rgba(249, 115, 22, .25);
-      border: 1.5px solid rgba(249, 115, 22, .6);
+      box-shadow: 0 0 0 4px rgba(167, 139, 250, .5), 0 0 30px rgba(167, 139, 250, .25);
+      border: 1.5px solid rgba(167, 139, 250, .6);
       transition: all .3s cubic-bezier(.4, 0, .2, 1);
       opacity: 0;
     }
@@ -3750,7 +3696,7 @@
       z-index: 99999;
       pointer-events: none;
       background: rgba(6, 7, 22, .95);
-      border: 1px solid rgba(249, 115, 22, .4);
+      border: 1px solid rgba(167, 139, 250, .4);
       border-radius: 10px;
       padding: 6px 12px;
       font-family: var(--mono);
@@ -3774,7 +3720,7 @@
       transform: translateX(-50%);
       z-index: 99997;
       background: rgba(6, 7, 22, .92);
-      border: 1px solid rgba(249, 115, 22, .35);
+      border: 1px solid rgba(167, 139, 250, .35);
       border-radius: 24px;
       padding: 7px 18px;
       display: none;
@@ -3794,7 +3740,7 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #f97316;
+      background: #a78bfa;
       animation: blink 1.2s ease-in-out infinite;
     }
 
@@ -3867,7 +3813,7 @@
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">run:
           &lt;python&gt;</span><span class="sk-key" style="color:#4ade80">Execute Python</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">swarm:
-          &lt;task&gt;</span><span class="sk-key" style="color:#f97316">5-Agent workflow</span></div>
+          &lt;task&gt;</span><span class="sk-key" style="color:#a78bfa">5-Agent workflow</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">activate
           vision</span><span class="sk-key" style="color:#60a5fa">Screen capture</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">full sync</span><span
@@ -3875,12 +3821,12 @@
 
       <!-- VOICE COMMANDS -->
       <div
-        style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#f97316;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">
+        style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#a78bfa;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">
         🎤 AI CURSOR — VOICE COMMANDS</div>
       <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:8px">Click <strong
-          style="color:#f97316">🎤 Voice</strong> in the topbar, then speak any of these:</div>
+          style="color:#a78bfa">🎤 Voice</strong> in the topbar, then speak any of these:</div>
 
-      <div style="font-family:var(--mono);font-size:9px;color:rgba(249,115,22,.6);margin:6px 0 3px">NAVIGATION</div>
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">NAVIGATION</div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open The
           Forge"</span><span class="sk-key" style="color:#fdba74">→ Forge IDE</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open The
@@ -3892,7 +3838,7 @@
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Chat / Terminal /
           Config"</span><span class="sk-key" style="color:#60a5fa">→ Panel</span></div>
 
-      <div style="font-family:var(--mono);font-size:9px;color:rgba(249,115,22,.6);margin:6px 0 3px">OPEN TABS &amp;
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">OPEN TABS &amp;
         WEBSITES</div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Google / YouTube /
           GitHub"</span><span class="sk-key" style="color:#4ade80">New Tab</span></div>
@@ -3903,7 +3849,7 @@
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Go to
           github.com/…"</span><span class="sk-key" style="color:#4ade80">Any URL</span></div>
 
-      <div style="font-family:var(--mono);font-size:9px;color:rgba(249,115,22,.6);margin:6px 0 3px">SCREEN CONTROL
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">SCREEN CONTROL
       </div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Brightness
           50"</span><span class="sk-key" style="color:#fbbf24">0–200%</span></div>
@@ -3912,7 +3858,7 @@
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Night mode"</span><span
           class="sk-key" style="color:#fbbf24">40% dim</span></div>
 
-      <div style="font-family:var(--mono);font-size:9px;color:rgba(249,115,22,.6);margin:6px 0 3px">WINDOWS APPS</div>
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">WINDOWS APPS</div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Display
           Settings"</span><span class="sk-key" style="color:#94a3b8">Win Settings</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Volume
@@ -3924,16 +3870,16 @@
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Bluetooth
           Settings"</span><span class="sk-key" style="color:#94a3b8">Bluetooth</span></div>
 
-      <div style="font-family:var(--mono);font-size:9px;color:rgba(249,115,22,.6);margin:6px 0 3px">WIDGETS &amp;
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">WIDGETS &amp;
         THEMES</div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Add clock / music /
-          projects"</span><span class="sk-key" style="color:#f97316">Widget</span></div>
+          projects"</span><span class="sk-key" style="color:#a78bfa">Widget</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Add sticky
           note"</span><span class="sk-key" style="color:#f5d020">Sticky</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Ocean / Matrix / Gold
-          theme"</span><span class="sk-key" style="color:#f97316">Theme</span></div>
+          theme"</span><span class="sk-key" style="color:#a78bfa">Theme</span></div>
 
-      <div style="font-family:var(--mono);font-size:9px;color:rgba(249,115,22,.6);margin:6px 0 3px">CLICK ANYTHING
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">CLICK ANYTHING
       </div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Click Full
           Sync"</span><span class="sk-key" style="color:#60a5fa">AI clicks it</span></div>
@@ -3990,7 +3936,7 @@
         <div class="nav-item" onclick="runProtocol('study')" style="cursor:pointer">📚 Study Protocol</div>
         <div class="nav-item" onclick="runProtocol('code')" style="cursor:pointer">💻 Code Protocol</div>
         <div class="nav-item" onclick="runProtocol('full')"
-          style="cursor:pointer;border:1px solid rgba(249,115,22,.18)">⚡ Full Sync<span class="nav-badge">ALL</span>
+          style="cursor:pointer;border:1px solid rgba(167,139,250,.18)">⚡ Full Sync<span class="nav-badge">ALL</span>
         </div>
         <div class="nav-label">JARVIS Systems</div>
         <div class="nav-item" onclick="activateVision('screen')" style="cursor:pointer">👁 Activate Vision</div>
@@ -4035,7 +3981,7 @@
           <button class="tb-btn" onclick="enterEnv('forge')"
             style="border-color:rgba(253,186,116,.35);color:#fdba74;background:rgba(253,186,116,.08)">🔥 Forge</button>
           <button class="tb-btn" onclick="runProtocol('full')"
-            style="border-color:rgba(249,115,22,.35);color:var(--accent);background:rgba(249,115,22,.08)">⚡
+            style="border-color:rgba(167,139,250,.35);color:var(--accent);background:rgba(167,139,250,.08)">⚡
             Sync</button>
         </div>
         <div class="hz-badge"><span id="hz-val2">0Hz</span> · <span id="api-txt2">offline</span></div>
@@ -4296,6 +4242,13 @@
     </div>
   </div>
 
+  <!-- Spotify minimized pill — spawned dynamically -->
+  <div id="sp-pill" style="display:none" onclick="spExpand()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="rgba(30,215,96,.8)"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    <span class="sp-pill-track" id="sp-pill-track">No Track Playing</span>
+    <div class="sp-pill-eq"><div class="sp-pill-bar" style="height:40%"></div><div class="sp-pill-bar"></div><div class="sp-pill-bar"></div></div>
+  </div>
+
   <div class="toast" id="toast"></div>
   <div class="api-bar">
     <div class="api-dot" id="api-dot"></div>
@@ -4349,20 +4302,15 @@
           <div class="wp-card-name">Flip Clock</div>
           <div class="wp-card-desc">Live animated clock</div>
         </div>
-        <div class="wp-card" onclick="addWidget('spotify')">
+        <div class="wp-card" onclick="spExpand();closeWidgetPicker()">
           <div class="wp-card-icon">🎵</div>
-          <div class="wp-card-name">Now Playing</div>
-          <div class="wp-card-desc">Music playback widget</div>
+          <div class="wp-card-name">Spotify Player</div>
+          <div class="wp-card-desc">Now playing — live controls</div>
         </div>
         <div class="wp-card" onclick="addWidget('projects')">
           <div class="wp-card-icon">📋</div>
           <div class="wp-card-name">Projects</div>
           <div class="wp-card-desc">Ongoing tasks & to-dos</div>
-        </div>
-        <div class="wp-card" onclick="addWidget('podcast')">
-          <div class="wp-card-icon">🎙</div>
-          <div class="wp-card-name">Podcast</div>
-          <div class="wp-card-desc">Spotify episode embed</div>
         </div>
       </div>
       <div style="margin-bottom:14px">
@@ -4372,7 +4320,7 @@
           <div class="wp-sticky-col" style="background:#f472b6" onclick="addSticky('pink')" title="Pink"></div>
           <div class="wp-sticky-col" style="background:#60a5fa" onclick="addSticky('blue')" title="Blue"></div>
           <div class="wp-sticky-col" style="background:#4ade80" onclick="addSticky('green')" title="Green"></div>
-          <div class="wp-sticky-col" style="background:#f97316" onclick="addSticky('purple')" title="Purple"></div>
+          <div class="wp-sticky-col" style="background:#a78bfa" onclick="addSticky('purple')" title="Purple"></div>
         </div>
       </div>
       <button class="wp-close" onclick="closeWidgetPicker()">✕ Close</button>
@@ -4413,7 +4361,7 @@
     // color: hue-shifted glass tint for each orb
     // anim: CSS animation name applied when connected
     const MODULES = [
-      { id: 'vision', name: 'Vision', icon: '👁', orbit: 0, angle: 50, color: '#f97316', hue: [167, 139, 250], anim: 'pulse-slow 3.2s ease-in-out infinite', ringSpd: ['spin-cw 6s linear infinite', 'spin-ccw 10s linear infinite'], desc: 'Image analysis & visual understanding', hint: 'Drop an image or describe what you see' },
+      { id: 'vision', name: 'Vision', icon: '👁', orbit: 0, angle: 50, color: '#a78bfa', hue: [167, 139, 250], anim: 'pulse-slow 3.2s ease-in-out infinite', ringSpd: ['spin-cw 6s linear infinite', 'spin-ccw 10s linear infinite'], desc: 'Image analysis & visual understanding', hint: 'Drop an image or describe what you see' },
       { id: 'voice', name: 'Voice', icon: '🎙', orbit: 1, angle: 130, color: '#60a5fa', hue: [96, 165, 250], anim: 'pulse-fast 1.8s ease-in-out infinite', ringSpd: ['spin-ccw 4s linear infinite', 'spin-cw 8s linear infinite'], desc: 'Speech, wake word & TTS control', hint: 'Voice mode active — try speaking' },
       { id: 'memory', name: 'Memory', icon: '🧠', orbit: 2, angle: 20, color: '#34d399', hue: [52, 211, 153], anim: 'pulse-slow 4s ease-in-out infinite', ringSpd: ['spin-cw 9s linear infinite', 'spin-ccw 15s linear infinite'], desc: 'SCTM Vault — persistent context injection', hint: 'Personal context will be injected into every prompt' },
       { id: 'research', name: 'Research', icon: '🔬', orbit: 1, angle: 230, color: '#22d3ee', hue: [34, 211, 238], anim: 'orb-scan 1.4s ease-in-out infinite', ringSpd: ['spin-ccw 3s linear infinite', 'spin-cw 6s linear infinite'], desc: 'LangChain + Tavily live web search', hint: 'Ask anything — Blitz will search the web' },
@@ -4731,14 +4679,14 @@
     }
 
     // ─── HUD WINDOWS ──────────────────────────────────────────
-    function spawnHUD(title, content, type = 'CODE', color = '#f97316') {
+    function spawnHUD(title, content, type = 'CODE', color = '#a78bfa') {
       if (!S.showHUD) return;
       hudCount++;
       const id = 'hud-' + hudCount;
       // Position: stagger them
       const x = Math.min(Math.max(80, (W || 600) * .15 + hudCount * 30), Math.max(80, (W || 600) * .5));
       const y = Math.min(Math.max(60, (H || 400) * .15 + hudCount * 30), Math.max(60, (H || 400) * .5));
-      const tagColors = { CODE: '#fdba74', DATA: '#22d3ee', RESULT: '#4ade80', ERROR: '#fb7185', INFO: '#f97316' };
+      const tagColors = { CODE: '#fdba74', DATA: '#22d3ee', RESULT: '#4ade80', ERROR: '#fb7185', INFO: '#a78bfa' };
       const tagBg = tagColors[type] || color;
       const div = document.createElement('div');
       div.className = 'hud-win'; div.id = id;
@@ -4974,7 +4922,7 @@
     function toggleMic() { if (!recognition) { toast('Voice not available in this browser'); return; } if (S.listening) recognition.stop(); else { synthRef.cancel(); recognition.start(); } }
     function stopSpeak() { synthRef.cancel(); S.speaking = false; document.getElementById('core-el').classList.remove('speaking'); document.getElementById('core-sub').textContent = coreSub(); showWave(false); }
     function cleanTTS(text) { return text.replace(/```[\s\S]*?```/g, 'code block').replace(/`[^`]+`/g, m => m.slice(1, -1)).replace(/#{1,6}\s/g, '').replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1').replace(/^\s*[-*]\s/gm, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\n{3,}/g, '\n\n').replace(/[^\w\s.,!?;:'"()\-]/g, ' ').replace(/\s{2,}/g, ' ').trim(); }
-    function speak(text) { if (!S.tts || !synthRef) return; synthRef.cancel(); const c = cleanTTS(text); if (!c) return; const u = new SpeechSynthesisUtterance(c); u.rate = S.speechRate; u.pitch = S.speechPitch; u.volume = .95; if (S.preferredVoice) u.voice = S.preferredVoice; u.onstart = () => { S.speaking = true; /* CRITICAL: stop mic so BLITZ doesn't hear itself speak */ if (recognition && S.listening) { try { recognition.stop(); } catch(e){} } document.getElementById('core-el').classList.add('speaking'); document.getElementById('core-sub').textContent = 'SPEAKING'; showWave(true, 's'); }; u.onend = u.onerror = () => { S.speaking = false; document.getElementById('core-el').classList.remove('speaking'); document.getElementById('core-sub').textContent = coreSub(); showWave(false); /* Small delay then allow mic again — avoids echo pickup */ setTimeout(() => { if (S.tts && document.getElementById('wake-pill')?.classList.contains('on')) startWakeWord(); }, 800); }; synthRef.speak(u); }
+    function speak(text) { if (!S.tts || !synthRef) return; synthRef.cancel(); const c = cleanTTS(text); if (!c) return; const u = new SpeechSynthesisUtterance(c); u.rate = S.speechRate; u.pitch = S.speechPitch; u.volume = .95; if (S.preferredVoice) u.voice = S.preferredVoice; u.onstart = () => { S.speaking = true; document.getElementById('core-el').classList.add('speaking'); document.getElementById('core-sub').textContent = 'SPEAKING'; showWave(true, 's'); }; u.onend = u.onerror = () => { S.speaking = false; document.getElementById('core-el').classList.remove('speaking'); document.getElementById('core-sub').textContent = coreSub(); showWave(false); }; synthRef.speak(u); }
     function coreSub() { const n = MODULES.filter(m => S.connected[m.id]).length; return n === 0 ? 'IDLE' : n === MODULES.length ? 'FULL SYNC' : 'ACTIVE'; }
 
     function startWake() {
@@ -4982,7 +4930,7 @@
       if (!SR) { toast('Wake word not supported'); return; }
       document.getElementById('wake-pill').classList.add('on');
       wakeRecog = new SR(); wakeRecog.continuous = true; wakeRecog.interimResults = true; wakeRecog.lang = 'en-US';
-      wakeRecog.onresult = e => { const t = Array.from(e.results).map(r => r[0].transcript).join(' ').toLowerCase(); if ((t.includes('hey blitz') || t.includes('blitz')) && !S.speaking) { wakeRecog.stop(); document.getElementById('wake-pill').classList.remove('on'); setTimeout(() => { if (recognition && !S.listening && !S.speaking) { recognition.start(); playNotify(); } }, 300); } };
+      wakeRecog.onresult = e => { const t = Array.from(e.results).map(r => r[0].transcript).join(' ').toLowerCase(); if (t.includes('hey blitz') || t.includes('blitz')) { wakeRecog.stop(); document.getElementById('wake-pill').classList.remove('on'); setTimeout(() => { if (recognition && !S.listening) { recognition.start(); playNotify(); } }, 300); } };
       wakeRecog.onend = () => { if (S.wakeEnabled) { document.getElementById('wake-pill').classList.add('on'); setTimeout(() => { try { wakeRecog.start(); } catch { } }, 500); } };
       try { wakeRecog.start(); } catch { }
     }
@@ -5654,7 +5602,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
         steps: [
           { act: 'connectAll', label: 'Syncing all modules...' },
           { act: 'runtime', label: 'Loading Python runtime' },
-          { act: 'hud', title: 'FULL SYNC', content: 'ALL SYSTEMS ONLINE\n\nModules: 7/7 connected\nPython runtime: ACTIVE\nMemory: ARMED\nVision: STANDBY\n\nB.L.I.T.Z. at full capacity.', type: 'INFO', color: '#f97316' },
+          { act: 'hud', title: 'FULL SYNC', content: 'ALL SYSTEMS ONLINE\n\nModules: 7/7 connected\nPython runtime: ACTIVE\nMemory: ARMED\nVision: STANDBY\n\nB.L.I.T.Z. at full capacity.', type: 'INFO', color: '#a78bfa' },
           { act: 'speak', text: 'Full sync protocol complete. All seven modules online. Runtime active. I am at full capacity.' },
           { act: 'chat', text: '**Full sync complete.** All 7 modules connected, Python runtime loaded, SCTM memory armed. I am operating at full capacity. What is the mission?' },
         ]
@@ -5678,7 +5626,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
         else if (step.act === 'connectAll') connectAll();
         else if (step.act === 'runtime') loadPyodide();
         else if (step.act === 'speak' && step.text) speak(step.text);
-        else if (step.act === 'hud') spawnHUD(step.title, step.content, step.type || 'INFO', step.color || '#f97316');
+        else if (step.act === 'hud') spawnHUD(step.title, step.content, step.type || 'INFO', step.color || '#a78bfa');
         else if (step.act === 'chat' && step.text) addMsg('b', step.text);
         else if (step.act === 'nav' && step.env) setTimeout(() => enterEnv(step.env), 600);
       }
@@ -5713,7 +5661,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
     };
 
     const AGENT_DEFS = {
-      planner: { icon: '🧭', name: 'Planner', color: '#f97316', role: 'You are the Planner agent. Break the user task into 3-5 specific subtasks for specialist agents. Respond with a JSON array of {agent, task} objects. Agents available: scout, critic, writer. Be concise.' },
+      planner: { icon: '🧭', name: 'Planner', color: '#a78bfa', role: 'You are the Planner agent. Break the user task into 3-5 specific subtasks for specialist agents. Respond with a JSON array of {agent, task} objects. Agents available: scout, critic, writer. Be concise.' },
       scout: { icon: '🔭', name: 'Scout', color: '#22d3ee', role: 'You are the Scout agent. Search for information and gather raw data on the given topic. Return a detailed summary of your findings. Be thorough.' },
       critic: { icon: '⚖️', name: 'Critic', color: '#fb7185', role: 'You are the Critic agent. Review the provided research and identify the most relevant, accurate, and high-quality information. Filter out noise. Return a refined summary.' },
       writer: { icon: '✍️', name: 'Writer', color: '#fbbf24', role: 'You are the Writer agent. Using the refined research, write the requested output. Be clear, structured, and compelling.' },
@@ -5721,7 +5669,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
     };
 
     function agentLog(agentKey, msg, type = 'info') {
-      const a = AGENT_DEFS[agentKey] || { icon: '🤖', name: agentKey, color: '#f97316' };
+      const a = AGENT_DEFS[agentKey] || { icon: '🤖', name: agentKey, color: '#a78bfa' };
       tlog(type, 'AGT ', '[' + a.icon + ' ' + a.name.toUpperCase() + '] ' + msg);
     }
 
@@ -5774,7 +5722,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
         // ── STEP 1: Planner ──
         tlog('info', 'SWRM', 'Step 1/5 — Planner analyzing task...');
         const plan = await callAgent('planner', `Task: ${task}`);
-        spawnHUD('🧭 Planner Output', plan, 'INFO', '#f97316');
+        spawnHUD('🧭 Planner Output', plan, 'INFO', '#a78bfa');
         let subtasks = [];
         try { subtasks = JSON.parse(plan.match(/\[[\s\S]+\]/)?.[0] || '[]'); } catch { subtasks = [{ agent: 'scout', task: task }, { agent: 'critic', task: 'Review findings' }, { agent: 'writer', task: 'Write output' }]; }
         tlog('sys', 'SWRM', `Plan: ${subtasks.length} subtasks created`);
@@ -6067,14 +6015,12 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
       }, 1500);
     }
 
-    // Expose key functions globally for sidebar buttons and inline onclick handlers
+    // Expose key functions globally for sidebar buttons
     window.runProtocol = runProtocol;
     window.runAgentSwarm = runAgentSwarm;
     window.activateVision = activateVision;
     window.autonomousRun = autonomousRun;
     window.enterEnv = enterEnv;
-    window.sendChat = sendChat;
-    window.loadPyodide = loadPyodide;
 
     init();
     jarvisBoot();
@@ -6091,308 +6037,231 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
     // ═══════════════════════════════════════════════════════════
     //  WIDGET SYSTEM
     // ═══════════════════════════════════════════════════════════
-    var widgetState = { projects: JSON.parse(localStorage.getItem('blitz_projects') || '[]'), stickyNotes: JSON.parse(localStorage.getItem('blitz_stickies') || '[]'), clockInterval: null, spotPlaying: false, spotProgress: 0, spotTimer: null };
-    var FAKE_TRACKS = [{ title: 'Midnight City', artist: 'M83', dur: 244 }, { title: 'Strobe', artist: 'deadmau5', dur: 578 }, { title: 'Holocene', artist: 'Bon Iver', dur: 356 }, { title: 'The Chain', artist: 'Fleetwood Mac', dur: 271 }, { title: 'Redbone', artist: 'Childish Gambino', dur: 328 }];
-    var fakeTrackIdx = 0;
+    var widgetState = { projects: JSON.parse(localStorage.getItem('blitz_projects') || '[]'), stickyNotes: JSON.parse(localStorage.getItem('blitz_stickies') || '[]'), clockInterval: null };
     function openWidgetPicker() { document.getElementById('widget-picker').classList.add('on'); }
     function closeWidgetPicker() { document.getElementById('widget-picker').classList.remove('on'); }
     document.getElementById('widget-picker').addEventListener('click', function (e) { if (e.target === this) closeWidgetPicker(); });
     function makeDraggableEl(el, handle) { var dx = 0, dy = 0, dr = false; handle = handle || el; function down(e) { dr = true; var t = e.touches ? e.touches[0] : e; var r = el.getBoundingClientRect(); dx = t.clientX - r.left; dy = t.clientY - r.top; el.style.transition = 'none'; if (e.touches) e.preventDefault(); } function move(e) { if (!dr) return; var t = e.touches ? e.touches[0] : e; el.style.left = Math.max(0, Math.min(t.clientX - dx, window.innerWidth - el.offsetWidth)) + 'px'; el.style.top = Math.max(0, Math.min(t.clientY - dy, window.innerHeight - el.offsetHeight)) + 'px'; } function up() { dr = false; el.style.transition = ''; } handle.addEventListener('mousedown', down); handle.addEventListener('touchstart', down, { passive: false }); document.addEventListener('mousemove', move); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('mouseup', up); document.addEventListener('touchend', up); }
     function makeWidgetEl(id, title, body, x, y, w) { var el = document.createElement('div'); el.className = 'widget'; el.id = 'widget-' + id; el.style.left = (x || 40) + 'px'; el.style.top = (y || 80) + 'px'; if (w) el.style.width = w + 'px'; el.innerHTML = '<div class="widget-bar"><div class="widget-bar-dot"></div><span class="widget-bar-title">' + title + '</span><button class="widget-close" onclick="removeWidget(\'' + id + '\')">&#xD7;</button></div>' + body; document.getElementById('widget-layer').appendChild(el); makeDraggableEl(el, el.querySelector('.widget-bar')); return el; }
-    function removeWidget(id) { var el = document.getElementById('widget-' + id); if (el) el.remove(); if (id.indexOf('clock') === 0 && widgetState.clockInterval) { clearInterval(widgetState.clockInterval); widgetState.clockInterval = null; } if (id.indexOf('spot') === 0 && widgetState.spotTimer) { clearInterval(widgetState.spotTimer); widgetState.spotTimer = null; } }
-    function fmtSpotTime(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+    function removeWidget(id) { var el = document.getElementById('widget-' + id); if (el) el.remove(); if (id.indexOf('clock') === 0 && widgetState.clockInterval) { clearInterval(widgetState.clockInterval); widgetState.clockInterval = null; } }
     function addWidget(type) {
       closeWidgetPicker(); var id = type + '_' + Date.now(); var cx = Math.max(40, Math.floor(window.innerWidth / 2) - 150); var cy = Math.max(60, Math.floor(window.innerHeight / 2) - 120);
       if (type === 'clock') { var body = '<div class="flip-clock"><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-h1">0</div><div class="flip-digit" id="' + id + '-h2">0</div></div><div class="flip-sep">:</div><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-m1">0</div><div class="flip-digit" id="' + id + '-m2">0</div></div><div class="flip-sep">:</div><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-s1">0</div><div class="flip-digit" id="' + id + '-s2">0</div></div></div><div class="flip-date-row" id="' + id + '-date"></div>'; makeWidgetEl(id, '&#x1F550; Clock', body, cx, cy, 320); (function startClock() { function tick() { var n = new Date(); var h = String(n.getHours()).padStart(2, '0'); var m = String(n.getMinutes()).padStart(2, '0'); var s = String(n.getSeconds()).padStart(2, '0'); var h1 = document.getElementById(id + '-h1'); if (!h1) { clearInterval(widgetState.clockInterval); widgetState.clockInterval = null; return; } document.getElementById(id + '-h1').textContent = h[0]; document.getElementById(id + '-h2').textContent = h[1]; document.getElementById(id + '-m1').textContent = m[0]; document.getElementById(id + '-m2').textContent = m[1]; document.getElementById(id + '-s1').textContent = s[0]; document.getElementById(id + '-s2').textContent = s[1]; var dt = document.getElementById(id + '-date'); if (dt) dt.textContent = n.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); } tick(); if (widgetState.clockInterval) clearInterval(widgetState.clockInterval); widgetState.clockInterval = setInterval(tick, 1000); })(); toast('&#x1F550; Clock added'); }
-      else if (type === 'spotify') { addSpotifyWidget(id, cx, cy); }
-      else if (type === 'podcast') { addPodcastWidget(id, cx, cy); }
       else if (type === 'projects') { var body = '<div class="widget-body"><div class="proj-add-row"><input class="proj-inp" id="' + id + '-inp" placeholder="Add task... (Enter)" onkeydown="if(event.key===\'Enter\')projAdd(\'' + id + '\')"><button class="proj-add-btn" onclick="projAdd(\'' + id + '\')">+</button></div><div class="proj-list" id="' + id + '-list"></div></div><div class="proj-footer"><span id="' + id + '-count">0 tasks</span></div>'; makeWidgetEl(id, '&#x1F4CB; Projects', body, cx, cy, 310); renderProjList(id); toast('&#x1F4CB; Projects board added'); }
     }
 
-    // ── PODCAST EMBED WIDGET (Spotify iFrame API) ──────────────────────────────
-    // Uses Spotify's official iFrame API — no OAuth needed, works on any HTTP origin.
-    // Docs: https://developer.spotify.com/documentation/embeds/references/iframe-api
-    var PODCAST_EPISODE_ID = '7makk4oTQel546B0PZlDM5';
-    var _spotifyIFrameAPI   = null;   // set once onSpotifyIframeApiReady fires
-    var _podcastControllers = {};     // widgetId → EmbedController
+    // ─────────────────────────────────────────────────────────
+    // SPOTIFY PLAYER ENGINE — fully draggable / removable widget
+    // ─────────────────────────────────────────────────────────
+    var SP = { playing: false, shuffle: false, repeat: false, vol: 0.7, progress: 0, duration: 1, track: 'No Track Playing', artist: '— connect Spotify —', authed: false, widgetOpen: false };
+    var SP_API = API + '/api/sys/spotify';
+    var SP_POLL_IV = null, SP_TICK_IV = null;
 
-    // Inject the Spotify iFrame API script once, lazily
-    function _ensureSpotifyApiScript() {
-      if (document.getElementById('spotify-iframe-api')) return;
-      var s = document.createElement('script');
-      s.id  = 'spotify-iframe-api';
-      s.src = 'https://open.spotify.com/embed/iframe-api/v1';
-      s.async = true;
-      document.head.appendChild(s);
+    function spFmt(s) { return Math.floor(s/60)+':'+(Math.floor(s%60)).toString().padStart(2,'0'); }
+
+    // Build the inner HTML for the player (no outer wrapper — that comes from spSpawn)
+    function spHTML() {
+      return '<div class="sp-hdr" id="sp-drag-handle">'
+        + '<div class="sp-brand"><svg class="sp-logo" viewBox="0 0 24 24" fill="rgba(30,215,96,.9)"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>SPOTIFY</div>'
+        + '<div class="sp-hdr-btns"><button class="sp-min-btn" onclick="spMinimize()">MIN</button><button class="sp-close-btn" onclick="spRemove()" title="Close">✕</button></div>'
+        + '</div>'
+        + '<div class="sp-body">'
+        + '<div class="sp-now"><div class="sp-disc" id="sp-disc">🎵<div class="sp-disc-hole"></div></div><div class="sp-info"><div class="sp-track" id="sp-track">No Track Playing</div><div class="sp-artist" id="sp-artist">— connect Spotify —</div></div><div class="sp-eq paused" id="sp-eq"><div class="sp-eq-bar" style="height:40%"></div><div class="sp-eq-bar"></div><div class="sp-eq-bar"></div><div class="sp-eq-bar" style="height:65%"></div></div></div>'
+        + '<div class="sp-prog-wrap"><div class="sp-times"><span id="sp-cur">0:00</span><span id="sp-dur">0:00</span></div><div class="sp-bar" id="sp-bar" onclick="spSeek(event)"><div class="sp-bar-fill" id="sp-bar-fill" style="width:0%"></div></div></div>'
+        + '<div class="sp-ctrls"><button class="sp-btn" id="sp-shuf" title="Shuffle" onclick="spShuffle()">⇌</button><button class="sp-btn" title="Previous" onclick="spPrev()">⏮</button><button class="sp-btn sp-play-btn" id="sp-play" title="Play/Pause" onclick="spToggle()">▶</button><button class="sp-btn" title="Next" onclick="spNext()">⏭</button><button class="sp-btn" id="sp-rep" title="Repeat" onclick="spRepeat()">↺</button></div>'
+        + '<div class="sp-vol"><span class="sp-vol-ico" id="sp-vol-ico">🔊</span><div class="sp-vol-bar" id="sp-vol-bar" onclick="spSetVol(event)"><div class="sp-vol-fill" id="sp-vol-fill" style="width:70%"></div></div></div>'
+        + '<a class="sp-playlist-link" href="https://open.spotify.com/playlist/6pl3GuKI353wYAVsFJtakw" target="_blank">♫ OPEN PLAYLIST IN SPOTIFY ↗</a>'
+        + '</div>';
     }
 
-    // Spotify calls this globally when the API is ready
-    window.onSpotifyIframeApiReady = function(IFrameAPI) {
-      _spotifyIFrameAPI = IFrameAPI;
-      // Resolve any widgets that were waiting for the API
-      document.querySelectorAll('[data-spotify-pending]').forEach(function(el) {
-        var wid       = el.dataset.spotifyPending;
-        var episodeId = el.dataset.episodeId || PODCAST_EPISODE_ID;
-        _createSpotifyController(wid, el, episodeId);
-      });
-    };
+    function spSpawn() {
+      // If already open, just show it
+      var existing = document.getElementById('sp-player');
+      if (existing) { existing.style.display = 'block'; SP.widgetOpen = true; return; }
 
-    function _createSpotifyController(wid, placeholderEl, episodeId) {
-      if (!_spotifyIFrameAPI) return;
-      var opts = {
-        width:  '100%',
-        height: 152,
-        uri:    'spotify:episode:' + episodeId,
-      };
-      _spotifyIFrameAPI.createController(placeholderEl, opts, function(ctrl) {
-        _podcastControllers[wid] = ctrl;
+      var el = document.createElement('div');
+      el.id = 'sp-player';
+      // Position: bottom-right, 22px from edge
+      el.style.right = '20px';
+      el.style.bottom = '22px';
+      // Convert to left/top for drag system (needs absolute values)
+      el.style.left  = (window.innerWidth - 284) + 'px';
+      el.style.top   = (window.innerHeight - 360) + 'px';
+      el.innerHTML = spHTML();
+      document.body.appendChild(el);
+      SP.widgetOpen = true;
 
-        ctrl.addListener('ready', function() {
-          var bar = document.getElementById(wid + '-pod-bar');
-          if (bar) bar.style.display = 'flex';
-        });
+      // Make it draggable by the header bar
+      makeDraggableEl(el, el.querySelector('#sp-drag-handle'));
 
-        ctrl.addListener('playback_update', function(e) {
-          var d   = e.data;
-          var pct = d.duration > 0 ? (d.position / d.duration * 100).toFixed(1) : 0;
-          var cur = document.getElementById(wid + '-pod-cur');
-          var dur = document.getElementById(wid + '-pod-dur');
-          var fill= document.getElementById(wid + '-pod-fill');
-          var btn = document.getElementById(wid + '-pod-play');
-          if (cur)  cur.textContent  = _fmtMs(d.position);
-          if (dur)  dur.textContent  = _fmtMs(d.duration);
-          if (fill) fill.style.width = pct + '%';
-          if (btn)  btn.textContent  = d.isPaused ? '▶' : '⏸';
-        });
-      });
+      // Bring to top on click
+      el.addEventListener('mousedown', function() { el.style.zIndex = 5001; }, true);
+
+      spRender();
+      tlog('sys','SP  ','Spotify widget spawned — draggable & removable');
     }
 
-    function _fmtMs(ms) {
-      var s = Math.floor((ms || 0) / 1000);
-      return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-    }
-
-    function podPlay(wid)   { var c = _podcastControllers[wid]; if (c) c.resume(); }
-    function podPause(wid)  { var c = _podcastControllers[wid]; if (c) c.pause(); }
-    function podToggle(wid) { var c = _podcastControllers[wid]; if (c) c.togglePlay(); }
-    function podRestart(wid){ var c = _podcastControllers[wid]; if (c) c.restart(); }
-    function podSeekClick(e, wid) {
-      var c = _podcastControllers[wid]; if (!c) return;
-      var pct = e.offsetX / e.currentTarget.offsetWidth;
-      var durEl = document.getElementById(wid + '-pod-dur');
-      if (!durEl) return;
-      var parts = durEl.textContent.split(':');
-      var totalS = parseInt(parts[0]) * 60 + parseInt(parts[1]);
-      c.seek(Math.floor(pct * totalS));
-    }
-
-    function addPodcastWidget(id, cx, cy) {
-      cx = cx || Math.max(40, Math.floor(window.innerWidth  / 2) - 170);
-      cy = cy || Math.max(60, Math.floor(window.innerHeight / 2) - 100);
-
-      var urlInput  = prompt('Spotify episode URL:\n(Press OK for default episode)', 'https://open.spotify.com/episode/' + PODCAST_EPISODE_ID);
-      var episodeId = PODCAST_EPISODE_ID;
-      if (urlInput && urlInput.trim()) {
-        var m = urlInput.trim().match(/episode\/([A-Za-z0-9]+)/);
-        if (m) episodeId = m[1];
+    function spRemove() {
+      var el = document.getElementById('sp-player');
+      if (el) {
+        el.style.animation = 'none';
+        el.style.transition = 'opacity .18s, transform .18s';
+        el.style.opacity = '0';
+        el.style.transform = 'scale(.95)';
+        setTimeout(function(){ el.remove(); }, 180);
       }
-
-      // The div#id-embed is the placeholder the API replaces with the real iframe
-      var body = [
-        '<div style="display:flex;flex-direction:column;gap:6px;padding:6px 4px 8px;">',
-
-        // Spotify embed placeholder — API mounts here
-        '<div id="' + id + '-embed" ',
-        '  data-spotify-pending="' + id + '" ',
-        '  data-episode-id="'      + episodeId + '" ',
-        '  style="width:100%;min-height:152px;border-radius:10px;background:rgba(0,0,0,.3);',
-        '         display:flex;align-items:center;justify-content:center;',
-        '         font-family:var(--mono);font-size:10px;color:var(--muted);">',
-        '  Loading…',
-        '</div>',
-
-        // Custom controls bar (hidden until ready event)
-        '<div id="' + id + '-pod-bar" style="display:none;align-items:center;gap:6px;padding:0 2px;">',
-        '  <button onclick="podToggle(\'' + id + '\')" id="' + id + '-pod-play" ',
-        '    style="width:28px;height:28px;border-radius:50%;border:1px solid rgba(253,186,116,.3);',
-        '           background:rgba(253,186,116,.08);color:var(--forge-orange,#fdba74);',
-        '           font-size:11px;cursor:pointer;flex-shrink:0;">▶</button>',
-        '  <button onclick="podRestart(\'' + id + '\')" ',
-        '    style="width:22px;height:22px;border-radius:50%;border:1px solid var(--border,rgba(255,255,255,.07));',
-        '           background:transparent;color:var(--muted,rgba(255,255,255,.32));',
-        '           font-size:9px;cursor:pointer;flex-shrink:0;" title="Restart">↺</button>',
-        '  <span id="' + id + '-pod-cur" style="font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0;">0:00</span>',
-        '  <div onclick="podSeekClick(event,\'' + id + '\')" ',
-        '    style="flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;cursor:pointer;position:relative;">',
-        '    <div id="' + id + '-pod-fill" ',
-        '      style="height:100%;width:0%;background:var(--forge-orange,#fdba74);border-radius:2px;',
-        '             pointer-events:none;transition:width .5s linear;"></div>',
-        '  </div>',
-        '  <span id="' + id + '-pod-dur" style="font-family:var(--mono);font-size:9px;color:var(--muted);flex-shrink:0;">0:00</span>',
-        '</div>',
-
-        '</div>'
-      ].join('');
-
-      makeWidgetEl(id, '🎙 Podcast', body, cx, cy, 340);
-
-      // Load the API script (noop if already loaded)
-      _ensureSpotifyApiScript();
-
-      // If API is already ready, create the controller immediately
-      if (_spotifyIFrameAPI) {
-        var placeholder = document.getElementById(id + '-embed');
-        if (placeholder) _createSpotifyController(id, placeholder, episodeId);
-      }
-      // Otherwise onSpotifyIframeApiReady will pick up [data-spotify-pending] elements
-
-      window.podToggle  = podToggle;
-      window.podRestart = podRestart;
-      window.podSeekClick = podSeekClick;
-
-      toast('🎙 Podcast widget added');
+      document.getElementById('sp-pill').style.display = 'none';
+      SP.widgetOpen = false;
+      toast('🎵 Spotify player closed');
+      tlog('info','SP  ','Widget removed');
     }
 
-    // ── REAL SPOTIFY INTEGRATION ──────────────────────────────────────────────
-    var _spotifyWidgetId = null;
-    var _spotifyPollTimer = null;
-
-    async function addSpotifyWidget(id, cx, cy) {
-      _spotifyWidgetId = id;
-      // Check if already authenticated
-      var statusRes = await fetch(API + '/api/sys/spotify/status').catch(() => null);
-      var status = statusRes ? await statusRes.json().catch(() => ({})) : {};
-      if (status.connected) {
-        spawnRealSpotifyWidget(id, cx, cy);
-      } else {
-        // Show connect widget first
-        var body = '<div class="widget-body spotify-widget">' +
-          '<div style="text-align:center;padding:16px 8px;">' +
-          '<div style="font-size:32px;margin-bottom:12px;">🎵</div>' +
-          '<div style="font-size:13px;font-weight:700;margin-bottom:6px;">Connect Spotify</div>' +
-          '<div style="font-size:10px;color:var(--muted);margin-bottom:14px;font-family:var(--mono);">Link your account for live playback control</div>' +
-          '<button onclick="spotifyConnect(\'' + id + '\',\'' + cx + '\',\'' + cy + '\')" style="padding:9px 20px;border-radius:8px;background:#1DB954;border:none;color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;width:100%;">▶ Connect Spotify</button>' +
-          '<div style="font-size:9px;color:var(--muted);margin-top:10px;font-family:var(--mono);">Requires SPOTIFY_CLIENT_ID in .env</div>' +
-          '</div></div>';
-        makeWidgetEl(id, '🎵 Spotify', body, cx, cy, 240);
-      }
-      toast('🎵 Spotify player added');
+    function spRender() {
+      var disc = document.getElementById('sp-disc');
+      if (!disc) return; // widget not open
+      var eq = document.getElementById('sp-eq');
+      var play = document.getElementById('sp-play');
+      document.getElementById('sp-track').textContent  = SP.track;
+      document.getElementById('sp-artist').textContent = SP.artist;
+      var pillTrack = document.getElementById('sp-pill-track');
+      if (pillTrack) pillTrack.textContent = SP.track;
+      play.textContent = SP.playing ? '⏸' : '▶';
+      disc.classList.toggle('playing', SP.playing);
+      eq.classList.toggle('paused', !SP.playing);
+      var pct = SP.duration > 0 ? (SP.progress / SP.duration * 100) : 0;
+      document.getElementById('sp-bar-fill').style.width = pct + '%';
+      document.getElementById('sp-cur').textContent = spFmt(SP.progress);
+      document.getElementById('sp-dur').textContent = spFmt(SP.duration);
+      document.getElementById('sp-vol-fill').style.width = (SP.vol * 100) + '%';
+      document.getElementById('sp-shuf').style.color = SP.shuffle ? 'rgba(30,215,96,.9)' : '';
+      document.getElementById('sp-rep').style.color  = SP.repeat  ? 'rgba(30,215,96,.9)' : '';
+      document.getElementById('sp-vol-ico').textContent = SP.vol === 0 ? '🔇' : SP.vol < 0.4 ? '🔉' : '🔊';
     }
 
-    function spotifyConnect(id, cx, cy) {
-      // Open OAuth popup
-      var popup = window.open(API + '/api/sys/spotify/auth', 'spotify_auth', 'width=480,height=680,scrollbars=yes');
-      window.addEventListener('message', function handler(e) {
-        if (e.data && e.data.type === 'spotify_auth_ok') {
-          window.removeEventListener('message', handler);
-          if (popup) popup.close();
-          // Remove connect widget and spawn real player
-          var el = document.getElementById('widget-' + id);
-          if (el) el.remove();
-          spawnRealSpotifyWidget(id, parseInt(cx) || 200, parseInt(cy) || 200);
-          toast('✅ Spotify connected!');
-        }
-      });
-    }
-
-    function spawnRealSpotifyWidget(id, cx, cy) {
-      _spotifyWidgetId = id;
-      var body = '<div class="widget-body spotify-widget">' +
-        '<div class="spot-row">' +
-          '<img class="spot-art" id="' + id + '-art" src="" style="width:44px;height:44px;border-radius:6px;object-fit:cover;background:#222;" onerror="this.style.display=\'none\'">' +
-          '<div class="spot-info">' +
-            '<div class="spot-track" id="' + id + '-track">Loading...</div>' +
-            '<div class="spot-artist" id="' + id + '-artist">Please start Spotify</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="spot-controls">' +
-          '<button class="spot-btn" onclick="spotifyCtrl(\''+id+'\',\'previous\')">&#x23EE;</button>' +
-          '<button class="spot-btn play" id="' + id + '-play" onclick="spotifyCtrl(\''+id+'\',\'toggle\')">&#x25B6;</button>' +
-          '<button class="spot-btn" onclick="spotifyCtrl(\''+id+'\',\'next\')">&#x23ED;</button>' +
-        '</div>' +
-        '<div class="spot-progress-wrap">' +
-          '<span id="' + id + '-cur">0:00</span>' +
-          '<div class="spot-progress" onclick="spotifySeekClick(event,\''+id+'\')">' +
-            '<div class="spot-progress-fill" id="' + id + '-fill"></div>' +
-          '</div>' +
-          '<span id="' + id + '-dur">0:00</span>' +
-        '</div>' +
-        '<div class="spot-src-note" id="' + id + '-src">🟢 Live from Spotify</div>' +
-        '</div>';
-      makeWidgetEl(id, '🎵 Now Playing', body, cx, cy, 290);
-      // Start polling
-      if (_spotifyPollTimer) clearInterval(_spotifyPollTimer);
-      _spotifyPollTimer = setInterval(() => pollSpotify(id), 3000);
-      pollSpotify(id);
-    }
-
-    async function pollSpotify(id) {
-      var el = document.getElementById('widget-' + id);
-      if (!el) { clearInterval(_spotifyPollTimer); return; }
+    async function spCall(action, value) {
+      if (!SP.authed) return null;
       try {
-        var r = await fetch(API + '/api/sys/spotify/now-playing');
-        var d = await r.json();
-        if (d.error && r.status === 401) {
-          document.getElementById(id + '-src').textContent = '⚠ Not authenticated — reconnect';
+        var r = await fetch(SP_API + '/control', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action: action, value: value||0}), signal: AbortSignal.timeout(4000) });
+        if (r.ok) return await r.json();
+      } catch(e) { tlog('warn','SP  ','Control error: '+e.message); }
+      return null;
+    }
+
+    async function spPollStatus() {
+      try {
+        var sr = await fetch(SP_API + '/status', {signal: AbortSignal.timeout(3000)});
+        if (!sr.ok) return;
+        var st = await sr.json();
+        SP.authed = st.connected;
+        if (!SP.authed) {
+          if (st.client_configured) {
+            var t = document.getElementById('sp-track');
+            if (t && SP.track === 'No Track Playing') {
+              t.textContent = 'Click to link Spotify';
+              t.style.cursor = 'pointer';
+              t.onclick = function() { window.open(SP_API+'/auth','sp_auth','width=480,height=680'); };
+              var a = document.getElementById('sp-artist');
+              if (a) a.textContent = '→ requires Premium';
+            }
+          }
           return;
         }
-        if (!d.playing || !d.item) {
-          document.getElementById(id + '-track').textContent = 'Not playing';
-          document.getElementById(id + '-artist').textContent = '—';
-          document.getElementById(id + '-play').innerHTML = '&#x25B6;';
-          return;
+        var nr = await fetch(SP_API + '/now-playing', {signal: AbortSignal.timeout(3000)});
+        if (!nr.ok) return;
+        var d = await nr.json();
+        if (d && d.item) {
+          SP.track    = d.item.title;
+          SP.artist   = d.item.artist;
+          SP.playing  = d.playing;
+          SP.progress = (d.progress_ms||0)/1000;
+          SP.duration = (d.item.duration_ms||1)/1000;
+          spRender();
         }
-        var item = d.item;
-        document.getElementById(id + '-track').textContent = item.title || '—';
-        document.getElementById(id + '-artist').textContent = item.artist || '—';
-        document.getElementById(id + '-play').innerHTML = d.playing ? '&#x23F8;' : '&#x25B6;';
-        var artEl = document.getElementById(id + '-art');
-        if (artEl && item.art_url) { artEl.src = item.art_url; artEl.style.display = ''; }
-        var dur = item.duration_ms || 1; var prog = d.progress_ms || 0;
-        document.getElementById(id + '-cur').textContent = fmtSpotTime(Math.floor(prog / 1000));
-        document.getElementById(id + '-dur').textContent = fmtSpotTime(Math.floor(dur / 1000));
-        document.getElementById(id + '-fill').style.width = (prog / dur * 100).toFixed(1) + '%';
-        document.getElementById(id + '-src').textContent = '🟢 Live from Spotify';
-      } catch(e) {
-        document.getElementById(id + '-src') && (document.getElementById(id + '-src').textContent = '⚠ Offline');
+      } catch(e) { /* silent */ }
+    }
+
+    function spTick() {
+      if (!SP.playing || !document.getElementById('sp-bar-fill')) return;
+      SP.progress = Math.min(SP.progress+1, SP.duration);
+      var pct = SP.duration > 0 ? (SP.progress/SP.duration*100) : 0;
+      document.getElementById('sp-bar-fill').style.width = pct+'%';
+      document.getElementById('sp-cur').textContent = spFmt(SP.progress);
+    }
+
+    async function spToggle() {
+      SP.playing = !SP.playing; spRender();
+      await spCall(SP.playing ? 'play' : 'pause');
+    }
+    async function spNext() {
+      SP.progress = 0; SP.playing = true; spRender();
+      await spCall('next'); setTimeout(spPollStatus, 900);
+    }
+    async function spPrev() {
+      SP.progress = 0; SP.playing = true; spRender();
+      await spCall('previous'); setTimeout(spPollStatus, 900);
+    }
+    function spSeek(e) {
+      var bar = document.getElementById('sp-bar');
+      if (!bar) return;
+      var rect = bar.getBoundingClientRect();
+      SP.progress = Math.max(0, Math.min(1, (e.clientX - rect.left)/rect.width)) * SP.duration;
+      spRender(); spCall('seek', Math.round(SP.progress * 1000));
+    }
+    function spSetVol(e) {
+      var bar = document.getElementById('sp-vol-bar');
+      if (!bar) return;
+      var rect = bar.getBoundingClientRect();
+      SP.vol = Math.max(0, Math.min(1, (e.clientX - rect.left)/rect.width));
+      spRender(); spCall('volume', Math.round(SP.vol * 100));
+    }
+    async function spShuffle() {
+      SP.shuffle = !SP.shuffle; spRender();
+      try { await fetch(SP_API+'/shuffle?state='+SP.shuffle, {method:'PUT', signal:AbortSignal.timeout(3000)}); } catch(e){}
+      toast(SP.shuffle ? '⇌ Shuffle ON' : '⇌ Shuffle OFF');
+    }
+    async function spRepeat() {
+      SP.repeat = !SP.repeat; spRender();
+      try { await fetch(SP_API+'/repeat?state='+(SP.repeat?'context':'off'), {method:'PUT', signal:AbortSignal.timeout(3000)}); } catch(e){}
+      toast(SP.repeat ? '↺ Repeat ON' : '↺ Repeat OFF');
+    }
+    function spMinimize() {
+      var el = document.getElementById('sp-player');
+      if (el) el.style.display = 'none';
+      var pill = document.getElementById('sp-pill');
+      if (pill) pill.style.display = 'flex';
+      tlog('info','SP  ','Player minimized');
+    }
+    function spExpand() {
+      var el = document.getElementById('sp-player');
+      if (!el) { spSpawn(); return; }
+      el.style.display = 'block';
+      document.getElementById('sp-pill').style.display = 'none';
+    }
+
+    // OAuth popup callback
+    window.addEventListener('message', function(e) {
+      if (e.data && e.data.type === 'spotify_auth_ok') {
+        SP.authed = true;
+        toast('✅ Spotify linked!');
+        tlog('sys','SP  ','Spotify OAuth success');
+        spPollStatus();
       }
-    }
+    });
 
-    async function spotifyCtrl(id, action) {
-      var actualAction = action;
-      if (action === 'toggle') {
-        // Determine current state from play button
-        var btn = document.getElementById(id + '-play');
-        actualAction = (btn && btn.innerHTML.includes('23F8')) ? 'pause' : 'play';
-      }
-      try {
-        await fetch(API + '/api/sys/spotify/control', {
-          method: 'POST', headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ action: actualAction })
-        });
-        setTimeout(() => pollSpotify(id), 400);
-      } catch(e) { toast('⚠ Spotify control failed'); }
-    }
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.ctrlKey && e.code === 'Space')      { e.preventDefault(); spToggle(); }
+      if (e.ctrlKey && e.code === 'ArrowRight') { e.preventDefault(); spNext(); }
+      if (e.ctrlKey && e.code === 'ArrowLeft')  { e.preventDefault(); spPrev(); }
+    });
 
-    async function spotifySeekClick(e, id) {
-      var pct = e.offsetX / e.currentTarget.offsetWidth;
-      var durEl = document.getElementById(id + '-dur');
-      if (!durEl) return;
-      var parts = durEl.textContent.split(':');
-      var dur = (parseInt(parts[0]) * 60 + parseInt(parts[1])) * 1000;
-      var pos = Math.floor(pct * dur);
-      await fetch(API + '/api/sys/spotify/control', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ action: 'seek', value: pos })
-      }).catch(() => {});
-      setTimeout(() => pollSpotify(id), 400);
-    }
-
-    // Legacy fake spot functions (kept for compatibility)
-    function spotToggle(id) { spotifyCtrl(id, 'toggle'); }
-    function spotNext(id) { spotifyCtrl(id, 'next'); }
-    function spotPrev(id) { spotifyCtrl(id, 'previous'); }
-    function spotSeek(e, id) { spotifySeekClick(e, id); }
+    // Auto-spawn on load + start polling
+    spSpawn();
+    spPollStatus();
+    SP_POLL_IV = setInterval(spPollStatus, 6000);
+    SP_TICK_IV = setInterval(spTick, 1000);
+    tlog('sys','SP  ','Spotify widget ONLINE — drag header to move, ✕ to close, MIN to minimize');
     function saveProjects() { localStorage.setItem('blitz_projects', JSON.stringify(widgetState.projects)); }
     function renderProjList(wid) { var list = document.getElementById(wid + '-list'); var cnt = document.getElementById(wid + '-count'); if (!list) return; if (!widgetState.projects.length) { list.innerHTML = '<div class="proj-empty">No tasks yet \u2014 add one above!</div>'; if (cnt) cnt.textContent = '0 tasks'; return; } list.innerHTML = ''; widgetState.projects.forEach(function (p, i) { var d = document.createElement('div'); d.className = 'proj-item' + (p.done ? ' done' : ''); d.innerHTML = '<div class="proj-check" onclick="projToggle(' + i + ',\'' + wid + '\')">' + (p.done ? '&#x2713;' : '') + '</div><span class="proj-text">' + p.text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span><button class="proj-del" onclick="projDel(' + i + ',\'' + wid + '\')">&#xD7;</button>'; list.appendChild(d); }); var done = widgetState.projects.filter(function (p) { return p.done; }).length; if (cnt) cnt.textContent = done + '/' + widgetState.projects.length + ' done'; }
     function projAdd(wid) { var inp = document.getElementById(wid + '-inp'); if (!inp || !inp.value.trim()) return; widgetState.projects.push({ text: inp.value.trim(), done: false, id: Date.now() }); inp.value = ''; saveProjects(); renderProjList(wid); }
@@ -6404,7 +6273,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
     function removeSticky(id) { var el = document.getElementById(id); if (el) el.remove(); widgetState.stickyNotes = widgetState.stickyNotes.filter(function (s) { return s.id !== id; }); saveStickies(); }
     function saveStickies() { localStorage.setItem('blitz_stickies', JSON.stringify(widgetState.stickyNotes)); }
     widgetState.stickyNotes.forEach(function (note) { spawnSticky(note); });
-    window.openWidgetPicker = openWidgetPicker; window.closeWidgetPicker = closeWidgetPicker; window.addWidget = addWidget; window.addPodcastWidget = addPodcastWidget; window.addSticky = addSticky; window.removeWidget = removeWidget; window.removeSticky = removeSticky; window.spotToggle = spotToggle; window.spotNext = spotNext; window.spotPrev = spotPrev; window.spotSeek = spotSeek; window.projAdd = projAdd; window.projToggle = projToggle; window.projDel = projDel; window.stickyChange = stickyChange;
+    window.openWidgetPicker = openWidgetPicker; window.closeWidgetPicker = closeWidgetPicker; window.addWidget = addWidget; window.addSticky = addSticky; window.removeWidget = removeWidget; window.removeSticky = removeSticky; window.spToggle = spToggle; window.spNext = spNext; window.spPrev = spPrev; window.spSeek = spSeek; window.spShuffle = spShuffle; window.spRepeat = spRepeat; window.spMinimize = spMinimize; window.spExpand = spExpand; window.spRemove = spRemove; window.spSpawn = spSpawn; window.spSetVol = spSetVol; window.projAdd = projAdd; window.projToggle = projToggle; window.projDel = projDel; window.stickyChange = stickyChange;
 
     // ═══════════════════════════════════════════════════════════
     //  AI CURSOR + VOICE DOM CONTROLLER v2 — Full PC/DOM Control
@@ -6643,7 +6512,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
 
       // ── WIDGETS ─────────────────────────────────────────────
       { p: /add (a )?clock|open clock|show clock/i, a: function () { addWidget('clock'); } },
-      { p: /add (music|spotify|player|now playing)/i, a: function () { addWidget('spotify'); } },
+      { p: /add (music|spotify|player|now playing)|open spotify player/i, a: function () { spExpand(); toast('🎵 Spotify player opened'); } },
       { p: /add (projects?|tasks?|todo|to-do)/i, a: function () { addWidget('projects'); } },
       { p: /add (a )?sticky|add (a )?note/i, a: function () { addSticky('yellow'); } },
       { p: /open widgets?|add widget/i, a: function () { openWidgetPicker(); } },
@@ -6761,7 +6630,7 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
     simFallback = function (text, active) {
       var t = text.toLowerCase().trim();
       if (/add clock/i.test(t)) { addWidget('clock'); return 'Clock widget added!'; }
-      if (/add (music|spotify)/i.test(t)) { addWidget('spotify'); return 'Music player added!'; }
+      if (/add (music|spotify)/i.test(t)) { spExpand(); return 'Spotify player opened!'; }
       if (/add (project|task)/i.test(t)) { addWidget('projects'); return 'Projects board added!'; }
       if (/add sticky|sticky note/i.test(t)) { addSticky('yellow'); return 'Sticky note added — drag it anywhere!'; }
       if (/what time|current time/i.test(t)) { return 'The time is ' + new Date().toLocaleTimeString() + '.'; }
