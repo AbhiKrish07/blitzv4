@@ -2653,6 +2653,1173 @@
       color: var(--red);
       border-color: var(--red)
     }
+
+    /* ══════════════════════════════════════════════
+       WIDGET SYSTEM
+    ══════════════════════════════════════════════ */
+    #widget-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 25;
+      overflow: hidden;
+    }
+
+    .widget {
+      position: absolute;
+      pointer-events: all;
+      background: rgba(6, 7, 20, .85);
+      backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 16px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .06);
+      overflow: hidden;
+      min-width: 200px;
+      user-select: none;
+      animation: widget-in .32s cubic-bezier(.34, 1.56, .64, 1);
+      transition: box-shadow .2s;
+    }
+
+    .widget:hover {
+      box-shadow: 0 22px 60px rgba(0, 0, 0, .75), inset 0 1px 0 rgba(255, 255, 255, .09);
+    }
+
+    @keyframes widget-in {
+      from {
+        opacity: 0;
+        transform: scale(.85) translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .widget-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px 6px;
+      cursor: grab;
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      background: rgba(255, 255, 255, .025);
+    }
+
+    .widget-bar:active {
+      cursor: grabbing;
+    }
+
+    .widget-bar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .15);
+    }
+
+    .widget-bar-title {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .3);
+      flex: 1;
+    }
+
+    .widget-close {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .25);
+      cursor: pointer;
+      font-size: 14px;
+      line-height: 1;
+      padding: 0;
+      transition: color .15s;
+    }
+
+    .widget-close:hover {
+      color: rgba(255, 255, 255, .8);
+    }
+
+    .widget-body {
+      padding: 14px;
+    }
+
+    /* ── FLIP CLOCK widget ── */
+    .flip-clock {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 18px 20px;
+    }
+
+    .flip-digit-group {
+      display: flex;
+      gap: 3px;
+    }
+
+    .flip-digit {
+      width: 44px;
+      height: 60px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .07) 0%, rgba(255, 255, 255, .03) 100%);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flip-digit::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: rgba(0, 0, 0, .5);
+    }
+
+    .flip-sep {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, .3);
+      align-self: center;
+      animation: sep-blink 1s step-end infinite;
+    }
+
+    @keyframes sep-blink {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .15
+      }
+    }
+
+    .flip-date-row {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(255, 255, 255, .3);
+      padding: 0 14px 12px;
+      letter-spacing: .08em;
+    }
+
+    /* ── SPOTIFY widget ── */
+    .spotify-widget {
+      width: 280px;
+    }
+
+    .spot-art {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #1db954, #14532d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      overflow: hidden;
+    }
+
+    .spot-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .spot-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .spot-track {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spot-artist {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .spot-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .spot-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .spot-btn {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .5);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      transition: all .15s;
+      padding: 0;
+    }
+
+    .spot-btn:hover {
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .spot-btn.play {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #1db954;
+      color: #000;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spot-btn.play:hover {
+      background: #1ed760;
+      transform: scale(1.05);
+    }
+
+    .spot-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .spot-progress {
+      flex: 1;
+      height: 3px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .spot-progress-fill {
+      height: 100%;
+      background: #1db954;
+      border-radius: 2px;
+      width: 35%;
+      transition: width .5s linear;
+    }
+
+    .spot-progress:hover .spot-progress-fill {
+      background: #1ed760;
+    }
+
+    .spot-src-note {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: rgba(255, 255, 255, .18);
+      text-align: center;
+      padding: 6px 14px 10px;
+    }
+
+    /* ── PROJECTS / TODO widget ── */
+    .projects-widget {
+      width: 300px;
+    }
+
+    .proj-add-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .proj-inp {
+      flex: 1;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .proj-inp:focus {
+      border-color: var(--accent);
+    }
+
+    .proj-add-btn {
+      background: var(--accent);
+      border: none;
+      border-radius: 7px;
+      color: #fff;
+      font-size: 16px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .proj-add-btn:hover {
+      opacity: .85;
+      transform: scale(1.05);
+    }
+
+    .proj-list {
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .proj-list::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .proj-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .1);
+      border-radius: 2px;
+    }
+
+    .proj-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 6px;
+      border-radius: 8px;
+      transition: background .12s;
+      cursor: default;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+    }
+
+    .proj-item:hover {
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .proj-check {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, .2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      transition: all .2s;
+    }
+
+    .proj-item.done .proj-check {
+      background: var(--green);
+      border-color: var(--green);
+      color: #000;
+    }
+
+    .proj-item.done .proj-text {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .proj-text {
+      flex: 1;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .proj-del {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, .15);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      transition: color .12s;
+    }
+
+    .proj-del:hover {
+      color: var(--red);
+    }
+
+    .proj-empty {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .proj-footer {
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      padding: 8px 14px;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    /* ── STICKY NOTES ── */
+    .sticky-note {
+      position: fixed;
+      pointer-events: all;
+      z-index: 9500;
+      width: 220px;
+      min-height: 160px;
+      border-radius: 4px 4px 12px 12px;
+      box-shadow: 3px 6px 24px rgba(0, 0, 0, .55), 0 1px 0 rgba(255, 255, 255, .04);
+      display: flex;
+      flex-direction: column;
+      animation: sticky-in .25s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes sticky-in {
+      from {
+        opacity: 0;
+        transform: scale(.8) rotate(-3deg);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .sticky-header {
+      height: 32px;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      cursor: grab;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      gap: 6px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sticky-header:active {
+      cursor: grabbing;
+    }
+
+    .sticky-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      opacity: .4;
+      transition: opacity .15s;
+    }
+
+    .sticky-close:hover {
+      opacity: 1;
+    }
+
+    .sticky-body {
+      flex: 1;
+      background: rgba(0, 0, 0, .18);
+      padding: 10px;
+      resize: none;
+      border: none;
+      outline: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.6;
+      min-height: 120px;
+      border-radius: 0 0 12px 12px;
+    }
+
+    /* Color themes for stickies */
+    .sticky-yellow .sticky-header {
+      background: #f5d020;
+      color: #2a2100;
+    }
+
+    .sticky-yellow .sticky-body {
+      background: rgba(245, 208, 32, .12);
+      color: #f5e080;
+    }
+
+    .sticky-pink .sticky-header {
+      background: #f472b6;
+      color: #3b0021;
+    }
+
+    .sticky-pink .sticky-body {
+      background: rgba(244, 114, 182, .1);
+      color: #f9b8d8;
+    }
+
+    .sticky-blue .sticky-header {
+      background: #60a5fa;
+      color: #00133b;
+    }
+
+    .sticky-blue .sticky-body {
+      background: rgba(96, 165, 250, .1);
+      color: #a8d0ff;
+    }
+
+    .sticky-green .sticky-header {
+      background: #4ade80;
+      color: #012312;
+    }
+
+    .sticky-green .sticky-body {
+      background: rgba(74, 222, 128, .1);
+      color: #87ffb6;
+    }
+
+    .sticky-purple .sticky-header {
+      background: #a78bfa;
+      color: #160035;
+    }
+
+    .sticky-purple .sticky-body {
+      background: rgba(167, 139, 250, .1);
+      color: #cdb8ff;
+    }
+
+    /* ── WIDGET PICKER ── */
+    #widget-picker {
+      position: fixed;
+      z-index: 10000;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .6);
+      backdrop-filter: blur(12px);
+    }
+
+    #widget-picker.on {
+      display: flex;
+    }
+
+    .wp-panel {
+      background: rgba(6, 7, 20, .96);
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 20px;
+      padding: 28px;
+      width: min(500px, 92vw);
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .7);
+      animation: widget-in .28s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .wp-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      margin-bottom: 6px;
+    }
+
+    .wp-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .wp-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .wp-card {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 12px;
+      padding: 16px 12px;
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+    }
+
+    .wp-card:hover {
+      background: rgba(167, 139, 250, .08);
+      border-color: rgba(167, 139, 250, .3);
+      transform: translateY(-2px);
+    }
+
+    .wp-card-icon {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .wp-card-name {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .wp-card-desc {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .wp-sticky-colors {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .wp-sticky-col {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .15s;
+    }
+
+    .wp-sticky-col:hover {
+      transform: scale(1.15);
+      border-color: rgba(255, 255, 255, .5);
+    }
+
+    .wp-close {
+      width: 100%;
+      padding: 10px;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .wp-close:hover {
+      background: rgba(255, 255, 255, .1);
+      color: var(--text);
+    }
+
+    /* ── VOICE DOM CONTROLLER ── */
+    #vdom-overlay {
+      position: fixed;
+      z-index: 9800;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    #vdom-overlay.on {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .vdom-pill {
+      background: rgba(6, 7, 22, .95);
+      backdrop-filter: blur(32px);
+      border: 1px solid rgba(167, 139, 250, .35);
+      border-radius: 40px;
+      padding: 10px 20px 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 36px rgba(0, 0, 0, .55), 0 0 0 1px rgba(167, 139, 250, .1);
+      min-width: 280px;
+    }
+
+    .vdom-mic-ring {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: radial-gradient(circle, var(--accent), rgba(96, 165, 250, .6));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      animation: vdom-pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes vdom-pulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(167, 139, 250, .4);
+      }
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(167, 139, 250, 0);
+      }
+    }
+
+    .vdom-text {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255, 255, 255, .7);
+    }
+
+    .vdom-cmd-display {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--accent);
+      font-style: italic;
+      min-height: 16px;
+      transition: all .2s;
+    }
+
+    .vdom-stop {
+      background: rgba(251, 113, 133, .15);
+      border: 1px solid rgba(251, 113, 133, .3);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--red);
+      cursor: pointer;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .vdom-stop:hover {
+      background: rgba(251, 113, 133, .25);
+    }
+
+    .vdom-transcript {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(6, 7, 20, .9);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(255, 255, 255, .6);
+      max-width: 500px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+      z-index: 9799;
+    }
+
+    .vdom-transcript.on {
+      opacity: 1;
+    }
+
+    /* Widget add button in topbar */
+    .tb-btn.widgets-btn {
+      border-color: rgba(167, 139, 250, .35);
+      color: var(--accent);
+      background: rgba(167, 139, 250, .07);
+    }
+
+    .tb-btn.widgets-btn:hover {
+      background: rgba(167, 139, 250, .14);
+    }
+
+    .tb-btn.vdom-btn {
+      border-color: rgba(96, 165, 250, .35);
+      color: #60a5fa;
+      background: rgba(96, 165, 250, .07);
+    }
+
+    .tb-btn.vdom-btn.on {
+      background: rgba(167, 139, 250, .2);
+      border-color: rgba(167, 139, 250, .5);
+      color: var(--accent);
+    }
+
+    /* ══════════════════════════════════════════════
+       RESPONSIVE — MOBILE & TABLET
+    ══════════════════════════════════════════════ */
+    /* Hamburger for mobile */
+    #mob-menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 7px;
+      padding: 4px 8px;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      transition: all .15s;
+    }
+
+    #mob-menu-btn:hover {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --panel: 340px;
+      }
+
+      .sidebar {
+        width: 200px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      #mob-menu-btn {
+        display: block;
+      }
+
+      /* Sidebar slides in as drawer */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 5000;
+        width: 260px;
+        transform: translateX(-100%);
+        transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+        box-shadow: 4px 0 32px rgba(0, 0, 0, .6);
+      }
+
+      .sidebar.mob-open {
+        transform: translateX(0);
+      }
+
+      .mob-sidebar-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 4999;
+        background: rgba(0, 0, 0, .5);
+        backdrop-filter: blur(4px);
+      }
+
+      .mob-sidebar-backdrop.on {
+        display: block;
+      }
+
+      /* Right panel becomes bottom sheet */
+      .rpanel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100% !important;
+        height: 70vh;
+        z-index: 4500;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        border-radius: 20px 20px 0 0;
+        transform: translateY(100%);
+        transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+      }
+
+      .rpanel.mob-open {
+        transform: translateY(0);
+      }
+
+      .rp-drag {
+        display: none;
+      }
+
+      /* Add handle bar at top of bottom sheet */
+      .rpanel::before {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, .12);
+        border-radius: 2px;
+        margin: 8px auto 2px;
+        flex-shrink: 0;
+      }
+
+      /* Canvas fills full width */
+      .canvas-area {
+        min-height: 50vh;
+      }
+
+      /* Topbar adjustments */
+      .topbar {
+        gap: 6px;
+        padding: 0 10px;
+      }
+
+      .tb-title {
+        display: none;
+      }
+
+      .tb-sep {
+        display: none;
+      }
+
+      .tb-btns {
+        gap: 3px;
+      }
+
+      .tb-btn {
+        padding: 4px 7px;
+        font-size: 8px;
+      }
+
+      .hz-badge {
+        display: none;
+      }
+
+      /* Orbit ring scale on small screens */
+      .scene {
+        transform-origin: center center;
+      }
+
+      /* Stickies take up less space on mobile */
+      .sticky-note {
+        width: 180px;
+      }
+
+      /* Widget picker full-width on mobile */
+      .wp-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 701px) and (max-width: 1024px) {
+
+      /* iPad / tablet layout */
+      :root {
+        --panel: 300px;
+      }
+
+      .sidebar {
+        width: 190px;
+      }
+
+      .topbar {
+        gap: 8px;
+        padding: 0 12px;
+      }
+    }
+
+    /* iOS safe area insets */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .api-bar {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      @media (max-width: 700px) {
+        .rpanel {
+          padding-bottom: env(safe-area-inset-bottom);
+        }
+      }
+    }
+
+    /* ══ GHOST AI CURSOR ══════════════════════════════════════ */
+    #ai-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      width: 28px;
+      height: 28px;
+      transform: translate(-50%, -50%);
+      transition: left .35s cubic-bezier(.4, 0, .2, 1), top .35s cubic-bezier(.4, 0, .2, 1);
+      display: none;
+    }
+
+    #ai-cursor.active {
+      display: block;
+    }
+
+    .ai-cursor-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid rgba(167, 139, 250, .9);
+      animation: cursor-spin 1.2s linear infinite;
+    }
+
+    .ai-cursor-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #a78bfa;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px rgba(167, 139, 250, .8);
+    }
+
+    @keyframes cursor-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    #ai-cursor.clicking .ai-cursor-ring {
+      animation: cursor-click .25s ease-out forwards;
+    }
+
+    @keyframes cursor-click {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(2.2);
+        opacity: .5;
+        border-color: #60a5fa;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    #ai-cursor.scanning .ai-cursor-ring {
+      border-color: rgba(74, 222, 128, .9);
+      animation: cursor-scan .6s ease-in-out infinite alternate;
+    }
+
+    @keyframes cursor-scan {
+      from {
+        transform: scale(.85)
+      }
+
+      to {
+        transform: scale(1.3)
+      }
+    }
+
+    /* Spotlight lasso shown on navigate */
+    .ai-spotlight {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99998;
+      border-radius: 8px;
+      box-shadow: 0 0 0 4px rgba(167, 139, 250, .5), 0 0 30px rgba(167, 139, 250, .25);
+      border: 1.5px solid rgba(167, 139, 250, .6);
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      opacity: 0;
+    }
+
+    .ai-spotlight.on {
+      opacity: 1;
+    }
+
+    /* Tooltip next to cursor */
+    #ai-tooltip {
+      position: fixed;
+      z-index: 99999;
+      pointer-events: none;
+      background: rgba(6, 7, 22, .95);
+      border: 1px solid rgba(167, 139, 250, .4);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, .8);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity .2s;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+    }
+
+    #ai-tooltip.on {
+      opacity: 1;
+    }
+
+    /* Status badge top-center when cursor active */
+    #ai-status-badge {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99997;
+      background: rgba(6, 7, 22, .92);
+      border: 1px solid rgba(167, 139, 250, .35);
+      border-radius: 24px;
+      padding: 7px 18px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: rgba(255, 255, 255, .7);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, .5);
+    }
+
+    #ai-status-badge.on {
+      display: flex;
+    }
+
+    #ai-status-badge .ai-sb-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #a78bfa;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    /* Permission notice */
+    #ai-permission-note {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(251, 191, 36, .1);
+      border: 1px solid rgba(251, 191, 36, .3);
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: rgba(251, 191, 36, .8);
+      z-index: 99996;
+      display: none;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    #ai-permission-note.on {
+      display: block;
+    }
   </style>
 </head>
 
@@ -2673,8 +3840,8 @@
   </div>
 
   <div class="shortcuts-modal" id="sk-modal">
-    <div class="sk-box">
-      <div class="sk-title">⌨ Shortcuts<button class="sk-x" onclick="toggleSk()">✕</button></div>
+    <div class="sk-box" style="max-height:82vh;overflow-y:auto">
+      <div class="sk-title">⌨ Shortcuts &amp; Voice Commands<button class="sk-x" onclick="toggleSk()">✕</button></div>
       <div class="sk-row"><span class="sk-desc">Toggle fullscreen</span><span class="sk-key">F</span></div>
       <div class="sk-row"><span class="sk-desc">Toggle microphone</span><span class="sk-key">Space</span></div>
       <div class="sk-row"><span class="sk-desc">Stop speaking</span><span class="sk-key">Esc</span></div>
@@ -2705,8 +3872,78 @@
           vision</span><span class="sk-key" style="color:#60a5fa">Screen capture</span></div>
       <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">full sync</span><span
           class="sk-key" style="color:#fbbf24">All online</span></div>
+
+      <!-- VOICE COMMANDS -->
+      <div
+        style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:#a78bfa;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:4px">
+        🎤 AI CURSOR — VOICE COMMANDS</div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:8px">Click <strong
+          style="color:#a78bfa">🎤 Voice</strong> in the topbar, then speak any of these:</div>
+
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">NAVIGATION</div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open The
+          Forge"</span><span class="sk-key" style="color:#fdba74">→ Forge IDE</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open The
+          Canvas"</span><span class="sk-key" style="color:#f0ead8">→ Notes</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open The
+          Nexus"</span><span class="sk-key" style="color:#38bdf8">→ Web</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open The
+          Studio"</span><span class="sk-key" style="color:#c084fc">→ 3D</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Chat / Terminal /
+          Config"</span><span class="sk-key" style="color:#60a5fa">→ Panel</span></div>
+
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">OPEN TABS &amp;
+        WEBSITES</div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Google / YouTube /
+          GitHub"</span><span class="sk-key" style="color:#4ade80">New Tab</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Gmail / Spotify /
+          Discord"</span><span class="sk-key" style="color:#4ade80">New Tab</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Search for black
+          holes"</span><span class="sk-key" style="color:#4ade80">Google it</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Go to
+          github.com/…"</span><span class="sk-key" style="color:#4ade80">Any URL</span></div>
+
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">SCREEN CONTROL
+      </div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Brightness
+          50"</span><span class="sk-key" style="color:#fbbf24">0–200%</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Brighter /
+          Dimmer"</span><span class="sk-key" style="color:#fbbf24">+25 / −25</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Night mode"</span><span
+          class="sk-key" style="color:#fbbf24">40% dim</span></div>
+
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">WINDOWS APPS</div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Display
+          Settings"</span><span class="sk-key" style="color:#94a3b8">Win Settings</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Volume
+          Settings"</span><span class="sk-key" style="color:#94a3b8">Win Sound</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Task
+          Manager"</span><span class="sk-key" style="color:#94a3b8">Taskmgr</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open File
+          Explorer"</span><span class="sk-key" style="color:#94a3b8">Files</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Open Bluetooth
+          Settings"</span><span class="sk-key" style="color:#94a3b8">Bluetooth</span></div>
+
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">WIDGETS &amp;
+        THEMES</div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Add clock / music /
+          projects"</span><span class="sk-key" style="color:#a78bfa">Widget</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Add sticky
+          note"</span><span class="sk-key" style="color:#f5d020">Sticky</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Ocean / Matrix / Gold
+          theme"</span><span class="sk-key" style="color:#a78bfa">Theme</span></div>
+
+      <div style="font-family:var(--mono);font-size:9px;color:rgba(167,139,250,.6);margin:6px 0 3px">CLICK ANYTHING
+      </div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Click Full
+          Sync"</span><span class="sk-key" style="color:#60a5fa">AI clicks it</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Click The
+          Forge"</span><span class="sk-key" style="color:#60a5fa">AI clicks it</span></div>
+      <div class="sk-row"><span class="sk-desc" style="font-family:var(--mono);font-size:10px">"Hey Blitz,
+          &lt;question&gt;"</span><span class="sk-key" style="color:#34d399">Chat AI</span></div>
     </div>
   </div>
+
 
   <div class="app">
     <!-- SIDEBAR -->
@@ -2782,10 +4019,14 @@
     <!-- CANVAS -->
     <div class="main">
       <div class="topbar">
+        <button id="mob-menu-btn" onclick="toggleMobSidebar()" title="Menu">☰</button>
         <span class="tb-title">B.L.I.T.Z.</span>
         <div class="tb-sep"></div>
         <span class="tb-info" id="tb-info">Orbital Module Hub</span>
         <div class="tb-btns">
+          <button class="tb-btn widgets-btn" onclick="openWidgetPicker()" title="Add Widget">⊞ Widgets</button>
+          <button class="tb-btn vdom-btn" id="vdom-toggle-btn" onclick="toggleVoiceDom()" title="Voice Control">🎤
+            Voice</button>
           <button class="tb-btn" onclick="connectAll()">⚡ All</button>
           <button class="tb-btn" onclick="disconnectAll()">○ None</button>
           <button class="tb-btn" onclick="resetLayout()">↺ Reset</button>
@@ -2801,6 +4042,7 @@
       </div>
       <div class="canvas-wrap">
         <div class="canvas-area" id="ca">
+          <div id="widget-layer"></div>
           <canvas id="bgc"></canvas>
           <svg id="bonds-svg"></svg>
           <div class="scene" id="scene">
@@ -3093,6 +4335,70 @@
       onmouseout="this.style.background='';this.style.color='rgba(251,113,133,.7)'">✕ Remove</div>
   </div>
 
+  <!-- Mobile sidebar backdrop -->
+  <div class="mob-sidebar-backdrop" id="mob-backdrop" onclick="toggleMobSidebar()"></div>
+
+  <!-- WIDGET PICKER MODAL -->
+  <div id="widget-picker">
+    <div class="wp-panel">
+      <div class="wp-title">⊞ Add Widget</div>
+      <div class="wp-sub">Choose a widget to place on your homescreen</div>
+      <div class="wp-grid">
+        <div class="wp-card" onclick="addWidget('clock')">
+          <div class="wp-card-icon">🕐</div>
+          <div class="wp-card-name">Flip Clock</div>
+          <div class="wp-card-desc">Live animated clock</div>
+        </div>
+        <div class="wp-card" onclick="addWidget('spotify')">
+          <div class="wp-card-icon">🎵</div>
+          <div class="wp-card-name">Now Playing</div>
+          <div class="wp-card-desc">Music playback widget</div>
+        </div>
+        <div class="wp-card" onclick="addWidget('projects')">
+          <div class="wp-card-icon">📋</div>
+          <div class="wp-card-name">Projects</div>
+          <div class="wp-card-desc">Ongoing tasks & to-dos</div>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="wp-sub" style="margin-bottom:8px;margin-top:0">📌 Sticky Note — choose colour:</div>
+        <div class="wp-sticky-colors">
+          <div class="wp-sticky-col" style="background:#f5d020" onclick="addSticky('yellow')" title="Yellow"></div>
+          <div class="wp-sticky-col" style="background:#f472b6" onclick="addSticky('pink')" title="Pink"></div>
+          <div class="wp-sticky-col" style="background:#60a5fa" onclick="addSticky('blue')" title="Blue"></div>
+          <div class="wp-sticky-col" style="background:#4ade80" onclick="addSticky('green')" title="Green"></div>
+          <div class="wp-sticky-col" style="background:#a78bfa" onclick="addSticky('purple')" title="Purple"></div>
+        </div>
+      </div>
+      <button class="wp-close" onclick="closeWidgetPicker()">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- VOICE DOM CONTROLLER OVERLAY -->
+  <div id="vdom-overlay">
+    <div class="vdom-pill">
+      <div class="vdom-mic-ring">🎤</div>
+      <div class="vdom-text">
+        <div style="font-size:11px;font-weight:700;margin-bottom:2px">AI Cursor <span
+            style="color:var(--accent)">Online</span></div>
+        <div class="vdom-cmd-display" id="vdom-cmd">Listening for commands…</div>
+      </div>
+      <button class="vdom-stop" onclick="stopVoiceDom()">Stop</button>
+    </div>
+  </div>
+  <div class="vdom-transcript" id="vdom-transcript"></div>
+
+  <!-- AI GHOST CURSOR & OVERLAYS -->
+  <div id="ai-cursor" aria-hidden="true">
+    <div class="ai-cursor-ring"></div>
+    <div class="ai-cursor-dot"></div>
+  </div>
+  <div id="ai-tooltip"></div>
+  <div id="ai-status-badge">
+    <div class="ai-sb-dot"></div><span id="ai-sb-text">AI Cursor Active</span>
+  </div>
+  <div id="ai-permission-note">&#9888; Some PC controls (brightness, volume, apps) need the Python backend running at
+    localhost:8000. Open B.L.I.T.Z. via the launcher for full system access.</div>
   <script>
     const API = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
       ? 'http://localhost:8000'
@@ -4765,6 +6071,421 @@ sys.stdout=_Cap(); sys.stderr=_Cap()
 
     init();
     jarvisBoot();
+    // ═══════════════════════════════════════════════════════════
+    //  MOBILE SIDEBAR TOGGLE
+    // ═══════════════════════════════════════════════════════════
+    function toggleMobSidebar() {
+      var sb = document.querySelector('.sidebar'); var bd = document.getElementById('mob-backdrop'); var rp = document.getElementById('rpanel'); if (!sb) return;
+      var open = sb.classList.toggle('mob-open'); if (bd) bd.classList.toggle('on', open); if (open && rp) rp.classList.remove('mob-open');
+    }
+    window.toggleMobSidebar = toggleMobSidebar;
+    (function () { var sy = 0; document.addEventListener('touchstart', function (e) { sy = e.touches[0].clientY; }, { passive: true }); document.addEventListener('touchend', function (e) { if (window.innerWidth > 700) return; if (sy - e.changedTouches[0].clientY > 70) { var rp = document.getElementById('rpanel'); var sb = document.querySelector('.sidebar'); if (rp) { var o = rp.classList.toggle('mob-open'); if (o && sb) sb.classList.remove('mob-open'); var bd = document.getElementById('mob-backdrop'); if (bd) bd.classList.toggle('on', o); } } }, { passive: true }); })();
+
+    // ═══════════════════════════════════════════════════════════
+    //  WIDGET SYSTEM
+    // ═══════════════════════════════════════════════════════════
+    var widgetState = { projects: JSON.parse(localStorage.getItem('blitz_projects') || '[]'), stickyNotes: JSON.parse(localStorage.getItem('blitz_stickies') || '[]'), clockInterval: null, spotPlaying: false, spotProgress: 0, spotTimer: null };
+    var FAKE_TRACKS = [{ title: 'Midnight City', artist: 'M83', dur: 244 }, { title: 'Strobe', artist: 'deadmau5', dur: 578 }, { title: 'Holocene', artist: 'Bon Iver', dur: 356 }, { title: 'The Chain', artist: 'Fleetwood Mac', dur: 271 }, { title: 'Redbone', artist: 'Childish Gambino', dur: 328 }];
+    var fakeTrackIdx = 0;
+    function openWidgetPicker() { document.getElementById('widget-picker').classList.add('on'); }
+    function closeWidgetPicker() { document.getElementById('widget-picker').classList.remove('on'); }
+    document.getElementById('widget-picker').addEventListener('click', function (e) { if (e.target === this) closeWidgetPicker(); });
+    function makeDraggableEl(el, handle) { var dx = 0, dy = 0, dr = false; handle = handle || el; function down(e) { dr = true; var t = e.touches ? e.touches[0] : e; var r = el.getBoundingClientRect(); dx = t.clientX - r.left; dy = t.clientY - r.top; el.style.transition = 'none'; if (e.touches) e.preventDefault(); } function move(e) { if (!dr) return; var t = e.touches ? e.touches[0] : e; el.style.left = Math.max(0, Math.min(t.clientX - dx, window.innerWidth - el.offsetWidth)) + 'px'; el.style.top = Math.max(0, Math.min(t.clientY - dy, window.innerHeight - el.offsetHeight)) + 'px'; } function up() { dr = false; el.style.transition = ''; } handle.addEventListener('mousedown', down); handle.addEventListener('touchstart', down, { passive: false }); document.addEventListener('mousemove', move); document.addEventListener('touchmove', move, { passive: false }); document.addEventListener('mouseup', up); document.addEventListener('touchend', up); }
+    function makeWidgetEl(id, title, body, x, y, w) { var el = document.createElement('div'); el.className = 'widget'; el.id = 'widget-' + id; el.style.left = (x || 40) + 'px'; el.style.top = (y || 80) + 'px'; if (w) el.style.width = w + 'px'; el.innerHTML = '<div class="widget-bar"><div class="widget-bar-dot"></div><span class="widget-bar-title">' + title + '</span><button class="widget-close" onclick="removeWidget(\'' + id + '\')">&#xD7;</button></div>' + body; document.getElementById('widget-layer').appendChild(el); makeDraggableEl(el, el.querySelector('.widget-bar')); return el; }
+    function removeWidget(id) { var el = document.getElementById('widget-' + id); if (el) el.remove(); if (id.indexOf('clock') === 0 && widgetState.clockInterval) { clearInterval(widgetState.clockInterval); widgetState.clockInterval = null; } if (id.indexOf('spot') === 0 && widgetState.spotTimer) { clearInterval(widgetState.spotTimer); widgetState.spotTimer = null; } }
+    function fmtSpotTime(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+    function addWidget(type) {
+      closeWidgetPicker(); var id = type + '_' + Date.now(); var cx = Math.max(40, Math.floor(window.innerWidth / 2) - 150); var cy = Math.max(60, Math.floor(window.innerHeight / 2) - 120);
+      if (type === 'clock') { var body = '<div class="flip-clock"><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-h1">0</div><div class="flip-digit" id="' + id + '-h2">0</div></div><div class="flip-sep">:</div><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-m1">0</div><div class="flip-digit" id="' + id + '-m2">0</div></div><div class="flip-sep">:</div><div class="flip-digit-group"><div class="flip-digit" id="' + id + '-s1">0</div><div class="flip-digit" id="' + id + '-s2">0</div></div></div><div class="flip-date-row" id="' + id + '-date"></div>'; makeWidgetEl(id, '&#x1F550; Clock', body, cx, cy, 320); (function startClock() { function tick() { var n = new Date(); var h = String(n.getHours()).padStart(2, '0'); var m = String(n.getMinutes()).padStart(2, '0'); var s = String(n.getSeconds()).padStart(2, '0'); var h1 = document.getElementById(id + '-h1'); if (!h1) { clearInterval(widgetState.clockInterval); widgetState.clockInterval = null; return; } document.getElementById(id + '-h1').textContent = h[0]; document.getElementById(id + '-h2').textContent = h[1]; document.getElementById(id + '-m1').textContent = m[0]; document.getElementById(id + '-m2').textContent = m[1]; document.getElementById(id + '-s1').textContent = s[0]; document.getElementById(id + '-s2').textContent = s[1]; var dt = document.getElementById(id + '-date'); if (dt) dt.textContent = n.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }); } tick(); if (widgetState.clockInterval) clearInterval(widgetState.clockInterval); widgetState.clockInterval = setInterval(tick, 1000); })(); toast('&#x1F550; Clock added'); }
+      else if (type === 'spotify') { var tr = FAKE_TRACKS[fakeTrackIdx]; var body = '<div class="widget-body spotify-widget"><div class="spot-row"><div class="spot-art">&#x1F3B5;</div><div class="spot-info"><div class="spot-track" id="' + id + '-track">' + tr.title + '</div><div class="spot-artist" id="' + id + '-artist">' + tr.artist + '</div></div></div><div class="spot-controls"><button class="spot-btn" onclick="spotPrev(\'' + id + '\')">&#x23EE;</button><button class="spot-btn play" id="' + id + '-play" onclick="spotToggle(\'' + id + '\')">&#x25B6;</button><button class="spot-btn" onclick="spotNext(\'' + id + '\')">&#x23ED;</button></div><div class="spot-progress-wrap"><span id="' + id + '-cur">0:00</span><div class="spot-progress" onclick="spotSeek(event,\'' + id + '\')"><div class="spot-progress-fill" id="' + id + '-fill"></div></div><span id="' + id + '-dur">' + fmtSpotTime(tr.dur) + '</span></div><div class="spot-src-note">Connect Spotify for live data</div></div>'; makeWidgetEl(id, '&#x1F3B5; Now Playing', body, cx, cy, 290); widgetState.spotPlaying = true; widgetState.spotProgress = 0; if (widgetState.spotTimer) clearInterval(widgetState.spotTimer); widgetState.spotTimer = setInterval(function () { var t = FAKE_TRACKS[fakeTrackIdx]; var f = document.getElementById(id + '-fill'); var c = document.getElementById(id + '-cur'); if (!f) { clearInterval(widgetState.spotTimer); return; } if (widgetState.spotPlaying) { widgetState.spotProgress = Math.min(widgetState.spotProgress + 1, t.dur); if (widgetState.spotProgress >= t.dur) { spotNext(id); return; } } f.style.width = (widgetState.spotProgress / t.dur * 100).toFixed(1) + '%'; if (c) c.textContent = fmtSpotTime(widgetState.spotProgress); }, 1000); toast('&#x1F3B5; Music widget added'); }
+      else if (type === 'projects') { var body = '<div class="widget-body"><div class="proj-add-row"><input class="proj-inp" id="' + id + '-inp" placeholder="Add task... (Enter)" onkeydown="if(event.key===\'Enter\')projAdd(\'' + id + '\')"><button class="proj-add-btn" onclick="projAdd(\'' + id + '\')">+</button></div><div class="proj-list" id="' + id + '-list"></div></div><div class="proj-footer"><span id="' + id + '-count">0 tasks</span></div>'; makeWidgetEl(id, '&#x1F4CB; Projects', body, cx, cy, 310); renderProjList(id); toast('&#x1F4CB; Projects board added'); }
+    }
+    function spotToggle(id) { widgetState.spotPlaying = !widgetState.spotPlaying; var b = document.getElementById(id + '-play'); if (b) b.innerHTML = widgetState.spotPlaying ? '&#x23F8;' : '&#x25B6;'; }
+    function spotNext(id) { fakeTrackIdx = (fakeTrackIdx + 1) % FAKE_TRACKS.length; var t = FAKE_TRACKS[fakeTrackIdx]; widgetState.spotProgress = 0; var te = document.getElementById(id + '-track'), ae = document.getElementById(id + '-artist'), de = document.getElementById(id + '-dur'); if (te) te.textContent = t.title; if (ae) ae.textContent = t.artist; if (de) de.textContent = fmtSpotTime(t.dur); }
+    function spotPrev(id) { fakeTrackIdx = (fakeTrackIdx - 1 + FAKE_TRACKS.length) % FAKE_TRACKS.length; var t = FAKE_TRACKS[fakeTrackIdx]; widgetState.spotProgress = 0; var te = document.getElementById(id + '-track'), ae = document.getElementById(id + '-artist'), de = document.getElementById(id + '-dur'); if (te) te.textContent = t.title; if (ae) ae.textContent = t.artist; if (de) de.textContent = fmtSpotTime(t.dur); }
+    function spotSeek(e, id) { var t = FAKE_TRACKS[fakeTrackIdx]; widgetState.spotProgress = Math.floor((e.offsetX / e.currentTarget.offsetWidth) * t.dur); }
+    function saveProjects() { localStorage.setItem('blitz_projects', JSON.stringify(widgetState.projects)); }
+    function renderProjList(wid) { var list = document.getElementById(wid + '-list'); var cnt = document.getElementById(wid + '-count'); if (!list) return; if (!widgetState.projects.length) { list.innerHTML = '<div class="proj-empty">No tasks yet \u2014 add one above!</div>'; if (cnt) cnt.textContent = '0 tasks'; return; } list.innerHTML = ''; widgetState.projects.forEach(function (p, i) { var d = document.createElement('div'); d.className = 'proj-item' + (p.done ? ' done' : ''); d.innerHTML = '<div class="proj-check" onclick="projToggle(' + i + ',\'' + wid + '\')">' + (p.done ? '&#x2713;' : '') + '</div><span class="proj-text">' + p.text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</span><button class="proj-del" onclick="projDel(' + i + ',\'' + wid + '\')">&#xD7;</button>'; list.appendChild(d); }); var done = widgetState.projects.filter(function (p) { return p.done; }).length; if (cnt) cnt.textContent = done + '/' + widgetState.projects.length + ' done'; }
+    function projAdd(wid) { var inp = document.getElementById(wid + '-inp'); if (!inp || !inp.value.trim()) return; widgetState.projects.push({ text: inp.value.trim(), done: false, id: Date.now() }); inp.value = ''; saveProjects(); renderProjList(wid); }
+    function projToggle(idx, wid) { if (widgetState.projects[idx]) widgetState.projects[idx].done = !widgetState.projects[idx].done; saveProjects(); renderProjList(wid); }
+    function projDel(idx, wid) { widgetState.projects.splice(idx, 1); saveProjects(); renderProjList(wid); }
+    function addSticky(color) { closeWidgetPicker(); var id = 'sticky_' + Date.now(); var cx = 80 + Math.random() * (Math.max(200, window.innerWidth - 320)); var cy = 80 + Math.random() * (Math.max(100, window.innerHeight - 280)); var note = { id: id, color: color, text: '', x: cx, y: cy }; widgetState.stickyNotes.push(note); spawnSticky(note); saveStickies(); toast('&#x1F4CC; Sticky note added'); }
+    function spawnSticky(note) { var id = note.id; var el = document.createElement('div'); el.className = 'sticky-note sticky-' + (note.color || 'yellow'); el.id = id; el.style.left = note.x + 'px'; el.style.top = note.y + 'px'; el.innerHTML = '<div class="sticky-header">&#x1F4CC; Note<button class="sticky-close" onclick="removeSticky(\'' + id + '\')">&#xD7;</button></div><textarea class="sticky-body" placeholder="Write anything..." oninput="stickyChange(\'' + id + '\',this.value)">' + ((note.text || '').replace(/</g, '&lt;')) + '</textarea>'; document.body.appendChild(el); makeDraggableEl(el, el.querySelector('.sticky-header')); }
+    function stickyChange(id, text) { var n = widgetState.stickyNotes.find(function (s) { return s.id === id; }); if (n) { n.text = text; saveStickies(); } }
+    function removeSticky(id) { var el = document.getElementById(id); if (el) el.remove(); widgetState.stickyNotes = widgetState.stickyNotes.filter(function (s) { return s.id !== id; }); saveStickies(); }
+    function saveStickies() { localStorage.setItem('blitz_stickies', JSON.stringify(widgetState.stickyNotes)); }
+    widgetState.stickyNotes.forEach(function (note) { spawnSticky(note); });
+    window.openWidgetPicker = openWidgetPicker; window.closeWidgetPicker = closeWidgetPicker; window.addWidget = addWidget; window.addSticky = addSticky; window.removeWidget = removeWidget; window.removeSticky = removeSticky; window.spotToggle = spotToggle; window.spotNext = spotNext; window.spotPrev = spotPrev; window.spotSeek = spotSeek; window.projAdd = projAdd; window.projToggle = projToggle; window.projDel = projDel; window.stickyChange = stickyChange;
+
+    // ═══════════════════════════════════════════════════════════
+    //  AI CURSOR + VOICE DOM CONTROLLER v2 — Full PC/DOM Control
+    // ═══════════════════════════════════════════════════════════
+    var vdomRecog = null, vdomActive = false;
+    var aiCursorEl = null, aiTooltipEl = null, aiStatusEl = null, aiStatusTxt = null, aiNoteEl = null;
+    var spotEl = null;
+
+    function aiInit() {
+      aiCursorEl = document.getElementById('ai-cursor');
+      aiTooltipEl = document.getElementById('ai-tooltip');
+      aiStatusEl = document.getElementById('ai-status-badge');
+      aiStatusTxt = document.getElementById('ai-sb-text');
+      aiNoteEl = document.getElementById('ai-permission-note');
+      spotEl = document.createElement('div'); spotEl.className = 'ai-spotlight'; document.body.appendChild(spotEl);
+    }
+    setTimeout(aiInit, 400);
+
+    // ── GHOST CURSOR ENGINE ──────────────────────────────────────
+    function aiMoveTo(x, y, label, cb) {
+      if (!aiCursorEl) return cb && cb();
+      aiCursorEl.classList.add('active');
+      aiCursorEl.classList.remove('clicking', 'scanning');
+      aiCursorEl.style.left = x + 'px'; aiCursorEl.style.top = y + 'px';
+      if (label) aiShowTooltip(x, y, label);
+      setTimeout(function () { if (cb) cb(); }, 380);
+    }
+
+    function aiMoveToEl(el, label, cb) {
+      if (!el) { if (cb) cb(); return; }
+      var r = el.getBoundingClientRect();
+      var x = r.left + r.width / 2; var y = r.top + r.height / 2;
+      spotEl.style.left = r.left + 'px';
+      spotEl.style.top = r.top + 'px';
+      spotEl.style.width = r.width + 'px';
+      spotEl.style.height = r.height + 'px';
+      spotEl.classList.add('on');
+      setTimeout(function () { spotEl.classList.remove('on'); }, 600);
+      aiMoveTo(x, y, label || el.textContent.trim().slice(0, 30), cb);
+    }
+
+    function aiClick(el, label, cb) {
+      aiMoveToEl(el, label, function () {
+        aiCursorEl.classList.add('clicking');
+        setTimeout(function () { aiCursorEl.classList.remove('clicking'); el.click(); if (cb) cb(); }, 220);
+      });
+    }
+
+    function aiShowTooltip(x, y, text) {
+      if (!aiTooltipEl) return;
+      aiTooltipEl.textContent = text;
+      aiTooltipEl.style.left = (x + 20) + 'px';
+      aiTooltipEl.style.top = (y - 14) + 'px';
+      aiTooltipEl.classList.add('on');
+      clearTimeout(aiTooltipEl._tmr);
+      aiTooltipEl._tmr = setTimeout(function () { aiTooltipEl.classList.remove('on'); }, 2200);
+    }
+
+    function aiSetStatus(text, scanning) {
+      if (!aiStatusEl) return;
+      aiStatusEl.classList.add('on');
+      if (aiStatusTxt) aiStatusTxt.textContent = text;
+      if (aiCursorEl) {
+        aiCursorEl.classList.toggle('scanning', !!scanning);
+      }
+    }
+
+    function aiHideCursor() {
+      if (aiCursorEl) { aiCursorEl.classList.remove('active', 'clicking', 'scanning'); }
+      if (aiStatusEl) { aiStatusEl.classList.remove('on'); }
+    }
+
+    function aiScanPage(cb) {
+      aiSetStatus('Scanning page…', true);
+      if (aiCursorEl) {
+        aiCursorEl.classList.add('active');
+        // Sweep across the screen
+        var pts = [[window.innerWidth * .3, window.innerHeight * .4], [window.innerWidth * .7, window.innerHeight * .4], [window.innerWidth * .5, window.innerHeight * .6], [window.innerWidth * .5, window.innerHeight * .3]];
+        var i = 0; function next() { if (i >= pts.length) { aiCursorEl.classList.remove('scanning'); if (cb) cb(); return; } aiMoveTo(pts[i][0], pts[i][1], '', function () { i++; next(); }); } next();
+      } else { if (cb) cb(); }
+    }
+
+    // ── FIND ELEMENTS BY NATURAL LANGUAGE ───────────────────────
+    function aiFind(query) {
+      // Try by aria-label, title, id, text content
+      var q = query.toLowerCase().trim();
+      // exact text match on buttons/links
+      var all = document.querySelectorAll('button,a,[role="button"],input,.nav-item,.rp-tab,.tb-btn');
+      for (var i = 0; i < all.length; i++) {
+        var txt = (all[i].textContent || '').toLowerCase().trim();
+        var ttl = (all[i].title || '').toLowerCase();
+        var id = (all[i].id || '').toLowerCase();
+        if (txt.includes(q) || ttl.includes(q) || id.includes(q)) return all[i];
+      }
+      return null;
+    }
+
+    // ── SYSTEM / PC ACTIONS ──────────────────────────────────────
+    function aiOpenTab(url, label) {
+      aiSetStatus('Opening ' + label + '…');
+      aiMoveTo(window.innerWidth / 2, window.innerHeight / 2, 'Opening ' + label, function () {
+        window.open(url, '_blank'); tlog('sys', 'VDOM', 'Opened tab: ' + url); toast('\uD83D\uDD0D Opened ' + label);
+      });
+    }
+
+    // Page brightness via CSS filter on body
+    var aiBrightness = 100;
+    function aiSetBrightness(val) {
+      aiBrightness = Math.max(10, Math.min(200, val));
+      document.body.style.filter = aiBrightness === 100 ? '' : 'brightness(' + aiBrightness + '%)';
+      aiSetStatus('Brightness: ' + aiBrightness + '%'); toast('\u2600 Brightness: ' + aiBrightness + '%');
+      tlog('sys', 'VDOM', 'Brightness set to ' + aiBrightness + '%');
+    }
+
+    // System settings via ms-settings: links (Windows only, opens Settings app)
+    function aiOpenSettings(page, label) {
+      aiSetStatus('Opening Windows ' + label);
+      var url = 'ms-settings:' + page;
+      aiMoveTo(window.innerWidth / 2, window.innerHeight * 0.8, 'Open Windows ' + label, function () {
+        var a = document.createElement('a'); a.href = url; a.click();
+        toast('\u2699 Opening Windows ' + label);
+        tlog('sys', 'VDOM', 'Settings: ' + url);
+        if (aiNoteEl) { aiNoteEl.classList.add('on'); setTimeout(function () { aiNoteEl.classList.remove('on'); }, 5000); }
+      });
+    }
+
+    // ── MASTER COMMAND TABLE ─────────────────────────────────────
+    var VDOM_CMDS = [
+      // ── BLITZ ENVIRONMENTS ──────────────────────────────────
+      {
+        p: /open (the )?forge|go to forge|forge mode/i,
+        a: function () { aiScanPage(function () { var btn = aiFind('forge'); if (btn) aiClick(btn, 'Open Forge', function () { enterEnv('forge'); }); else enterEnv('forge'); }); }
+      },
+      {
+        p: /open (the )?canvas|go to canvas|canvas mode/i,
+        a: function () { aiScanPage(function () { var btn = aiFind('canvas'); if (btn) aiClick(btn, 'Open Canvas', function () { enterEnv('canvas'); }); else enterEnv('canvas'); }); }
+      },
+      {
+        p: /open (the )?nexus|go to nexus|nexus mode/i,
+        a: function () { aiScanPage(function () { var btn = aiFind('nexus'); if (btn) aiClick(btn, 'Open Nexus', function () { enterEnv('nexus'); }); else enterEnv('nexus'); }); }
+      },
+      {
+        p: /open (the )?studio|go to studio|studio mode/i,
+        a: function () { aiScanPage(function () { var btn = aiFind('studio'); if (btn) aiClick(btn, 'Open Studio', function () { enterEnv('studio'); }); else enterEnv('studio'); }); }
+      },
+
+      // ── BLITZ PANELS ───────────────────────────────────────
+      {
+        p: /open chat|show chat|go to chat/i,
+        a: function () { var t = aiFind('chat'); aiClick(t || document.querySelector('[onclick*="rpTab(\'chat\'"]'), 'Open Chat', function () { rpTab('chat'); }); }
+      },
+      {
+        p: /open terminal|show terminal/i,
+        a: function () { var t = aiFind('terminal'); aiClick(t, 'Open Terminal', function () { rpTab('term'); }); }
+      },
+      {
+        p: /open (config|settings panel)|go to config/i,
+        a: function () { var t = aiFind('config'); aiClick(t, 'Open Config', function () { rpTab('cfg'); }); }
+      },
+      {
+        p: /open (shop|market|store)/i,
+        a: function () { var t = aiFind('shop'); aiClick(t, 'Open Shop', function () { rpTab('mkt'); }); }
+      },
+
+      // ── NEW TABS ────────────────────────────────────────────
+      { p: /open (a )?new tab/i, a: function () { aiOpenTab('about:blank', 'New Tab'); } },
+      { p: /open google/i, a: function () { aiOpenTab('https://google.com', 'Google'); } },
+      { p: /open youtube/i, a: function () { aiOpenTab('https://youtube.com', 'YouTube'); } },
+      { p: /open github/i, a: function () { aiOpenTab('https://github.com', 'GitHub'); } },
+      { p: /open gmail/i, a: function () { aiOpenTab('https://mail.google.com', 'Gmail'); } },
+      { p: /open (spotify|music app)/i, a: function () { aiOpenTab('https://open.spotify.com', 'Spotify'); } },
+      { p: /open chatgpt/i, a: function () { aiOpenTab('https://chat.openai.com', 'ChatGPT'); } },
+      { p: /open netflix/i, a: function () { aiOpenTab('https://netflix.com', 'Netflix'); } },
+      { p: /open twitter|open x\b/i, a: function () { aiOpenTab('https://x.com', 'X / Twitter'); } },
+      { p: /open reddit/i, a: function () { aiOpenTab('https://reddit.com', 'Reddit'); } },
+      { p: /open wikipedia/i, a: function () { aiOpenTab('https://en.wikipedia.org', 'Wikipedia'); } },
+      { p: /open maps|google maps/i, a: function () { aiOpenTab('https://maps.google.com', 'Google Maps'); } },
+      { p: /open (discord)/i, a: function () { aiOpenTab('https://discord.com/app', 'Discord'); } },
+      {
+        p: /search (?:for |the web for )?(.+)/i,
+        a: function (m) { aiOpenTab('https://www.google.com/search?q=' + encodeURIComponent(m[1]), 'Search: ' + m[1]); }
+      },
+      {
+        p: /go to (?:website |url |site )?(.+\.[a-z]{2,}.*)/i,
+        a: function (m) { var u = m[1].trim(); if (!u.startsWith('http')) u = 'https://' + u; aiOpenTab(u, u); }
+      },
+
+      // ── BRIGHTNESS ─────────────────────────────────────────
+      { p: /(?:set |turn |make )?brightness (?:to |at )?(\d+)(?:\s*%)?/i, a: function (m) { aiSetBrightness(parseInt(m[1])); } },
+      { p: /bright(?:en|er)|increase brightness|brighter/i, a: function () { aiSetBrightness(aiBrightness + 25); } },
+      { p: /dim(?:mer)?|darker|decrease brightness|lower brightness/i, a: function () { aiSetBrightness(aiBrightness - 25); } },
+      { p: /full brightness|max brightness/i, a: function () { aiSetBrightness(100); } },
+      { p: /night mode|dark(en)? screen/i, a: function () { aiSetBrightness(40); setTheme('default'); } },
+
+      // ── WINDOWS SYSTEM SETTINGS ─────────────────────────────
+      { p: /open (display|screen) settings/i, a: function () { aiOpenSettings('display', 'Display Settings'); } },
+      { p: /open (volume|sound|audio) settings/i, a: function () { aiOpenSettings('sound', 'Sound Settings'); } },
+      { p: /open (network|wifi|wi-fi) settings/i, a: function () { aiOpenSettings('network-wifi', 'Network Settings'); } },
+      { p: /open (bluetooth) settings/i, a: function () { aiOpenSettings('bluetooth', 'Bluetooth Settings'); } },
+      { p: /open (apps|application) settings/i, a: function () { aiOpenSettings('appsfeatures', 'Apps Settings'); } },
+      { p: /open (power|battery|sleep) settings/i, a: function () { aiOpenSettings('powersleep', 'Power Settings'); } },
+      { p: /open (personali[sz]|wallpaper|background) settings/i, a: function () { aiOpenSettings('personalization', 'Personalization'); } },
+      { p: /open windows settings|open settings app/i, a: function () { aiOpenSettings('', 'Windows Settings'); } },
+      {
+        p: /open task manager/i, a: function () {
+          aiSetStatus('Opening Task Manager…');
+          var a = document.createElement('a'); a.href = 'ms-taskmgr:'; try { a.click(); } catch (e) { }
+          toast('\uD83D\uDCCB Opening Task Manager…');
+        }
+      },
+      {
+        p: /open file explorer|open files/i, a: function () {
+          aiSetStatus('Opening File Explorer…');
+          var a = document.createElement('a'); a.href = 'shell:MyComputerFolder'; try { a.click(); } catch (e) { }
+          toast('\uD83D\uDCC2 Opening File Explorer…');
+        }
+      },
+
+      // ── CONNECT / DISCONNECT MODULES ────────────────────────
+      {
+        p: /connect all|sync all|full sync|bring everything online/i,
+        a: function () { aiScanPage(function () { var b = aiFind('All'); aiClick(b || document.querySelector('[onclick*="connectAll"]'), 'Connect All', connectAll); }); }
+      },
+      {
+        p: /disconnect all|clear all|everything off/i,
+        a: function () { aiScanPage(function () { var b = aiFind('None'); aiClick(b, 'Disconnect All', disconnectAll); }); }
+      },
+      {
+        p: /connect (voice|vision|memory|research|coding|studying|create)/i,
+        a: function (m) { var name = m[1]; aiScanPage(function () { var orb = document.getElementById('atom-' + name.toLowerCase()); aiClick(orb, 'Connect ' + name, function () { connectMod(name.toLowerCase()); }); }); }
+      },
+      {
+        p: /disconnect (voice|vision|memory|research|coding|studying|create)/i,
+        a: function (m) { disconnectMod(m[1].toLowerCase()); }
+      },
+
+      // ── WIDGETS ─────────────────────────────────────────────
+      { p: /add (a )?clock|open clock|show clock/i, a: function () { addWidget('clock'); } },
+      { p: /add (music|spotify|player|now playing)/i, a: function () { addWidget('spotify'); } },
+      { p: /add (projects?|tasks?|todo|to-do)/i, a: function () { addWidget('projects'); } },
+      { p: /add (a )?sticky|add (a )?note/i, a: function () { addSticky('yellow'); } },
+      { p: /open widgets?|add widget/i, a: function () { openWidgetPicker(); } },
+
+      // ── THEMES ──────────────────────────────────────────────
+      { p: /(?:set |switch to |use )?dark theme|default theme/i, a: function () { setTheme('default'); } },
+      { p: /(?:set |switch to |use )?ocean theme/i, a: function () { setTheme('ocean'); } },
+      { p: /(?:set |switch to |use )?matrix theme/i, a: function () { setTheme('matrix'); } },
+      { p: /(?:set |switch to |use )?(crimson|red) theme/i, a: function () { setTheme('crimson'); } },
+      { p: /(?:set |switch to |use )?gold(?:en)? theme/i, a: function () { setTheme('gold'); } },
+
+      // ── PAGE ACTIONS ────────────────────────────────────────
+      { p: /fullscreen|full screen|toggle fullscreen/i, a: function () { toggleFS(); } },
+      { p: /clear chat|reset chat|delete chat/i, a: function () { clearChat(); } },
+      { p: /stop speaking|be quiet|shush|stop talking/i, a: function () { stopSpeak(); } },
+      { p: /reset (layout|orbit)/i, a: function () { resetLayout(); } },
+      { p: /study protocol|start studying/i, a: function () { runProtocol('study'); } },
+      { p: /code protocol|start coding/i, a: function () { runProtocol('code'); } },
+      { p: /(?:run )?full (?:protocol|sync)|activate everything/i, a: function () { runProtocol('full'); } },
+      {
+        p: /scroll (up|down)(?: (\d+))?/i,
+        a: function (m) { window.scrollBy(0, m[1] === 'down' ? (parseInt(m[2] || 200)) : -parseInt(m[2] || 200)); }
+      },
+
+      // ── CLICK ANYTHING BY VOICE ──────────────────────────────
+      {
+        p: /click (?:the )?(.+)/i,
+        a: function (m) {
+          var label = m[1].trim();
+          aiSetStatus('Looking for: ' + label, true);
+          aiScanPage(function () {
+            var el = aiFind(label);
+            if (el) { aiClick(el, 'Clicking: ' + label, function () { tlog('sys', 'VDOM', 'Clicked: ' + label); }); }
+            else { toast('\u274C Could not find "' + label + '"'); aiHideCursor(); speak('I couldn\'t find ' + label + ' on screen.'); }
+          });
+        }
+      },
+
+      // ── AI / CHAT ────────────────────────────────────────────
+      {
+        p: /^(?:hey blitz|blitz|ask blitz|question)\s+(.+)/i,
+        a: function (m) { var msg = m[1]; document.getElementById('ci').value = msg; aiClick(document.getElementById('ci'), 'Type message', function () { sendChat(); }); }
+      },
+      {
+        p: /send message (.+)/i,
+        a: function (m) { document.getElementById('ci').value = m[1]; sendChat(); }
+      },
+
+      // ── CLOSE / STOP ─────────────────────────────────────────
+      { p: /stop voice(?: control)?|voice off|deactivate voice/i, a: function () { stopVoiceDom(); } },
+      { p: /close (widget|cursor|ai cursor)/i, a: function () { aiHideCursor(); } },
+    ];
+
+    function vdomProcess(text) {
+      var ce = document.getElementById('vdom-cmd'), te = document.getElementById('vdom-transcript');
+      if (ce) ce.textContent = '"' + text + '"';
+      if (te) { te.textContent = text; te.classList.add('on'); setTimeout(function () { te.classList.remove('on'); }, 3000); }
+      tlog('info', 'VDOM', 'Heard: ' + text);
+      for (var i = 0; i < VDOM_CMDS.length; i++) {
+        var m = text.match(VDOM_CMDS[i].p);
+        if (m) { tlog('sys', 'VDOM', 'Execute: ' + text); VDOM_CMDS[i].a(m); return; }
+      }
+      // Smart fallback: type into chat and send
+      tlog('info', 'VDOM', 'AI fallback: ' + text);
+      var inp = document.getElementById('ci'); if (inp) inp.value = text;
+      sendChat();
+    }
+
+    function startVoiceDom() {
+      var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { toast('Speech not supported — try Chrome'); return; }
+      if (vdomRecog) { try { vdomRecog.stop(); } catch (e) { } }
+      vdomRecog = new SR(); vdomRecog.continuous = true; vdomRecog.interimResults = true; vdomRecog.lang = 'en-US';
+      vdomRecog.onresult = function (e) {
+        var last = e.results[e.results.length - 1];
+        if (last.isFinal) { var t = last[0].transcript.trim(); if (t.length > 1) vdomProcess(t); }
+        else { var ce = document.getElementById('vdom-cmd'); if (ce) ce.textContent = last[0].transcript + '...'; }
+      };
+      vdomRecog.onerror = function (e) { if (e.error !== 'no-speech') tlog('err', 'VDOM', 'Error: ' + e.error); };
+      vdomRecog.onend = function () { if (vdomActive) { try { vdomRecog.start(); } catch (e) { } } };
+      vdomRecog.start();
+    }
+
+    function stopVoiceDom() {
+      vdomActive = false;
+      if (vdomRecog) { try { vdomRecog.stop(); } catch (e) { } vdomRecog = null; }
+      document.getElementById('vdom-overlay').classList.remove('on');
+      var b = document.getElementById('vdom-toggle-btn'); if (b) b.classList.remove('on');
+      aiHideCursor();
+      if (aiNoteEl) aiNoteEl.classList.remove('on');
+      toast('\uD83C\uDFA4 Voice cursor off');
+    }
+
+    function toggleVoiceDom() {
+      if (vdomActive) { stopVoiceDom(); return; }
+      vdomActive = true;
+      document.getElementById('vdom-overlay').classList.add('on');
+      var b = document.getElementById('vdom-toggle-btn'); if (b) b.classList.add('on');
+      if (aiCursorEl) aiCursorEl.classList.add('active');
+      aiSetStatus('Voice Cursor ONLINE — speak a command');
+      tlog('sys', 'VDOM', 'Voice DOM v2 ONLINE — cursor + PC control active');
+      toast('\uD83C\uDFA4 Voice cursor active — say a command!');
+      speak('Voice cursor online. I can open apps, tabs, widgets, and control your screen. What should I do?');
+      startVoiceDom();
+    }
+
+    window.toggleVoiceDom = toggleVoiceDom; window.stopVoiceDom = stopVoiceDom;
+
+    // Always auto-save chat
+    var _asmOrig = addMsg;
+    addMsg = function (role, text, skipHistory) { _asmOrig(role, text, skipHistory); try { localStorage.setItem('blitz_chat', JSON.stringify(chatHistory.slice(-200))); localStorage.setItem('blitz_chat_ts', new Date().toISOString()); } catch (e) { } };
+
+    // Enhanced offline AI
+    var _simOrig = simFallback;
+    simFallback = function (text, active) {
+      var t = text.toLowerCase().trim();
+      if (/add clock/i.test(t)) { addWidget('clock'); return 'Clock widget added!'; }
+      if (/add (music|spotify)/i.test(t)) { addWidget('spotify'); return 'Music player added!'; }
+      if (/add (project|task)/i.test(t)) { addWidget('projects'); return 'Projects board added!'; }
+      if (/add sticky|sticky note/i.test(t)) { addSticky('yellow'); return 'Sticky note added — drag it anywhere!'; }
+      if (/what time|current time/i.test(t)) { return 'The time is ' + new Date().toLocaleTimeString() + '.'; }
+      if (/what.*(day|date)|today.*(date|day)/i.test(t)) { return 'Today is ' + new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + '.'; }
+      if (/voice control/i.test(t)) { toggleVoiceDom(); return 'Voice control toggled. Speak commands!'; }
+      if (/full sync|activate everything/i.test(t)) { connectAll(); return 'All modules activating!'; }
+      return _simOrig(text, active);
+    };
+
+    tlog('sys', 'WGT ', 'Widget system ONLINE \u2014 Clock, Music, Projects, Sticky Notes');
+    tlog('sys', 'VDOM', 'Voice DOM controller STANDBY \u2014 click Voice button to activate');
+    tlog('sys', 'MOB ', 'Responsive layout ACTIVE \u2014 mobile & tablet optimized');
+    tlog('sys', 'SAVE', 'Chat auto-save ALWAYS ON \u2014 ' + chatHistory.length + ' messages in history');
   </script>
 </body>
 
