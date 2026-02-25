@@ -12,13 +12,9 @@ Mount in main.py:
 
 import os, subprocess, asyncio, json, time
 from pathlib import Path
-from typing import Optional
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import BaseModel
-
-# CREATE_NO_WINDOW only exists on Windows; use 0 elsewhere
-_NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
 router = APIRouter(prefix="/api/sys", tags=["system"])
 
@@ -108,17 +104,17 @@ async def open_app(req: AppRequest):
             # URI scheme — use PowerShell to launch
             subprocess.Popen(
                 ["powershell", "-Command", f"Start-Process '{cmd}'"],
-                shell=False, creationflags=_NO_WINDOW
+                shell=False, creationflags=subprocess.CREATE_NO_WINDOW
             )
         elif cmd.endswith(".exe") or "/" in cmd or "\\" in cmd:
             subprocess.Popen(
                 cmd, shell=True,
-                creationflags=_NO_WINDOW
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
         else:
             subprocess.Popen(
                 ["powershell", "-Command", f"Start-Process '{cmd}'"],
-                shell=False, creationflags=_NO_WINDOW
+                shell=False, creationflags=subprocess.CREATE_NO_WINDOW
             )
         return {"status": "launched", "app": name, "cmd": cmd}
     except Exception as e:
@@ -196,8 +192,8 @@ async def get_volume():
         return JSONResponse(status_code=503, content={"error": str(e), "fallback": True})
 
 class VolumeRequest(BaseModel):
-    level: int = -1          # 0–100, or -1 to skip
-    mute: Optional[bool] = None
+    level: int = -1   # 0–100, or -1 to skip
+    mute: bool = None
 
 @router.post("/volume")
 async def set_volume(req: VolumeRequest):
@@ -342,12 +338,44 @@ async def hotkey(req: HotkeyRequest):
 from dotenv import load_dotenv
 load_dotenv()
 
-SPOTIFY_CLIENT_ID    = os.getenv("SPOTIFY_CLIENT_ID", "")
-SPOTIFY_REDIRECT_URI = os.getenv("SPOTIFY_REDIRECT_URI", "http://localhost:8000/api/sys/spotify/callback")
-SPOTIFY_SCOPES       = "user-read-playback-state user-read-currently-playing user-modify-playback-state"
+SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID", "")
+SPOTIFY_SCOPES    = "user-read-playback-state user-read-currently-playing user-modify-playback-state"
+
+def _get_redirect_uri() -> str:
+    """
+    Resolve redirect URI at request time so Render's injected env vars
+    are always picked up. Priority:
+      1. SPOTIFY_REDIRECT_URI env var (explicit override)
+      2. RENDER_EXTERNAL_URL (Render sets this automatically)
+      3. localhost fallback for local dev
+    """
+    explicit = os.getenv("SPOTIFY_REDIRECT_URI", "").strip()
+    if explicit:
+        # Accept both bare URL and full callback URL
+        if explicit.endswith("/callback"):
+            return explicit
+        return explicit.rstrip("/") + "/api/sys/spotify/callback"
+
+    render_url = os.getenv("RENDER_EXTERNAL_URL", "").strip()
+    if render_url:
+        return render_url.rstrip("/") + "/api/sys/spotify/callback"
+
+    return "http://localhost:8000/api/sys/spotify/callback"
 
 # In-memory token store (swap for DB in production)
 _spotify_tokens: dict = {}
+
+@router.get("/spotify/debug")
+async def spotify_debug():
+    """Check exactly what redirect URI and client ID the server is using.
+    Visit https://blitz-v4.onrender.com/api/sys/spotify/debug in your browser."""
+    return {
+        "client_id_set": bool(SPOTIFY_CLIENT_ID),
+        "client_id_preview": (SPOTIFY_CLIENT_ID[:8] + "...") if SPOTIFY_CLIENT_ID else "NOT SET",
+        "redirect_uri_in_use": _get_redirect_uri(),
+        "SPOTIFY_REDIRECT_URI_env": os.getenv("SPOTIFY_REDIRECT_URI", "NOT SET"),
+        "RENDER_EXTERNAL_URL_env": os.getenv("RENDER_EXTERNAL_URL", "NOT SET"),
+    }
 
 @router.get("/spotify/auth")
 async def spotify_auth():
@@ -366,7 +394,7 @@ async def spotify_auth():
         "response_type": "code",
         "client_id": SPOTIFY_CLIENT_ID,
         "scope": SPOTIFY_SCOPES,
-        "redirect_uri": SPOTIFY_REDIRECT_URI,
+        "redirect_uri": _get_redirect_uri(),
         "code_challenge_method": "S256",
         "code_challenge": challenge,
         "state": "blitz",
@@ -387,7 +415,7 @@ async def spotify_callback(code: str = "", error: str = "", state: str = ""):
         resp = await client.post("https://accounts.spotify.com/api/token", data={
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": SPOTIFY_REDIRECT_URI,
+            "redirect_uri": _get_redirect_uri(),
             "client_id": SPOTIFY_CLIENT_ID,
             "code_verifier": verifier,
         })
@@ -516,3 +544,31 @@ async def spotify_control(req: SpotifyControl):
         else:
             raise HTTPException(400, f"Unknown action: {req.action}")
     return {"status": "ok", "action": req.action, "http": r.status_code}
+
+@router.put("/spotify/shuffle")
+async def spotify_shuffle(state: bool = False):
+    """Toggle shuffle on/off."""
+    headers = await _spotify_headers()
+    if not headers:
+        return JSONResponse(status_code=401, content={"error": "Not authenticated"})
+    import httpx
+    async with httpx.AsyncClient() as client:
+        r = await client.put(
+            f"https://api.spotify.com/v1/me/player/shuffle?state={str(state).lower()}",
+            headers=headers
+        )
+    return {"status": "ok", "shuffle": state, "http": r.status_code}
+
+@router.put("/spotify/repeat")
+async def spotify_repeat(state: str = "off"):
+    """Set repeat mode: off | track | context."""
+    headers = await _spotify_headers()
+    if not headers:
+        return JSONResponse(status_code=401, content={"error": "Not authenticated"})
+    import httpx
+    async with httpx.AsyncClient() as client:
+        r = await client.put(
+            f"https://api.spotify.com/v1/me/player/repeat?state={state}",
+            headers=headers
+        )
+    return {"status": "ok", "repeat": state, "http": r.status_code}
